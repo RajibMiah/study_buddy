@@ -1,6 +1,6 @@
 
 from django.shortcuts import render
-from .models import Room
+from .models import Room 
 import json
 
 # Create your views here.
