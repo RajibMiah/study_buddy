@@ -1,8 +1,16 @@
 <a href="/">
     <h1>LOGO</h1>
 </a>
-<form method="GET" action="{% url 'home' %}">
+<form
+    method="GET" action="{% url 'home' %}">
     <!-- {%csrf_token%} -->
-    <input type = 'text' name = 'q' placeholder="search Room..."/>
+    <input type='text' name='q' placeholder=" Search Room..."/>
 </form>
+<div>
+    {% if request.user.is_authenticated %}
+        <a href="{% url 'logout' %}">logout</a>
+    {% else %}
+        <a href="{% url 'login' %}">login</a>
+    {% endif %}
+</div>
 <hr/>
