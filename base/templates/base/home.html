@@ -3,7 +3,9 @@
 {%block content %}
 
 <h1>Home template</h1>
+
 <div>
+    <a href="{% url 'create-room' %}">Create Room</a>
     {% for room in rooms %}
         <div>
             <h5>
