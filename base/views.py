@@ -1,5 +1,4 @@
 
-from urllib import request
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
 from django.contrib.auth.decorators import login_required
@@ -150,3 +149,14 @@ def deleteRoom(request, pk):
 
     context = {'obj': room}
     return render(request, 'base/delete.html', context)
+
+@login_required(login_url='/login')
+def deleteMessage(request , pk):
+    message = Message.objects.get(id = pk)
+    if request.user != message.user:
+        return HttpResponse('You are not allowed here !!')
+    if request.method == 'POST':
+        message.delete()
+        return redirect('home' )
+    context = {'obj':message}    
+    return render(request , 'base/delete.html' , context)        
