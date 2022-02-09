@@ -1,31 +1,56 @@
 {% extends 'main.html' %}
 
+
 {% block content %}
+    <style>
+        .room-container {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+        }
+    </style>
 
-    <h1>{{ room.name }}</h1>
-    <hr/>
-    <p>{{ room.description }}</p>
 
-    <div class="comment-wrapper">
-        <h3>Conversation</h3>
-        <hr/>
-        {% for message in room_messages %}
-            <div>
-                <small>
-                    @{{ message.user }}
-                    ,
-                    {{ message.created | timesince }}
-                    ago</small>
-                <p>{{ message.body }}</p>
+    <div class="room-container">
+        <div>
+            <h1>{{ room.name }}</h1>
+            <h5>@{{ room.host }}</h5>
+            <hr/>
+            <p>{{ room.description }}</p>
+
+            <small>{{ room.topic }}</small>
+
+            <div class="comment-wrapper">
+                <h3>Conversation</h3>
+                <hr/>
+                {% for message in room_messages %}
+                    <div>
+                        <small>
+                            @{{ message.user }}
+                            ,
+                            {{ message.created | timesince }}
+                            ago</small>
+                        <p>{{ message.body }}</p>
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
-    </div>
-    {% if request.user.is_authenticated %}
-        <div class="comment-form">
-            <form method="POST" action="">
-                {% csrf_token %}
-                <input type="text" name='body' placeholder="Write you message "/>
-            </form>
+            {% if request.user.is_authenticated %}
+                <div class="comment-form">
+                    <form method="POST" action="">
+                        {% csrf_token %}
+                        <input type="text" name='body' placeholder="Write you message "/>
+                    </form>
+                </div>
+            {% endif %}
         </div>
-    {% endif %}
+        <div>
+            <h2>participants</h2>
+            {%for participant in participants%}
+                <div>
+                    <p>@{{participant.username}}</p>
+                </div>
+            {%endfor%}
+            <hr/>
+        </div>
+    </div>
+
 {% endblock %}
