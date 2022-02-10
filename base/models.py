@@ -32,7 +32,10 @@ class Message(models.Model):
     body = models.TextField(max_length=255)
     updated = models.DateTimeField(auto_now=True)
     created  = models.DateTimeField(auto_now_add=True)
-    
+
+    class Meta:
+        ordering = ['-updated' , '-created']
+
     def __str__(self) -> str:
         return self.body[0:50]
 
