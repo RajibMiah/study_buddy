@@ -1,7 +1,7 @@
 <h3>RECENT ACTIVITIES</h3>
 {% for room_message in room_messages %}
     <div>
-        <small>@{{ room_message.user }}
+        <small><a href="{% url 'user-profile' room_message.user.id %}">@{{ room_message.user }}</a>
             {{ room_message.created |timesince }}</small>
         <small>repliced to:
             {{ room_message.room }}</small>
