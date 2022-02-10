@@ -9,6 +9,7 @@ urlpatterns = [
     path('delete-message/<str:pk>' , deleteMessage , name = 'delete-message'),
 
     path('', home , name = 'home'),
+    path('profile/<str:pk>/', userProfile , name = 'user-profile'),
     path('room/<str:pk>/' , room , name = 'room'),
     path('create-room/' , createRoom  , name ='create-room' ),
     path('update-room/<str:pk>/' , updateRoom , name = 'update-room'),

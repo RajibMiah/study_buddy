@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from django.contrib import messages
 from django.db.models import Q
 from .models import Room, Topic , Message
@@ -62,6 +63,16 @@ def registerPage(request):
     context = {'page': page, 'form': form}
     return render(request, 'base/login.html', context)
 
+def userProfile(request , pk):
+    user = User.objects.get(id = pk)
+    rooms = user.room_set.all()
+
+    room_messages = user.message_set.all()
+    topic = Topic.objects.all()
+
+    context = {'user': user , 'rooms':rooms , 'room_messages':room_messages ,'topics': topic}
+    print(context)
+    return render(request , 'base/profile.html' , context)
 
 def home(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
