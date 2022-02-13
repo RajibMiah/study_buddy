@@ -173,3 +173,12 @@ def deleteMessage(request , pk):
         return redirect('home' )
     context = {'obj':message}    
     return render(request , 'base/delete.html' , context)        
+
+def updateUser(request):
+    pass
+
+def topicsPage(request):
+    pass
+
+def activityPage(request):
+    pass
