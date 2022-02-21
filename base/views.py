@@ -201,9 +201,10 @@ def deleteMessage(request, pk):
     context = {'obj': message}
     return render(request, 'base/delete.html', context)
 
-
+@login_required(login_url='/login')
 def updateUser(request):
-    return HttpResponse('user profile update page')
+    context = {}
+    return render(request , 'base/update_user.html' ,context)
 
 
 def topicsPage(request):
