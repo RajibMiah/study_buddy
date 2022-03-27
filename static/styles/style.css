@@ -1140,7 +1140,7 @@ a {
 }
 
 .participants__top span {
-  color: var(--color-main);
+  color: var(--color-light);
   font-size: 1.3rem;
   text-transform: none;
 }
