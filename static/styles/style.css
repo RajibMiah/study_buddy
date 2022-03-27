@@ -96,7 +96,7 @@ a {
 
 .btn--main {
   background-color: var(--color-main);
-  color: var(--color-light);
+  color: var(--color-dark);
 }
 
 .btn:hover {
@@ -135,7 +135,7 @@ a {
   position: relative;
   display: inline-block;
   border-radius: 50%;
-  border: 2px solid var(--color-main);
+  border: 2px solid var(--color-dark-light);
 }
 
 .avatar img {
@@ -290,7 +290,7 @@ a {
 .header__logo > h1 {
   font-weight: 700;
   font-size: 2rem;
-  color: var(--color-dark);
+  color: var(--color-dark-light);
 }
 
 .header__search > label {
@@ -314,7 +314,7 @@ a {
   background: transparent;
   border: none;
   outline: none;
-  color: var(--color-light);
+  color: var(--color-dark);
 }
 
 @media screen and (max-width: 800px) {
@@ -502,7 +502,7 @@ a {
   padding: 1rem;
   border-radius: 3px;
   width: 100%;
-  color: var(--color-light);
+  color: var(--color-dark);
   font-weight: 500;
   outline: none;
 }
@@ -670,6 +670,7 @@ a {
 .roomListRoom__actions span {
   font-size: 1.4rem;
   font-weight: 500;
+  color: var(--color-dark-light);
 }
 
 .roomListRoom__actions svg {
@@ -713,14 +714,14 @@ a {
 }
 
 .roomListRoom__joined svg {
-  fill: var(--color-main);
+  fill: var(--color-dark-light);
   width: 1.6rem;
   height: 1.6rem;
 }
 
 .roomListRoom__topic {
   padding: 5px 1.5rem;
-  background-color: var(--color-dark);
+  background-color: var(--color-dark-light);
   border-radius: 5rem;
   font-weight: 500;
   font-size: 1.3rem;
@@ -749,7 +750,7 @@ a {
 .activities__box {
   margin: 1.5rem;
   padding: 1.5rem;
-  border: 2px solid var(--color-dark-medium);
+  border: 2px solid var(--color-dark-light);
   border-radius: 5px;
 }
 
@@ -772,12 +773,21 @@ a {
   font-size: 1.4rem;
 }
 
+.activities__boxContent a{
+  color: var(--color-dark-medium);
+}
+
+.activities__boxContent p{
+  color: var(--color-dark-medium);
+}
+
 .activities__boxContent a:hover {
   text-decoration: underline;
 }
 
 .activities__boxRoomContent {
   background: var(--color-bg);
+  color: var(--color-dark-medium);
   padding: 1rem;
   border-radius: 5px;
   margin-top: 1rem;
@@ -785,7 +795,7 @@ a {
 }
 
 .roomListRoom__actions svg {
-  fill: var(--color-light-gray);
+  fill: var(--color-dark-light);
 }
 
 /*==============================
@@ -1008,7 +1018,7 @@ a {
 .room__info h3 {
   font-size: 2.4rem;
   font-weight: 500;
-  color: var(--color-main);
+  color: var(--color-dark);
 }
 
 .room__hosted p {
@@ -1063,7 +1073,7 @@ a {
 }
 
 .thread {
-  border-left: 2px solid var(--color-dark);
+  border-left: 2px solid var(--color-light-medium);
   padding-left: 1rem;
   margin: 2rem 0;
   padding: 2rem;
@@ -1092,9 +1102,11 @@ a {
   gap: 1rem;
 }
 
+
 .thread__details {
   font-size: 1.4rem;
   margin-top: 0.5rem;
+  color:var(--color-dark)
 }
 
 .room__message {
@@ -1109,7 +1121,7 @@ a {
 
 .room__message > form > input {
   resize: none;
-  background-color: var(--color-dark-light);
+  background-color: var(--color-dark-medium);
   color: var(--color-light);
   border: none;
   outline: none;
