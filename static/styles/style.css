@@ -6,14 +6,14 @@
   --color-dark: #3f4156;
   --color-dark-medium: #51546e;
   --color-dark-light: #696d97;
-  --color-light: #e5e5e5;
+  --color-light: #ffffffe7;
+  --color-light-medium:rgba(161, 156, 156, 0.452);
   --color-gray: #8b8b8b;
   --color-light-gray: #b2bdbd;
-  --color-bg: #2d2d39;
+  --color-bg:#e8e8ee;
   --color-success: #5dd693;
   --color-error: #fc4b0b;
 }
-
 /*========== base styles ==========*/
 
 * {
@@ -96,7 +96,7 @@ a {
 
 .btn--main {
   background-color: var(--color-main);
-  color: var(--color-dark);
+  color: var(--color-light);
 }
 
 .btn:hover {
@@ -152,7 +152,7 @@ a {
   background-color: var(--color-gray);
   z-index: 111;
   border-radius: 50%;
-  border: 0.3rem solid var(--color-dark);
+  border: 0.3rem solid var(--color-light);
 }
 
 .avatar.active::after {
@@ -267,7 +267,7 @@ a {
 
 .header {
   padding: 1.5rem;
-  background-color: var(--color-dark);
+  background-color: var(--color-light);
 }
 
 .header > .container {
@@ -290,11 +290,11 @@ a {
 .header__logo > h1 {
   font-weight: 700;
   font-size: 2rem;
-  color: var(--color-light);
+  color: var(--color-dark);
 }
 
 .header__search > label {
-  background-color: var(--color-dark-medium);
+  background-color: var(--color-light-medium);
   padding: 1.3rem 1rem;
   display: flex;
   align-items: center;
@@ -429,7 +429,7 @@ a {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -46%);
-  background-color: var(--color-dark);
+  background-color: var(--color-light);
   border-radius: 1rem;
   box-shadow: 1px 1px 6px 3px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -575,7 +575,7 @@ a {
   justify-content: space-between;
   margin-bottom: 3rem;
   font-weight: 500;
-  color: var(--color-light-gray);
+  color: var(--color-dark);
   transition: all 0.3s ease-in-out;
 }
 
@@ -586,7 +586,7 @@ a {
 
 .topics__list li a span {
   padding: 0.5rem 1rem;
-  background-color: var(--color-dark);
+  background-color: var(--color-light);
   border-radius: 3px;
   font-size: 1.3rem;
   font-weight: 700;
@@ -629,7 +629,7 @@ a {
 .roomList__header h2 {
   text-transform: uppercase;
   font-weight: 500;
-  color: var(--color-light);
+  color: var(--color-dark-medium);
   letter-spacing: 1px;
 }
 
@@ -642,7 +642,7 @@ a {
 
 .roomListRoom {
   margin-bottom: 2.4rem;
-  background-color: var(--color-dark);
+  background-color: var(--color-light);
   border-radius: 1rem;
   padding: 2rem;
 }
@@ -687,7 +687,7 @@ a {
   font-size: 2rem;
   font-weight: 500;
   margin-bottom: 1.5rem;
-  color: var(--color-light);
+  color: var(--color-dark);
   transition: all 0.3s ease-in-out;
 }
 
@@ -696,7 +696,7 @@ a {
 }
 
 .roomListRoom__meta {
-  border-top: 1px solid var(--color-dark-medium);
+  border-top: 1px solid var(--color-dark);
   padding-top: 1rem;
   display: flex;
   align-items: center;
@@ -704,7 +704,7 @@ a {
 }
 
 .roomListRoom__joined {
-  color: var(--color-light-gray);
+  color: var(--color-dark-medium);
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -720,7 +720,7 @@ a {
 
 .roomListRoom__topic {
   padding: 5px 1.5rem;
-  background-color: var(--color-dark-medium);
+  background-color: var(--color-dark);
   border-radius: 5rem;
   font-weight: 500;
   font-size: 1.3rem;
@@ -731,7 +731,7 @@ a {
 ================================*/
 
 .activities {
-  background: var(--color-dark);
+  background: var(--color-light);
   border-radius: 5px;
   overflow: hidden;
 }
@@ -900,7 +900,7 @@ a {
 
 .room,
 .participants {
-  background: var(--color-dark);
+  background: var(--color-light);
   max-height: 87.5vh;
   border-radius: 0.7rem;
   overflow: hidden;
@@ -968,7 +968,7 @@ a {
   overflow-y: auto;
   position: absolute;
   width: 95%;
-  background: var(--color-dark);
+  background: var(--color-light);
   z-index: 999;
   top: 4.4rem;
   padding-top: 2rem;
