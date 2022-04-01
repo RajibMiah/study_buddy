@@ -73,7 +73,7 @@ def registerPage(request):
 def userProfile(request, pk):
     user = User.objects.get(id=pk)
     rooms = user.room_set.all()
-
+    
     room_messages = user.message_set.all()
     topic = Topic.objects.all()
 
