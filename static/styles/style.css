@@ -222,6 +222,7 @@ a {
 
 .dropdown-menu.show {
   display: block;
+  width: max-content !important;
 }
 
 .dropdown-menu a {

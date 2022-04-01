@@ -3,10 +3,10 @@ from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from django.contrib import messages
 from django.db.models import Q
-from .models import Room, Topic, Message
+from .models import Room, Topic, Message , User
 from .forms import RoomForm , UserForm
 
 
@@ -79,7 +79,7 @@ def userProfile(request, pk):
 
     context = {'user': user, 'rooms': rooms,
                'room_messages': room_messages, 'topics': topic}
-    print(context)
+    # print(context)
     return render(request, 'base/profile.html', context)
 
 
