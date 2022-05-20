@@ -129,6 +129,7 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_ROOT = BASE_DIR /  'static/images'
+
 AUTH_USER_MODEL = 'base.User'
 
 

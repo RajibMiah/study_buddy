@@ -9,7 +9,7 @@ class User(AbstractUser):
     email = models.EmailField(unique=True , null=True)
     bio = models.CharField(max_length=255 ,null=True)
 
-    avator = models.ImageField( null=True ,default = 'avatar.svg')
+    avator = models.ImageField( null=True , blank = True, default = 'avatar.svg')
     USERNAME_FIELD ='email'
     REQUIRED_FIELDS = []
 
