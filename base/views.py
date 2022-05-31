@@ -30,9 +30,10 @@ def login(request):
             user = User.objects.get(username = username)
         except:
             messages.error(request, 'User does not exist')
-
+        print("username" , username , 'passwrod' , password)
         # user = authenticate(request, email=email, password=password)
         user = authenticate(request, username = username , password = password)
+        print('user',user)
         if user is not None:
             auth_login(request, user)
             return redirect('home')
