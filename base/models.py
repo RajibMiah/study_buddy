@@ -7,9 +7,9 @@ from django.contrib.auth.models import AbstractUser
 class User(AbstractUser):
     name = models.CharField(max_length=255 , null=True)
     email = models.EmailField(unique=True , null=True)
-    bio = models.CharField(max_length=255 ,null=True)
+    bio = models.CharField(max_length=255 ,null=True , blank=True)
 
-    avator = models.ImageField( null=True , blank = True, default = 'avatar.svg')
+    avator = models.ImageField( null=True , blank = True, default = 'images/avatar.svg')
     # USERNAME_FIELD ='email'
     # REQUIRED_FIELDS = ['username' , 'email' , 'password']
 
