@@ -16,8 +16,19 @@
                         </div>
                     </div>
                     <div class="profile__info">
-                        <h3>{{ user.name }}</h3>
-                        <p>@{{ user.username }}</p>
+                        <div class="profile_info_container">
+                            <h3>{{ user.name }}</h3>
+                            <!-- <p>@{{ user.username }}</p> -->
+    
+                            {% if request.user != user%}
+                                <div class="header__user">
+                                    <button type="button" class="icon-button">
+                                        <span class="material-symbols-outlined">chat</span>
+                                    </button>
+                                </div>
+                            {% endif%}
+                        </div>
+                      
                         {% if request.user == user %}
                             <a href="{% url 'update-user' %}" class="btn btn--main btn--pill">Edit Profile</a>
                         {% endif %}
@@ -29,13 +40,6 @@
                         </p>
                     </div>
                 </div>
-
-                <div class="roomList__header">
-                    <div>
-                        <h2>Study Rooms Hosted by dennis_ivy</a>
-                    </h2>
-                </div>
-            </div>
             {% include 'base/feed_component.html' %}
 
 

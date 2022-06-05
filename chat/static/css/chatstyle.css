@@ -401,6 +401,7 @@ body {
 }
 #frame #sidepanel #contacts ul li.contact .wrap img {
   width: 40px;
+  height: 40px !important;
   border-radius: 50%;
   float: left;
   margin-right: 10px;
@@ -520,6 +521,7 @@ body {
 }
 #frame .content .contact-profile img {
   width: 40px;
+  height: 40px;
   border-radius: 50%;
   float: left;
   margin: 9px 12px 0 9px;
