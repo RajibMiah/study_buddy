@@ -119,10 +119,10 @@ def room(request, pk):
 
         )
         room_details.participants.add(request.user)
-        print('message body', message)
+        # print('message body', message)
         return redirect('room', pk=room_details.id)
 
-    print('roomt details =--->', room_details)
+    # print('roomt details =--->', room_details)
 
     context = {'room': room_details, 'room_messages': room_messages,
                'participants': participants}
