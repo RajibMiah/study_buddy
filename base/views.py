@@ -1,14 +1,16 @@
 
-from django.shortcuts import render, redirect, HttpResponse
-from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
 # from django.contrib.auth.models import User
 from django.contrib import messages
+from django.contrib.auth import authenticate
+from django.contrib.auth import login as auth_login
+from django.contrib.auth import logout as auth_logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Q
-from .models import Room, Topic, Message , User
-from .forms import RoomForm , UserForm
+from django.shortcuts import HttpResponse, redirect, render
 
+from .forms import RoomForm, UserForm
+from .models import Message, Room, Topic, User
 
 # Create your views here.
 
@@ -27,13 +29,13 @@ def login(request):
         try:
             # pass
             # user = User.objects.get(email=email)
-            user = User.objects.get(username = username)
+            user = User.objects.get(username=username)
         except:
             messages.error(request, 'User does not exist')
-        print("username" , username , 'passwrod' , password)
+        print("username", username, 'passwrod', password)
         # user = authenticate(request, email=email, password=password)
-        user = authenticate(request, username = username , password = password)
-        print('user',user)
+        user = authenticate(request, username=username, password=password)
+        print('user', user)
         if user is not None:
             auth_login(request, user)
             return redirect('home')
@@ -74,7 +76,7 @@ def registerPage(request):
 def userProfile(request, pk):
     user = User.objects.get(id=pk)
     rooms = user.room_set.all()
-    
+
     room_messages = user.message_set.all()
     topic = Topic.objects.all()
 
@@ -119,6 +121,8 @@ def room(request, pk):
         room_details.participants.add(request.user)
         print('message body', message)
         return redirect('room', pk=room_details.id)
+
+    print('roomt details =--->', room_details)
 
     context = {'room': room_details, 'room_messages': room_messages,
                'participants': participants}
@@ -205,18 +209,19 @@ def deleteMessage(request, pk):
     context = {'obj': message}
     return render(request, 'base/delete.html', context)
 
+
 @login_required(login_url='/login')
 def updateUser(request):
     user = request.user
     form = UserForm(instance=user)
     if request.method == 'POST':
-        form = UserForm(request.POST , instance=user)
+        form = UserForm(request.POST, instance=user)
         if form.is_valid:
             form.save()
-            return redirect('user-profile' , pk = user.id)
+            return redirect('user-profile', pk=user.id)
 
     context = {'form': form}
-    return render(request , 'base/update_user.html' ,context)
+    return render(request, 'base/update_user.html', context)
 
 
 def topicsPage(request):
