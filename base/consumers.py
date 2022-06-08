@@ -19,7 +19,6 @@ class RoomConsumer(WebsocketConsumer):
         self.room_group_name = f'chat_{self.room_name}'
         self.room = Room.objects.get(pk=self.room_name)
         self.user = self.scope['user']  # new
-
         # connection has to be accepted
         self.accept()
 
@@ -37,22 +36,31 @@ class RoomConsumer(WebsocketConsumer):
 
     def receive(self, text_data=None, bytes_data=None):
         text_data_json = json.loads(text_data)
+        print('text', text_data_json)
         message = text_data_json['message']
 
         if not self.user.is_authenticated:  # new
             return                          # new
 
-        # send chat message event to the room
+        Message.objects.create(
+            user=self.user, room=self.room, body=message)  # new
+
+        self.message_data = Message.objects.filter(
+            room_id=self.room).values().last()
+
+        self.message_data['type'] = 'chat_message'
+        # self.message_data['updated'] = str(self.message_data.update.utcnow())
+        # self.message_data['created'] = str(self.message_data.created.utcnow())
+
+        print(self.message_data)
+
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
-            {
-                'type': 'chat_message',
-                'user': self.user.username,  # new
-                'message': message,
-            }
+            # self.message_data
         )
-        Message.objects.create(
-            user=self.user, room=self.room, content=message)  # new
+        # Message.objects.create(
+        #     user=self.user, room=self.room, body=message)  # new
 
     def chat_message(self, event):
+        print(" prinfing event object", event)
         self.send(text_data=json.dumps(event))

@@ -110,17 +110,17 @@ def room(request, pk):
     room_messages = room_details.message_set.all()
     participants = room_details.participants.all()
     # print('participants' , participants)
-    if request.method == 'POST':
+    # if request.method == 'POST':
 
-        message = Message.objects.create(
-            user=request.user,
-            room=room_details,
-            body=request.POST.get('body')
+    #     message = Message.objects.create(
+    #         user=request.user,
+    #         room=room_details,
+    #         body=request.POST.get('body')
 
-        )
-        room_details.participants.add(request.user)
-        # print('message body', message)
-        return redirect('room', pk=room_details.id)
+    #     )
+    #     room_details.participants.add(request.user)
+    #     # print('message body', message)
+    #     return redirect('room', pk=room_details.id)
 
     # print('roomt details =--->', room_details)
 

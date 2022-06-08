@@ -2,17 +2,17 @@
 // console.log("Sanity check from index.js.");
 
 // // focus 'roomInput' when user opens the page
-// document.querySelector("#roomInput").focus();
+// document.querySelector("#chatMessageInput").focus();
 
 // // submit if the user presses the enter key
-// document.querySelector("#roomInput").onkeyup = function(e) {
+// document.querySelector("#chatMessageInput").onkeyup = function(e) {
 //     if (e.keyCode === 13) {  // enter key
 //         document.querySelector("#roomConnect").click();
 //     }
 // };
 
 // // redirect to '/room/<roomInput>/'
-// document.querySelector("#roomConnect").onclick = function() {
+// document.querySelector("#chatMessageInput").onclick = function() {
 //     let roomName = document.querySelector("#roomInput").value;
 //     window.location.pathname = "ws/room/" + roomId + "/";
 //     console.log(window.location.pathname)
