@@ -397,6 +397,7 @@ a {
 
 .header__menu p {
   line-height: 1.2;
+  /* color: #71d0eb; */
 }
 
 .header__menu span {
@@ -1256,13 +1257,13 @@ a {
   overflow-y: auto;
 }
 
-p {
+/* p {
   color: white;
   margin: 12px 0;
   font-size: 18px;
   font-family: sans-serif;
   letter-spacing: 0.44px;
-}
+} */
 
 .red {
   color: #f65e5a;
