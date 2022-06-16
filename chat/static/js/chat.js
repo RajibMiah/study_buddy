@@ -188,6 +188,7 @@ function toggleStatus(sid, from, to) {
 }
 
 function createContact(sid, name, preview, status, mode, img) {
+  console.log('mode' , mode , 'preview' , preview)  
   var contact;
   if (preview === "") {
     preview = "No Message";
@@ -231,6 +232,7 @@ function createContact(sid, name, preview, status, mode, img) {
   } else {
     $("#contact" + sid).slideDown("fast");
   }
+  
   $("#contact" + sid).click(function () {
     $("#chat-tab" + activeContact).css("display", "none");
     $("#contact" + activeContact).removeClass("active");
@@ -292,13 +294,14 @@ function createMessage(msg) {
       }
     }
   }
+//   console.log(msg.time_stamp)
   return (
     '<li class="' +
     String(cls) +
     '"><p>' +
     String(msg.content) +
     '<br><span class="custom-msg-date">' +
-    String(msg.time_stamp) +
+    String(msg.time_stamp ) +  //// time stemp convertor
     "</span></p></li>"
   );
 }

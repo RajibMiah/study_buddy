@@ -126,34 +126,28 @@ class ChatConsumer(WebsocketConsumer):
         })
 
     def chat_load(self, data):
-        # print('chat data', data)
-        # print('name', self.user)
 
-        self.recipient = User.objects.get(uuid=self.recciver_uuid)
-        self.contacts = contact.objects.get(contact_id=self.recipient)
-        print("contants", self.contacts)
-        self.msg_set = Message.objects.filter((Q(sender=self.user) & Q(recipient=self.recipient)) | (
-            Q(sender=self.recipient) & Q(recipient=self.user))).order_by('-timestamp').all()
-        self.chname = self.get_channel_name(recipient=self.recipient)
+        recipient = User.objects.get(id=data['user'])
+        msg_set = Message.objects.filter((Q(sender=self.user) & Q(recipient=recipient)) | (
+            Q(sender=recipient) & Q(recipient=self.user))).order_by('-timestamp').all()
+        chname = self.get_channel_name(recipient=recipient)
 
-        self.status = ''
-        if self.chname is None:
-            self.status = "offline"
+        status = ''
+        if chname is None:
+            status = "offline"
         else:
-            self.status = "online"
+            status = "online"
             self.send_chat_msg(
-                msg=self.user.id, type="status.ON", reciever=self.recipient)
+                msg=self.user.id, type="status.ON", reciever=recipient)
 
         ctx = {
-            # 'user_uuid': data['user']['id'],
+            'recipient_uuid': str(recipient.uuid),
             'contact': data['user'],
-            'name': self.recipient.username,
-            'messages': self.to_json_msgs(self.msg_set),
-            'status': self.status,
-            'pic': self.recipient.avator.url
-
+            'name': recipient.username,
+            'messages': self.to_json_msgs(msg_set),
+            'status': status,
+            'pic': recipient.avator.url
         }
-        # print("context", ctx)
         return ctx
 
     def new_msg(self, recv_data):
