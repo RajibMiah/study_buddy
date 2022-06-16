@@ -1,21 +1,3 @@
-'''
-    Copyright (C) 2020  Jayesh Karkare Alien-X717
-
-    This file is part of Chat
-
-    Chat is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Chat is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Chat.  If not, see <https://www.gnu.org/licenses/>.'''
-
 import json
 import threading
 import time
@@ -34,9 +16,14 @@ User = get_user_model()
 
 
 class ChatConsumer(WebsocketConsumer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(args, kwargs)
+        self.recciver_uuid = None
 
     def connect(self):
         print('------------connected------------')
+        # print('self channel name', self)
+        self.recciver_uuid = self.scope['url_route']['kwargs']['reciver_uuid']
         self.user = User.objects.get(username=self.scope['user'])
         contact.objects.filter(contact_id=self.user).delete()
         contact.objects.create(
@@ -73,7 +60,7 @@ class ChatConsumer(WebsocketConsumer):
             pass
 
     def disconnect(self, code):
-        print('discounted=====================>', code)
+
         contact.objects.filter(channel_name=self.channel_name).delete()
         try:
             contact.objects.get(contact_id=self.user)
@@ -150,6 +137,7 @@ class ChatConsumer(WebsocketConsumer):
             'status': status,
             'pic': recipient.avator.url
         }
+        print('context', ctx)
         return ctx
 
     def new_msg(self, recv_data):
@@ -194,6 +182,7 @@ class ChatConsumer(WebsocketConsumer):
             print("error while sending"+str(e))
 
     def search_result(self, data):
+        print('result data', data)
         try:
             result_set = User.objects.values('id', 'username', 'avator').filter(
                 username__contains=data["text"]).exclude(id=self.user.id)[:10]
@@ -207,6 +196,7 @@ class ChatConsumer(WebsocketConsumer):
                     "pic": settings.MEDIA_URL+item['avator']
 
                 })
+            print('')
 
             self.send_to_socket({
                 "command": "SEARCH",

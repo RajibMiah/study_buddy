@@ -22,8 +22,23 @@ def signup(request):
 
 @login_required
 def chatpage(request):
+
+    # TODO:: find first message in model contact by channel_name which is uuid and pass it to targeted_reciver view
+
     return render(request, 'chat/chatpage.html', {
         'username': mark_safe(json.dumps(request.user.username)),
         'userid': mark_safe(json.dumps(request.user.id)),
-        'domain': mark_safe(json.dumps(get_current_site(request).domain))
+        'domain': mark_safe(json.dumps(get_current_site(request).domain)),
+    })
+
+
+@login_required
+def targeted_reciver(request, reciver_uuid):
+    print('~~~DEBUG~~~')
+    print('reciver uuid', reciver_uuid)
+    return render(request, 'chat/chatpage.html', {
+        'username': mark_safe(json.dumps(request.user.username)),
+        'userid': mark_safe(json.dumps(request.user.id)),
+        'domain': mark_safe(json.dumps(get_current_site(request).domain)),
+        'reciver_uuid': reciver_uuid
     })

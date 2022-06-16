@@ -1,28 +1,13 @@
-/*
-    Copyright (C) 2020  Jayesh Karkare Alien-X717
 
-    This file is part of Chat
-
-    Chat is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Chat is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Chat.  If not, see <https://www.gnu.org/licenses/>.
-*/
 var activeContact;
 var userid;
 var username;
 var contactList = Object();
 var srchactive= false;
 var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
-var socket = new ReconnectingWebSocket(ws_scheme + '://'+host+'/ws/chat/');  //remember to change this
+const reciver_uuid = JSON.parse(document.getElementById("reciver_uuid").textContent);
+console.log('reciver uuid' , reciver_uuid)
+var socket = new ReconnectingWebSocket(ws_scheme + '://'+host+'/ws/chat/' + reciver_uuid + '/');  //remember to change this
 
 console.log(socket)
 

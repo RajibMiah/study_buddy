@@ -20,38 +20,38 @@
 
             <!-- Logged In -->
             {% if request.user.is_authenticated %}
-            <div class = 'menu__container'>
-                <div class="header__user">
-                    <a href="{% url 'update-user' %}">
-                        <div class="avatar avatar--medium active">
-                            <img id="profile-img" src="{{ user.avator.url }}" class="online" alt="" />
-                        </div>
-                        <p>{{ request.user.username }}
-                            <!-- <span>@{{ request.user.username }}</span> -->
-                        </p>
-                    </a>
-                    <button class="dropdown-button">
-                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-                            <title>chevron-down</title>
-                            <path d="M16 21l-13-13h-3l16 16 16-16h-3l-13 13z"></path>
-                        </svg>
-                    </button>
+                <div class='menu__container'>
+                    <div class="header__user">
+                        <a href="{% url 'update-user' %}">
+                            <div class="avatar avatar--medium active">
+                                <img id="profile-img" src="{{ user.avator.url }}" class="online" alt=""/>
+                            </div>
+                            <p>{{ request.user.username }}
+                                <!-- <span>@{{ request.user.username }}</span> -->
+                            </p>
+                        </a>
+                        <button class="dropdown-button">
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                                <title>chevron-down</title>
+                                <path d="M16 21l-13-13h-3l16 16 16-16h-3l-13 13z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="header__user">
+                        <a type="button" class="icon-button" href="{% url 'chat' %}">
+                            <span class="material-symbols-outlined">chat</span>
+                            <span class="icon-button__badge">2</span>
+                        </a>
+                    </div>
+                    <div class="header__user">
+                        <button type="button" class="icon-button">
+                            <span class="material-icons">notifications</span>
+                            <span class="icon-button__badge">2</span>
+                        </button>
+                    </div>
+
                 </div>
-                <div class="header__user">
-                    <a type="button" class="icon-button" href="{% url 'chat' %}">
-                        <span class="material-symbols-outlined">chat</span>
-                        <span class="icon-button__badge">2</span>
-                    </a>
-                </div>
-                <div class="header__user">
-                    <button type="button" class="icon-button">
-                        <span class="material-icons">notifications</span>
-                        <span class="icon-button__badge">2</span>
-                      </button>
-                </div>
-                   
-            </div>
-               
+
             {% else %}
 
                 <!-- Not Logged In -->

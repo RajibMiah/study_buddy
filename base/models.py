@@ -1,4 +1,6 @@
 
+import uuid
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 # from django.contrib.auth.models import User
@@ -9,6 +11,8 @@ class User(AbstractUser):
     name = models.CharField(max_length=255, null=True)
     email = models.EmailField(unique=True, null=True)
     bio = models.CharField(max_length=255, null=True, blank=True)
+    uuid = models.UUIDField(
+        primary_key=False, default=uuid.uuid4, editable=False)
 
     avator = models.ImageField(
         null=True, blank=True, default='images/avatar.svg')
