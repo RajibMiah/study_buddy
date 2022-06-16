@@ -21,11 +21,14 @@ socket.onopen = function (e) {
       command: "CACHE_CHAT",
     })
   );
+
 };
 
 socket.onmessage = function (e) {
 
   var data = JSON.parse(e.data);
+
+
 
   switch (data["command"]) {
     case "PING":
@@ -86,6 +89,9 @@ socket.onmessage = function (e) {
         }
       }
       break;
+
+    // TODO:: FEATCH AND DISPLAY DATA WHEN USER COME WITH USER UUID
+
     case "single_uuid_msg":
         console.log( data.msg_list)
         // var cid = data.contact;
@@ -383,3 +389,4 @@ function startsearch() {
   $("#contact-list").css("display", "none");
   $("#search-list").css("display", "block");
 }
+
