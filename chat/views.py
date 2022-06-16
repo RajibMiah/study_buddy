@@ -28,14 +28,14 @@ def signup(request):
 
 @login_required
 def chatpage(request):
-    recipient = contact.objects.get()
-    user_contact = User.objects.get(username=recipient)
-    print(user_contact.uuid)
+    recipient = contact.objects.filter()[:1].get()
+    user_contact = User.objects.filter(username=recipient).first()
+
     return redirect('/chat/' + str(user_contact.uuid) + '/')
 
 
 @login_required
-def targeted_reciver(request, reciver_uuid):
+def targeted_recipient(request, reciver_uuid):
     return render(request, 'chat/chatpage.html', {
         'username': mark_safe(json.dumps(request.user.username)),
         'userid': mark_safe(json.dumps(request.user.id)),

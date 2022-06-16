@@ -5,6 +5,6 @@ from . import views
 
 urlpatterns = [
     path('', views.chatpage, name='chat'),
-    path('<str:reciver_uuid>/', views.targeted_reciver, name='message-chat'),
+    path('<str:reciver_uuid>/', views.targeted_recipient, name='message-chat'),
 
 ]
