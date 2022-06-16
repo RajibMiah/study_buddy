@@ -9,6 +9,7 @@ from channels.layers import get_channel_layer
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models.query_utils import Q
+from django.dispatch import receiver
 
 from .models import Message, contact
 
@@ -18,6 +19,11 @@ User = get_user_model()
 class ChatConsumer(WebsocketConsumer):
     def __init__(self, *args, **kwargs):
         super().__init__(args, kwargs)
+        self.room_name = None
+        self.room_group_name = None
+        self.room = None
+        self.user = None  # new
+        self.user_details = None
         self.recciver_uuid = None
 
     def connect(self):
@@ -25,6 +31,7 @@ class ChatConsumer(WebsocketConsumer):
         # print('self channel name', self)
         self.recciver_uuid = self.scope['url_route']['kwargs']['reciver_uuid']
         self.user = User.objects.get(username=self.scope['user'])
+        print("self user id", self.user.uuid)
         contact.objects.filter(contact_id=self.user).delete()
         contact.objects.create(
             channel_name=self.channel_name, contact_id=self.user)
@@ -53,8 +60,9 @@ class ChatConsumer(WebsocketConsumer):
 
             self.send_to_socket({
                 'command': 'LOAD_MSGS',
-                'msg_list': msg_list
+                'msg_list': msg_list,
             })
+
         except Exception as e:
             print("exception in cahcing chat" + str(e))
             pass
@@ -77,7 +85,9 @@ class ChatConsumer(WebsocketConsumer):
         msg = event["message"]
         self.send_to_socket({
             'command': 'NEW_MSG',
-            'message': msg
+            'message': msg,
+            # 'user_uuid': json.loads(self.user.uuid),
+
         })
         if(msg["sid"] not in self.user_list and msg['sid'] != self.user.id):
             self.user_list.append(msg["sid"])
@@ -116,28 +126,34 @@ class ChatConsumer(WebsocketConsumer):
         })
 
     def chat_load(self, data):
+        # print('chat data', data)
+        # print('name', self.user)
 
-        recipient = User.objects.get(id=data['user'])
-        msg_set = Message.objects.filter((Q(sender=self.user) & Q(recipient=recipient)) | (
-            Q(sender=recipient) & Q(recipient=self.user))).order_by('-timestamp').all()
-        chname = self.get_channel_name(recipient=recipient)
+        self.recipient = User.objects.get(uuid=self.recciver_uuid)
+        self.contacts = contact.objects.get(contact_id=self.recipient)
+        print("contants", self.contacts)
+        self.msg_set = Message.objects.filter((Q(sender=self.user) & Q(recipient=self.recipient)) | (
+            Q(sender=self.recipient) & Q(recipient=self.user))).order_by('-timestamp').all()
+        self.chname = self.get_channel_name(recipient=self.recipient)
 
-        status = ''
-        if chname is None:
-            status = "offline"
+        self.status = ''
+        if self.chname is None:
+            self.status = "offline"
         else:
-            status = "online"
+            self.status = "online"
             self.send_chat_msg(
-                msg=self.user.id, type="status.ON", reciever=recipient)
+                msg=self.user.id, type="status.ON", reciever=self.recipient)
 
         ctx = {
+            # 'user_uuid': data['user']['id'],
             'contact': data['user'],
-            'name': recipient.username,
-            'messages': self.to_json_msgs(msg_set),
-            'status': status,
-            'pic': recipient.avator.url
+            'name': self.recipient.username,
+            'messages': self.to_json_msgs(self.msg_set),
+            'status': self.status,
+            'pic': self.recipient.avator.url
+
         }
-        print('context', ctx)
+        # print("context", ctx)
         return ctx
 
     def new_msg(self, recv_data):
@@ -182,7 +198,7 @@ class ChatConsumer(WebsocketConsumer):
             print("error while sending"+str(e))
 
     def search_result(self, data):
-        print('result data', data)
+
         try:
             result_set = User.objects.values('id', 'username', 'avator').filter(
                 username__contains=data["text"]).exclude(id=self.user.id)[:10]
@@ -196,7 +212,6 @@ class ChatConsumer(WebsocketConsumer):
                     "pic": settings.MEDIA_URL+item['avator']
 
                 })
-            print('')
 
             self.send_to_socket({
                 "command": "SEARCH",

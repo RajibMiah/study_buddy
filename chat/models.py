@@ -25,4 +25,4 @@ class contact(models.Model):
         settings.AUTH_USER_MODEL, related_name='contact', on_delete=models.DO_NOTHING)
 
     def __str__(self):
-        return self.contact_id
+        return str(self.contact_id)
