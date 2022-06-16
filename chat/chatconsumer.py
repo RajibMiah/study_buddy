@@ -9,7 +9,6 @@ from channels.layers import get_channel_layer
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models.query_utils import Q
-from django.dispatch import receiver
 
 from .models import Message, contact
 
@@ -28,16 +27,15 @@ class ChatConsumer(WebsocketConsumer):
 
     def connect(self):
         print('------------connected------------')
-        # print('self channel name', self)
         self.recciver_uuid = self.scope['url_route']['kwargs']['reciver_uuid']
         self.user = User.objects.get(username=self.scope['user'])
-        print("self user id", self.user.uuid)
         contact.objects.filter(contact_id=self.user).delete()
         contact.objects.create(
             channel_name=self.channel_name, contact_id=self.user)
         self.accept()
         self.PING_ACK = True
         pinger = threading.Thread(target=self.ping)
+
         pinger.start()
 
     def send_to_socket(self, data):
@@ -148,7 +146,44 @@ class ChatConsumer(WebsocketConsumer):
             'status': status,
             'pic': recipient.avator.url
         }
+
         return ctx
+
+    def pik_chat_individual(self, data):
+
+        try:
+
+            recipient = User.objects.get(uuid=data['recipient_uuid'])
+
+            msg_set = Message.objects.filter((Q(sender=self.user) & Q(recipient=recipient)) | (
+                Q(sender=recipient) & Q(recipient=self.user))).order_by('-timestamp').all()
+            chname = self.get_channel_name(recipient=recipient)
+
+            status = ''
+            if chname is None:
+                status = "offline"
+            else:
+                status = "online"
+                self.send_chat_msg(
+                    msg=self.user.id, type="status.ON", reciever=recipient)
+
+            ctx = {
+                'recipient_uuid': str(recipient.uuid),
+                # 'contact': rec,
+                'name': recipient.username,
+                'messages': self.to_json_msgs(msg_set),
+                'status': status,
+                'pic': recipient.avator.url
+            }
+
+            self.send_to_socket({
+                'command': 'single_uuid_msg',
+                'msg_list': ctx,
+            })
+
+        except Exception as e:
+            print("exception in cahcing chat" + str(e))
+            pass
 
     def new_msg(self, recv_data):
         data = recv_data["message"]
@@ -286,5 +321,7 @@ class ChatConsumer(WebsocketConsumer):
             self.add_new_contact(recv_data)
         elif recv_data['command'] == 'MAR':
             self.mark_as_read(recv_data)
+        elif recv_data['command'] == 'load_message_uuid':
+            self.pik_chat_individual(recv_data)
         else:
             pass

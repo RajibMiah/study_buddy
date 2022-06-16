@@ -8,17 +8,14 @@ const reciver_uuid = JSON.parse(
   document.getElementById("reciver_uuid").textContent
 );
 
-var persons_uuid = ''
+var persons_uuid = "";
 
 var socket = new ReconnectingWebSocket(
   ws_scheme + "://" + host + "/ws/chat/" + reciver_uuid + "/"
 ); //remember to change this
 
-
 socket.onopen = function (e) {
-
-
-  createOpeningChattab();
+  
   socket.send(
     JSON.stringify({
       command: "CACHE_CHAT",
@@ -27,9 +24,8 @@ socket.onopen = function (e) {
 };
 
 socket.onmessage = function (e) {
-  var data = JSON.parse(e.data);
 
-  console.log("data====>", data);
+  var data = JSON.parse(e.data);
 
   switch (data["command"]) {
     case "PING":
@@ -49,17 +45,24 @@ socket.onmessage = function (e) {
         status = "online";
         img = data.message.pic;
       }
-      
-      createContact(ID, name, data.message.content, status, false, img , data.recipient_uuid);
+
+      createContact(
+        ID,
+        name,
+        data.message.content,
+        status,
+        false,
+        img,
+        data.recipient_uuid
+      );
       $("#chat-log" + ID).append(createMessage(data.message));
       scrollToEnd(ID);
       break;
-    // =============LOAD MESSAGE==============
     case "LOAD_MSGS":
       var msg_list = data["msg_list"];
 
       for (var i = 0; i < msg_list.length; i++) {
-
+      
         if (!contactList[msg_list[i].contact] ) {
           var cid = msg_list[i].contact;
           var cname = msg_list[i].name;
@@ -73,9 +76,9 @@ socket.onmessage = function (e) {
             msg_list[i].status,
             true,
             img,
-            msg_list[i].recipient_uuid,
+            msg_list[i].recipient_uuid
           );
-
+        
           for (var j = 0; j < len; j++) {
             $("#chat-log" + String(cid)).prepend(createMessage(msgs[j]));
           }
@@ -83,6 +86,29 @@ socket.onmessage = function (e) {
         }
       }
       break;
+    case "single_uuid_msg":
+        console.log( data.msg_list)
+        // var cid = data.contact;
+        // var cname = data.msg_list.name;
+        // var msgs = data.msg_list.messages;
+        // len = msgs.length;
+        // var img = data.msg_list.pic;
+        // createContact(
+        //   cid,
+        //   cname,
+        //   msgs[0].content,
+        //   data.msg_list.status,
+        //   true,
+        //   img,
+        //   data.msg_list.recipient_uuid
+        // );
+      
+        // for (var j = 0; j < len; j++) {
+        //   $("#chat-log" + String(cid)).prepend(createMessage(msgs[j]));
+        // }
+        // scrollToEnd(cid);
+        
+        break;  
     case "SEARCH":
       list = data["result"];
       if (list.length > 0) {
@@ -117,7 +143,7 @@ socket.onmessage = function (e) {
         data["status"],
         false,
         data["pic"],
-        data['recipient_uuid']
+        data["recipient_uuid"]
       );
   }
 };
@@ -148,7 +174,7 @@ function createresults(id, name, pic, uname) {
     var preview = "";
     if (contactList[id]) {
       preview = "already added,start chating!";
-      createContact(id, uname, preview, "", false, pic , recipient_uuid);
+      createContact(id, uname, preview, "", false, pic, recipient_uuid);
     } else {
       socket.send(
         JSON.stringify({
@@ -193,8 +219,7 @@ function toggleStatus(sid, from, to) {
   contactList[sid].status = to;
 }
 
-function createContact(sid, name, preview, status, mode, img , recipient_uuid) {
-
+function createContact(sid, name, preview, status, mode, img, recipient_uuid) {
   var contact;
   if (preview === "") {
     preview = "No Message";
@@ -242,7 +267,6 @@ function createContact(sid, name, preview, status, mode, img , recipient_uuid) {
   $("#contact" + sid).click(function () {
     $("#chat-tab" + activeContact).css("display", "none");
     $("#contact" + activeContact).removeClass("active");
-  
 
     activeContact = sid;
     $("#active-contact").text(contactList[activeContact].name);
@@ -251,19 +275,24 @@ function createContact(sid, name, preview, status, mode, img , recipient_uuid) {
     $("#contact" + activeContact).addClass("active");
 
     history.replaceState(
-        {
-          id: "JavaScript Tutorials",
-          source: "web",
-        },
-        "chat",
-        `http://127.0.0.1:8000/chat/${recipient_uuid}/`
-      );
-      
+      {
+        id: "JavaScript Tutorials",
+        source: "web",
+      },
+      "chat",
+      `http://127.0.0.1:8000/chat/${recipient_uuid}/`
+    );
+    socket.send(
+        JSON.stringify({
+          command: "load_message_uuid",
+          recipient_uuid: recipient_uuid,
+        })
+    );
+
     if ($(".msg" + sid).hasClass("un")) {
       sendMAR(sid);
     }
     $(".msg" + sid).removeClass("un");
-    
   });
 }
 
@@ -277,7 +306,6 @@ function sendMAR(sid) {
 }
 
 function createOpeningChattab(id) {
-  
   var tab = '<ul id="chat-log' + id + '"></ul>';
   tab = $('<div id="chat-tab' + id + '" class="messages"></div>').html(tab);
 
@@ -288,8 +316,6 @@ function createOpeningChattab(id) {
 }
 
 function createChattab(id) {
-
-
   var tab = '<ul id="chat-log' + id + '"></ul>';
   tab = $('<div id="chat-tab' + id + '" class="messages"></div>').html(tab);
 
@@ -346,7 +372,6 @@ $("#search-bar").on("keyup", function (e) {
   }
 });
 
-
 function stopsearch() {
   $("#search-list").empty();
   srchactive = false;
@@ -358,5 +383,3 @@ function startsearch() {
   $("#contact-list").css("display", "none");
   $("#search-list").css("display", "block");
 }
-
-
