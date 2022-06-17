@@ -158,7 +158,6 @@ class ChatConsumer(WebsocketConsumer):
             msg_set = Message.objects.filter((Q(sender=self.user) & Q(recipient=recipient)) | (
                 Q(sender=recipient) & Q(recipient=self.user))).order_by('-timestamp').all()
             chname = self.get_channel_name(recipient=recipient)
-
             status = ''
             if chname is None:
                 status = "offline"
