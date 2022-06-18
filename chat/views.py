@@ -41,7 +41,7 @@ def targeted_recipient(request, reciver_uuid):
         recipient = User.objects.get(uuid=reciver_uuid)
         msg_set = Message.objects.filter((Q(sender=request.user) & Q(recipient=recipient)) | (
             Q(sender=request.user) & Q(recipient=recipient))).order_by('-timestamp').all()
-        chname = contact.objects.get(contact_id_id=recipient.id)
+        # chname = contact.objects.get(contact_id_id=recipient.id)
 
         status = 'online'
         # if chname is None:

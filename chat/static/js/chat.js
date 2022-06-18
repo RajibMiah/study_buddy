@@ -63,6 +63,7 @@ socket.onmessage = function (e) {
       break;
     case "LOAD_MSGS":
       var msg_list = data["msg_list"];
+      console.log("msg content" , msg_list)
 
       for (var i = 0; i < msg_list.length; i++) {
       
@@ -194,6 +195,11 @@ function createresults(id, name, pic, uname) {
     }
   });
 }
+
+$(document).ready(()=>{
+    console.log('=============my context========== ' , my_context)
+})
+
 $("#chat-input-box").on("keyup", function (e) {
   if (e.keyCode === 13) {
     $("#chat-submit").click();
