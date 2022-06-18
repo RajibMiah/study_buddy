@@ -291,6 +291,7 @@ class ChatConsumer(WebsocketConsumer):
         return msg_list
 
     def to_json_msg(self, msg):
+
         return{
             'sid': msg.sender.id,
             'rid': msg.recipient.id,

@@ -8,6 +8,7 @@ from django.dispatch import receiver
 from django.shortcuts import redirect, render
 from django.utils.safestring import mark_safe
 
+from .chatconsumer import ChatConsumer
 from .forms import RegistrationForm
 from .models import Message, contact
 
@@ -35,55 +36,56 @@ def chatpage(request):
 
 @login_required
 def targeted_recipient(request, reciver_uuid):
-    print('====query pk==========', reciver_uuid)
+
     if reciver_uuid:
         recipient = User.objects.get(uuid=reciver_uuid)
         msg_set = Message.objects.filter((Q(sender=request.user) & Q(recipient=recipient)) | (
             Q(sender=request.user) & Q(recipient=recipient))).order_by('-timestamp').all()
-        # chname = contact.objects.get(contact_id_id=recipient.id)
-        # print("msg set", msg_set)
+        chname = contact.objects.get(contact_id_id=recipient.id)
+
         status = 'online'
         # if chname is None:
         #     status = "offline"
         # else:
         #     status = "online"
-        #     # send_chat_msg(
-        #     #     msg=request.user.id, type="status.ON", reciever=recipient)
+        #     # ChatConsumer.send_chat_msg(
+        #     #     self=None, msg=request.user.id, type="status.ON", reciever=recipient)
 
         ctx = {
             'recipient_uuid': str(recipient.uuid),
             # 'contact': data['user'],
             'name': recipient.username,
-            'messages': msg_set,
+            'messages': to_json_msgs(msg_set),
             'status': status,
             'pic': recipient.avator.url
         }
-        print('context', ctx)
+        # print('context', ctx)
 
     return render(request, 'chat/chatpage.html', {
         'username': mark_safe(json.dumps(request.user.username)),
         'userid': mark_safe(json.dumps(request.user.id)),
         'domain': mark_safe(json.dumps(get_current_site(request).domain)),
         'reciver_uuid': reciver_uuid,
-        'context': ctx
+        'loaded_msg_details': mark_safe(json.dumps(ctx))
     })
-
-
-# def send_chat_msg(self, msg, type, reciever):
-#     try:
-#         ch_name = self.get_channel_name(recipient=reciever)
-#         if ch_name is not None:
-#             channel_layer = get_channel_layer()
-#             async_to_sync(channel_layer.send)(ch_name, {
-#                 "type": type,
-#                 "message": msg
-#             })
-#     except Exception as e:
-#         print("error while sending"+str(e))
 
 
 def to_json_msgs(msgs):
     msg_list = []
     for msg in msgs:
-        msg_list.append(json.dumps(msg))
+        msg_list.append(to_json_msg(msg))
     return msg_list
+
+
+def to_json_msg(msg):
+
+    return{
+        'sid': msg.sender_id,
+        'rid': msg.recipient_id,
+        'sender': msg.sender.username,
+        'recipient': msg.recipient.username,
+        'content': msg.content,
+        'time_stamp': str(msg.timestamp).split('.')[0],
+        'is_readed': msg.is_readed,
+        'pic': msg.sender.avator.url
+    }
