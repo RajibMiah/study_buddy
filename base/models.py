@@ -28,10 +28,8 @@ class Topic(models.Model):
 
 
 class Room(models.Model):
-    host = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name='host')
-    topic = models.ForeignKey(
-        Topic, on_delete=models.SET_NULL, null=True, related_name='topic')
+    host = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    topic = models.ForeignKey(Topic, on_delete=models.SET_NULL, null=True)
     participants = models.ManyToManyField(
         User, related_name='participants', blank=True)
     name = models.CharField(max_length=255)
@@ -59,10 +57,8 @@ class Room(models.Model):
 
 
 class Message(models.Model):
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='message_user')
-    room = models.ForeignKey(
-        Room, on_delete=models.CASCADE, related_name='message_room')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
     body = models.TextField(max_length=255)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)

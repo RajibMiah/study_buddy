@@ -41,19 +41,21 @@ def targeted_recipient(request, reciver_uuid):
         recipient = User.objects.get(uuid=reciver_uuid)
         msg_set = Message.objects.filter((Q(sender=request.user) & Q(recipient=recipient)) | (
             Q(sender=request.user) & Q(recipient=recipient))).order_by('-timestamp').all()
-        # chname = contact.objects.get(contact_id_id=recipient.id)
 
-        status = 'online'
-        # if chname is None:
-        #     status = "offline"
-        # else:
-        #     status = "online"
-        #     # ChatConsumer.send_chat_msg(
-        #     #     self=None, msg=request.user.id, type="status.ON", reciever=recipient)
+        print("chennel name start")
+        chname = ChatConsumer.get_channel_name(self=None, recipient=recipient)
+        print("chennel name end", chname)
+        status = ''
+        if chname is None:
+            status = "offline"
+        else:
+            status = "online"
+            ChatConsumer.send_chat_msg(
+                msg=ChatConsumer.user.id, type="status.ON", reciever=recipient)
 
         ctx = {
             'recipient_uuid': str(recipient.uuid),
-            # 'contact': data['user'],
+            'contact': recipient.id,
             'name': recipient.username,
             'messages': to_json_msgs(msg_set),
             'status': status,

@@ -15,20 +15,15 @@ var socket = new ReconnectingWebSocket(
 ); //remember to change this
 
 socket.onopen = function (e) {
-  
   socket.send(
     JSON.stringify({
       command: "CACHE_CHAT",
     })
   );
-
 };
 
 socket.onmessage = function (e) {
-
   var data = JSON.parse(e.data);
-
-
 
   switch (data["command"]) {
     case "PING":
@@ -63,62 +58,35 @@ socket.onmessage = function (e) {
       break;
     case "LOAD_MSGS":
       var msg_list = data["msg_list"];
-      console.log("msg content" , msg_list)
-
-      for (var i = 0; i < msg_list.length; i++) {
-      
-        if (!contactList[msg_list[i].contact] ) {
-          var cid = msg_list[i].contact;
-          var cname = msg_list[i].name;
-          var msgs = msg_list[i].messages;
-          len = msgs.length;
-          var img = msg_list[i].pic;
-          createContact(
-            cid,
-            cname,
-            msgs[0].content,
-            msg_list[i].status,
-            true,
-            img,
-            msg_list[i].recipient_uuid
-          );
-        
-          for (var j = 0; j < len; j++) {
-            $("#chat-log" + String(cid)).prepend(createMessage(msgs[j]));
-          }
-          scrollToEnd(cid);
-        }
-      }
+      createContentFun(msg_list)
       break;
 
     // TODO:: FEATCH AND DISPLAY DATA WHEN USER COME WITH USER UUID
 
     case "single_uuid_msg":
-        console.log( data.msg_list)
-        // var cid = data.contact;
-        // var cname = data.msg_list.name;
-        // var msgs = data.msg_list.messages;
-        // len = msgs.length;
-        // var img = data.msg_list.pic;
-        // createContact(
-        //   cid,
-        //   cname,
-        //   msgs[0].content,
-        //   data.msg_list.status,
-        //   true,
-        //   img,
-        //   data.msg_list.recipient_uuid
+      // console.log( data.msg_list)
+      // var cid = data.contact;
+      // var cname = data.msg_list.name;
+      // var msgs = data.msg_list.messages;
+      // len = msgs.length;
+      // var img = data.msg_list.pic;
+      // createContact(
+      //   cid,
+      //   cname,
+      //   msgs[0].content,
+      //   data.msg_list.status,
+      //   true,
+      //   img,
+      //   data.msg_list.recipient_uuid
 
+      // );
 
-        
-        // );
-      
-        // for (var j = 0; j < len; j++) {
-        //   $("#chat-log" + String(cid)).prepend(createMessage(msgs[j]));
-        // }
-        // scrollToEnd(cid);
-        
-        break;  
+      // for (var j = 0; j < len; j++) {
+      //   $("#chat-log" + String(cid)).prepend(createMessage(msgs[j]));
+      // }
+      // scrollToEnd(cid);
+
+      break;
     case "SEARCH":
       list = data["result"];
       if (list.length > 0) {
@@ -196,9 +164,9 @@ function createresults(id, name, pic, uname) {
   });
 }
 
-$(document).ready(()=>{
-    console.log('=============my context========== ' , my_context)
-})
+$(document).ready(() => {
+  createContentFun(JSON.parse(my_context));
+});
 
 $("#chat-input-box").on("keyup", function (e) {
   if (e.keyCode === 13) {
@@ -279,6 +247,37 @@ function createContact(sid, name, preview, status, mode, img, recipient_uuid) {
     $("#contact" + sid).slideDown("fast");
   }
 
+  $("#contact" + sid).ready(function () {
+    $("#chat-tab" + activeContact).css("display", "block");
+    $("#contact" + activeContact).removeClass("active");
+
+    activeContact = sid;
+    $("#active-contact").text(contactList[activeContact].name);
+    $("#active-contact-img").attr("src", contactList[activeContact].pic);
+    $("#chat-tab" + activeContact).css("display", "block");
+    $("#contact" + activeContact).addClass("active");
+
+    history.replaceState(
+      {
+        id: "JavaScript Tutorials",
+        source: "web",
+      },
+      "chat",
+      `http://127.0.0.1:8000/chat/${recipient_uuid}/`
+    );
+    socket.send(
+      JSON.stringify({
+        command: "load_message_uuid",
+        recipient_uuid: recipient_uuid,
+      })
+    );
+
+    if ($(".msg" + sid).hasClass("un")) {
+      sendMAR(sid);
+    }
+    $(".msg" + sid).removeClass("un");
+  });
+
   $("#contact" + sid).click(function () {
     $("#chat-tab" + activeContact).css("display", "none");
     $("#contact" + activeContact).removeClass("active");
@@ -298,10 +297,10 @@ function createContact(sid, name, preview, status, mode, img, recipient_uuid) {
       `http://127.0.0.1:8000/chat/${recipient_uuid}/`
     );
     socket.send(
-        JSON.stringify({
-          command: "load_message_uuid",
-          recipient_uuid: recipient_uuid,
-        })
+      JSON.stringify({
+        command: "load_message_uuid",
+        recipient_uuid: recipient_uuid,
+      })
     );
 
     if ($(".msg" + sid).hasClass("un")) {
@@ -367,7 +366,7 @@ function createMessage(msg) {
   );
 }
 
-$(document).ready(function (e) {});
+// $(document).ready(function (e) {});
 
 $("#search-bar").on("keyup", function (e) {
   var search = $("#search-bar").val();
@@ -399,3 +398,29 @@ function startsearch() {
   $("#search-list").css("display", "block");
 }
 
+
+const createContentFun = (msg_list) =>{
+  for (var i = 0; i < msg_list.length; i++) {
+    if (!contactList[msg_list[i].contact]) {
+      var cid = msg_list[i].contact;
+      var cname = msg_list[i].name;
+      var msgs = msg_list[i].messages;
+      len = msgs.length;
+      var img = msg_list[i].pic;
+      createContact(
+        cid,
+        cname,
+        msgs[0].content,
+        msg_list[i].status,
+        true,
+        img,
+        msg_list[i].recipient_uuid
+      );
+
+      for (var j = 0; j < len; j++) {
+        $("#chat-log" + String(cid)).prepend(createMessage(msgs[j]));
+      }
+      scrollToEnd(cid);
+    }
+  }
+}

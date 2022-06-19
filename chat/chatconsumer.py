@@ -84,7 +84,7 @@ class ChatConsumer(WebsocketConsumer):
         self.send_to_socket({
             'command': 'NEW_MSG',
             'message': msg,
-            # 'user_uuid': json.loads(self.user.uuid),
+            'user_uuid': json.loads(self.user.uuid),
 
         })
         if(msg["sid"] not in self.user_list and msg['sid'] != self.user.id):
@@ -146,7 +146,6 @@ class ChatConsumer(WebsocketConsumer):
             'status': status,
             'pic': recipient.avator.url
         }
-
         return ctx
 
     def pik_chat_individual(self, data):
