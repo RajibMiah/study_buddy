@@ -1,6 +1,7 @@
 import json
 import threading
 import time
+import uuid
 
 from asgiref.sync import async_to_sync
 from channels.exceptions import StopConsumer
@@ -41,7 +42,7 @@ class ChatConsumer(WebsocketConsumer):
     def send_to_socket(self, data):
         self.send(json.dumps(data))
 
-    def cache_chat(self):
+    def get_all_cache_chat(self):
         try:
             msgs = Message.objects.values('sender', 'recipient').filter(
                 Q(recipient=self.user) | Q(sender=self.user)).order_by('timestamp')
@@ -65,6 +66,82 @@ class ChatConsumer(WebsocketConsumer):
             print("exception in cahcing chat" + str(e))
             pass
 
+    def get_cache_chat(self, data):
+        print('from get_cach_data', data)
+        try:
+            msgs = Message.objects.values('sender', 'recipient').filter(
+                Q(recipient=self.user) | Q(sender=self.user)).order_by('timestamp')
+            self.user_list = list()
+            msg_list = list()
+            for msg in msgs:
+                sid = msg['sender']
+                if sid == self.user.id:
+                    sid = msg['recipient']
+
+                if sid not in self.user_list:
+                    self.user_list.append(sid)
+                    msg_list.append(self.chat_load(data={'user': sid}))
+
+            self.send_to_socket({
+                'command': 'LOAD_MSGS',
+                'msg_list': msg_list,
+            })
+
+        except Exception as e:
+            print("exception in cahcing chat" + str(e))
+            pass
+
+    def check_user_load(self, data):
+
+        # NOTE:: NOT USER DATA OR USER
+        print('check user load data', data)
+        recipient = User.objects.get(uuid=self.reciver_uuid)
+        msg_set = Message.objects.filter((Q(sender=self.user) & Q(recipient=recipient)) | (
+            Q(sender=self.user) & Q(recipient=recipient))).order_by('-timestamp').all()
+        chname = self.get_channel_name(recipient=recipient)
+        status = ''
+        if chname is None:
+            status = "offline"
+        else:
+            status = "online"
+            self.send_chat_msg(
+                msg=self.user.id, type="status.ON", reciever=recipient)
+
+        ctx = {
+            'recipient_uuid': str(recipient.uuid),
+            'contact': data['user'],
+            'name': recipient.username,
+            'messages': self.to_json_msgs(msg_set),
+            'status': status,
+            'pic': recipient.avator.url
+        }
+        return ctx
+
+    def chat_load(self, data):
+
+        recipient = User.objects.get(id=data['user'])
+        msg_set = Message.objects.filter((Q(sender=self.user) & Q(recipient=recipient)) | (
+            Q(sender=recipient) & Q(recipient=self.user))).order_by('-timestamp').all()
+        chname = self.get_channel_name(recipient=recipient)
+
+        status = ''
+        if chname is None:
+            status = "offline"
+        else:
+            status = "online"
+            self.send_chat_msg(
+                msg=self.user.id, type="status.ON", reciever=recipient)
+
+        ctx = {
+            'recipient_uuid': str(recipient.uuid),
+            'contact': data['user'],
+            'name': recipient.username,
+            'messages': self.to_json_msgs(msg_set),
+            'status': status,
+            'pic': recipient.avator.url
+        }
+        return ctx
+
     def disconnect(self, code):
 
         contact.objects.filter(channel_name=self.channel_name).delete()
@@ -84,7 +161,7 @@ class ChatConsumer(WebsocketConsumer):
         self.send_to_socket({
             'command': 'NEW_MSG',
             'message': msg,
-            'user_uuid': json.loads(self.user.uuid),
+            'user_uuid': str(json.loads(self.user.uuid)),
 
         })
         if(msg["sid"] not in self.user_list and msg['sid'] != self.user.id):
@@ -122,66 +199,6 @@ class ChatConsumer(WebsocketConsumer):
             "command": "ONLINE",
             "message": id
         })
-
-    def chat_load(self, data):
-
-        recipient = User.objects.get(id=data['user'])
-        msg_set = Message.objects.filter((Q(sender=self.user) & Q(recipient=recipient)) | (
-            Q(sender=recipient) & Q(recipient=self.user))).order_by('-timestamp').all()
-        chname = self.get_channel_name(recipient=recipient)
-
-        status = ''
-        if chname is None:
-            status = "offline"
-        else:
-            status = "online"
-            self.send_chat_msg(
-                msg=self.user.id, type="status.ON", reciever=recipient)
-
-        ctx = {
-            'recipient_uuid': str(recipient.uuid),
-            'contact': data['user'],
-            'name': recipient.username,
-            'messages': self.to_json_msgs(msg_set),
-            'status': status,
-            'pic': recipient.avator.url
-        }
-        return ctx
-
-    def pik_chat_individual(self, data):
-
-        try:
-
-            recipient = User.objects.get(uuid=data['recipient_uuid'])
-
-            msg_set = Message.objects.filter((Q(sender=self.user) & Q(recipient=recipient)) | (
-                Q(sender=recipient) & Q(recipient=self.user))).order_by('-timestamp').all()
-            chname = self.get_channel_name(recipient=recipient)
-            status = ''
-            if chname is None:
-                status = "offline"
-            else:
-                status = "online"
-                self.send_chat_msg(
-                    msg=self.user.id, type="status.ON", reciever=recipient)
-
-            ctx = {
-                'recipient_uuid': str(recipient.uuid),
-                # 'contact': rec,
-                'name': recipient.username,
-                'messages': self.to_json_msgs(msg_set),
-                'status': status,
-                'pic': recipient.avator.url
-            }
-
-            self.send_to_socket({
-                'command': 'single_uuid_msg',
-                'msg_list': ctx,
-            })
-
-        except Exception as e:
-            print("exception in cahcing chat" + str(e))
-            pass
 
     def new_msg(self, recv_data):
         data = recv_data["message"]
@@ -227,19 +244,20 @@ class ChatConsumer(WebsocketConsumer):
     def search_result(self, data):
 
         try:
-            result_set = User.objects.values('id', 'username', 'avator').filter(
+            result_set = User.objects.values('id', 'username', 'avator' , 'uuid').filter(
                 username__contains=data["text"]).exclude(id=self.user.id)[:10]
             contact_list = list()
+
             for item in result_set:
                 # if not item['username'] == self.user.username:
                 contact_list.append({
                     "id": item["id"],
                     "name": item['username'],
                     "uname": item['username'],
-                    "pic": settings.MEDIA_URL+item['avator']
-
+                    "pic": settings.MEDIA_URL+item['avator'],
+                    "recipient_uuid": str(item['uuid'])
                 })
-
+            print(contact_list)
             self.send_to_socket({
                 "command": "SEARCH",
                 "result": contact_list
@@ -263,7 +281,8 @@ class ChatConsumer(WebsocketConsumer):
             "id": contact.id,
             "name": contact.username,
             "pic": contact.avator.url,
-            "status": status
+            "status": status,
+            "recipient_uuid": str(contact.uuid)
         })
 
     def chat_MAR(self, event):
@@ -312,15 +331,15 @@ class ChatConsumer(WebsocketConsumer):
             self.pong(recv_data)
         elif recv_data['command'] == 'NEW_MSG':
             self.new_msg(recv_data)
-        elif recv_data['command'] == 'CACHE_CHAT':
-            self.cache_chat()
+        elif recv_data['command'] == 'GET_ALL_CACHE_CHAT':
+            self.get_all_cache_chat()
         elif recv_data['command'] == 'SEARCH':
             self.search_result(recv_data)
         elif recv_data['command'] == 'NEW_CONTACT':
             self.add_new_contact(recv_data)
         elif recv_data['command'] == 'MAR':
             self.mark_as_read(recv_data)
-        elif recv_data['command'] == 'load_message_uuid':
-            self.pik_chat_individual(recv_data)
+        elif recv_data['command'] == 'CHECK_RECIPIENT_MSG':
+            self.check_user_load(recv_data)
         else:
             pass

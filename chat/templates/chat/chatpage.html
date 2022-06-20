@@ -70,9 +70,10 @@
         <script src="{% static 'js/reconnecting-websocket.min.js' %}"></script>
         <script>
             var my_context = '{{ loaded_msg_details }}';
-            var username = '{{ username }}';
-            var userid = '{{ userid }}';
+            var username = {{ username }};
+            var userid = {{ userid }};
             var host = {{ domain }};
+            // var reciver_uuid = {{ reciver_uuid }}
         </script>
         {{ reciver_uuid|json_script:"reciver_uuid" }}
         <script src="{% static 'js/chat.js' %}"></script>
