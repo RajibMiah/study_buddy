@@ -1352,6 +1352,13 @@ a {
     opacity: 0;
   }
 }
+
+.profile_update_container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .page-wrapper .sidebar-wrapper,
 .sidebar-wrapper .sidebar-brand > a,
 .sidebar-wrapper .sidebar-dropdown > a:after,
