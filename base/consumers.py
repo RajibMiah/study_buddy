@@ -54,9 +54,6 @@ class RoomConsumer(WebsocketConsumer):
 
     def send_new_msg(self, recv_data):
         data = recv_data['message']
-
-        print('============pass data========', data)
-
         try:
             if not self.user.is_authenticated:  # new
                 return                          # new
@@ -71,8 +68,6 @@ class RoomConsumer(WebsocketConsumer):
 
             # self.user_details = User.objects.filter(
             #     id=self.message_data["user_id"]).values().first()
-
-            print("=====passs=== new message queries", new_msg_obj)
 
             # print(json.dumps(
             #     self.user_details, indent=4, sort_keys=True,   cls=DjangoJSONEncoder))
@@ -90,6 +85,7 @@ class RoomConsumer(WebsocketConsumer):
             })
             self.send_room_msg(msg=self.to_json_msg(
                 new_msg_obj), type='chat.message')
+
         except Exception as e:
             print('exception in new_msg' + str(e))
 
@@ -107,9 +103,15 @@ class RoomConsumer(WebsocketConsumer):
         except Exception as e:
             print("error while sending"+str(e))
 
+    def chat_message(self, event):
+        msg = event["message"]
+        self.send_to_socket({
+            'command': 'NEW_MSG',
+            'message': msg,
+        })
+
     def receive(self, text_data=None, bytes_data=None):
         recv_data = json.loads(text_data)
-        # message = recv_data['message']
 
         if recv_data['command'] == 'MESSAGE':
             pass
@@ -117,21 +119,3 @@ class RoomConsumer(WebsocketConsumer):
             self.send_new_msg(recv_data)
         else:
             pass
-
-        # self.user_obj = dict()
-        # for key, value in self.user_details.items:
-        #     if json.dumps(self.message_data[key], indent=4, sort_keys=True,   cls=DjangoJSONEncoder):
-
-        #         self.user_obj[key] = value
-        #     else:
-        #         self.user_obj[key] = json.dumps(
-        #             self.message_data[key], indent=4, sort_keys=True,   cls=DjangoJSONEncoder)
-        # print(self.user_obj)
-        # self.message_data['user'] = self.user_details
-
-        # print(self.message_data)
-        # print(type(self.message_data))
-
-    def chat_message(self, event):
-        # print(" prinfing event object", event)
-        self.send(text_data=json.dumps(event))

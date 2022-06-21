@@ -23,7 +23,7 @@ chatMessageSend.onclick = function () {
 
   chatSocket.send(
     JSON.stringify({
-      command:'NEW_MSG',
+      command: "NEW_MSG",
       message: chatMessageInput.value,
     })
   );
@@ -54,14 +54,14 @@ function connect() {
 
   chatSocket.onmessage = function (e) {
     const data = JSON.parse(e.data);
-    
-    switch (data.type) {
+
+    switch (data["command"]) {
       case "chat_message":
         chatLog.value += data.user + ": " + data.message + "\n"; // new
         break;
-      case "chat.message":
-            console.log('new message' , data.message)
-        break;   
+      case "NEW_MSG":
+        console.log("new message", data.message);
+        break;
       default:
         console.error("Unknown message type!");
         break;
