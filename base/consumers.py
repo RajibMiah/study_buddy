@@ -2,7 +2,7 @@ import json
 
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
-from django.core.serializers.json import DjangoJSONEncoder
+from channels.layers import get_channel_layer
 
 from .models import Message, Room, User
 
@@ -36,35 +36,87 @@ class RoomConsumer(WebsocketConsumer):
             self.channel_name,
         )
 
+    def send_to_socket(self, data):
+        self.send(json.dumps(data))
+
+    def to_json_msg(self, msg):
+        print("to json msg", msg)
+        return{
+            'id': '',
+            'message_id': '',
+            'username': '',
+            'body': '',
+            'created': '',
+            'host': '',
+            'avator': '',
+
+        }
+
+    def send_new_msg(self, recv_data):
+        data = recv_data['message']
+
+        print('============pass data========', data)
+
+        try:
+            if not self.user.is_authenticated:  # new
+                return                          # new
+
+            new_msg_obj = Message.objects.create(
+                user=self.user, room=self.room, body=data)  # new
+
+            # self.message_data = Message.objects.filter(
+            #     room_id=self.room).values().last()
+
+            # print('user id', self.message_data["user_id"])
+
+            # self.user_details = User.objects.filter(
+            #     id=self.message_data["user_id"]).values().first()
+
+            print("=====passs=== new message queries", new_msg_obj)
+
+            # print(json.dumps(
+            #     self.user_details, indent=4, sort_keys=True,   cls=DjangoJSONEncoder))
+
+            # self.message_data['type'] = 'chat_message'
+
+            # self.message_data['updated'] = json.dumps(
+            #     self.message_data["updated"], indent=4, sort_keys=True,   cls=DjangoJSONEncoder)
+            # self.message_data['created'] = json.dumps(
+            #     self.message_data["created"], indent=4, sort_keys=True,   cls=DjangoJSONEncoder)
+
+            self.send_to_socket({
+                "command": 'NEW_MSG',
+                'message': self.to_json_msg(new_msg_obj)
+            })
+            self.send_room_msg(msg=self.to_json_msg(
+                new_msg_obj), type='chat.message')
+        except Exception as e:
+            print('exception in new_msg' + str(e))
+
+    def send_room_msg(self, msg, type):
+
+        try:
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": type,
+                    "message": msg
+                },
+            )
+
+        except Exception as e:
+            print("error while sending"+str(e))
+
     def receive(self, text_data=None, bytes_data=None):
-        text_data_json = json.loads(text_data)
-        message = text_data_json['message']
+        recv_data = json.loads(text_data)
+        # message = recv_data['message']
 
-        if not self.user.is_authenticated:  # new
-            return                          # new
-
-        Message.objects.create(
-            user=self.user, room=self.room, body=message)  # new
-
-        self.message_data = Message.objects.filter(
-            room_id=self.room).values().last()
-
-        print('user id', self.message_data["user_id"])
-
-        self.user_details = User.objects.filter(
-            id=self.message_data["user_id"]).values().first()
-
-        print(self.user_details)
-
-        # print(json.dumps(
-        #     self.user_details, indent=4, sort_keys=True,   cls=DjangoJSONEncoder))
-
-        self.message_data['type'] = 'chat_message'
-
-        self.message_data['updated'] = json.dumps(
-            self.message_data["updated"], indent=4, sort_keys=True,   cls=DjangoJSONEncoder)
-        self.message_data['created'] = json.dumps(
-            self.message_data["created"], indent=4, sort_keys=True,   cls=DjangoJSONEncoder)
+        if recv_data['command'] == 'MESSAGE':
+            pass
+        elif recv_data['command'] == 'NEW_MSG':
+            self.send_new_msg(recv_data)
+        else:
+            pass
 
         # self.user_obj = dict()
         # for key, value in self.user_details.items:
@@ -79,11 +131,6 @@ class RoomConsumer(WebsocketConsumer):
 
         # print(self.message_data)
         # print(type(self.message_data))
-
-        async_to_sync(self.channel_layer.group_send)(
-            self.room_group_name,
-            self.message_data
-        )
 
     def chat_message(self, event):
         # print(" prinfing event object", event)
