@@ -13,6 +13,7 @@ chatMessageInput.focus();
 chatMessageInput.onkeyup = function (e) {
   if (e.keyCode === 13) {
     // enter key
+    e.preventDefault()
     chatMessageSend.click();
   }
 };
@@ -20,7 +21,6 @@ chatMessageInput.onkeyup = function (e) {
 // clear the 'chatMessageInput' and forward the message
 chatMessageSend.onclick = function () {
   if (chatMessageInput.value.length === 0) return;
-
   chatSocket.send(
     JSON.stringify({
       command: "NEW_MSG",
@@ -29,6 +29,7 @@ chatMessageSend.onclick = function () {
   );
 
   chatMessageInput.value = "";
+  chatLog.scrollTop = chatLog.scrollHeight;
 };
 
 let chatSocket = null;
@@ -70,6 +71,7 @@ function connect() {
 
     // scroll 'chatLog' to the bottom
     chatLog.scrollTop = chatLog.scrollHeight;
+    console.log("chat log" ,chatLog)
   };
 
   chatSocket.onerror = function (err) {
@@ -79,10 +81,14 @@ function connect() {
   };
 }
 
-const createRoomNewMessage = (data) => {
+// $(document).ready(function (e) {
+//   console.log("ready on it");
+//   var tab = document.getElementsByClassName("scroll");
+//   tab.scrollTop = tab.scrollHeight;
+// });
 
-  return (
-    `<div class="thread">
+const createRoomNewMessage = (data) => {
+  return `<div class="thread">
           <div class="thread__top">
               <div class="thread__author">
                   <a href="#" class="thread__authorInfo">
@@ -106,9 +112,7 @@ const createRoomNewMessage = (data) => {
           <div class="thread__details" id="chatLog">
               ${data.body}
           </div>
-      </div>` );
+      </div>`;
 };
 
 connect();
-
-
