@@ -40,12 +40,19 @@ class RoomConsumer(WebsocketConsumer):
         self.send(json.dumps(data))
 
     def to_json_msg(self, msg):
-        print("to json msg", msg)
+        # msg_body = json.dumps(msg)
+        try:
+            # TODO:: HANDLE THE EXCEPTION FORM AND RETURN DOUBLE MESSAGE
+            obj = Message.objects.get(user=self.user).first()
+            print(obj)
+        except Exception as e:
+            print('exception in new_msg' + str(e))
+
         return{
             'id': '',
             'message_id': '',
             'username': '',
-            'body': '',
+            'body': str(msg),
             'created': '',
             'host': '',
             'avator': '',
@@ -60,24 +67,6 @@ class RoomConsumer(WebsocketConsumer):
 
             new_msg_obj = Message.objects.create(
                 user=self.user, room=self.room, body=data)  # new
-
-            # self.message_data = Message.objects.filter(
-            #     room_id=self.room).values().last()
-
-            # print('user id', self.message_data["user_id"])
-
-            # self.user_details = User.objects.filter(
-            #     id=self.message_data["user_id"]).values().first()
-
-            # print(json.dumps(
-            #     self.user_details, indent=4, sort_keys=True,   cls=DjangoJSONEncoder))
-
-            # self.message_data['type'] = 'chat_message'
-
-            # self.message_data['updated'] = json.dumps(
-            #     self.message_data["updated"], indent=4, sort_keys=True,   cls=DjangoJSONEncoder)
-            # self.message_data['created'] = json.dumps(
-            #     self.message_data["created"], indent=4, sort_keys=True,   cls=DjangoJSONEncoder)
 
             self.send_to_socket({
                 "command": 'NEW_MSG',

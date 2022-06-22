@@ -61,6 +61,7 @@ function connect() {
         break;
       case "NEW_MSG":
         console.log("new message", data.message);
+        $("#room-chat-list").append(createRoomNewMessage(data.message));
         break;
       default:
         console.error("Unknown message type!");
@@ -77,4 +78,37 @@ function connect() {
     chatSocket.close();
   };
 }
+
+const createRoomNewMessage = (data) => {
+
+  return (
+    `<div class="thread">
+          <div class="thread__top">
+              <div class="thread__author">
+                  <a href="#" class="thread__authorInfo">
+                      <div class="avatar avatar--small">
+                          <img src= "#"/>
+                      </div>
+                      <span></span>
+                  </a>
+                  <span class="thread__date"> 20 seconds
+                      ago</span>
+              </div>
+                  <a href="#">
+                      <div class="thread__delete">
+                          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                              <title>remove</title>
+                              <path d="M27.314 6.019l-1.333-1.333-9.98 9.981-9.981-9.981-1.333 1.333 9.981 9.981-9.981 9.98 1.333 1.333 9.981-9.98 9.98 9.98 1.333-1.333-9.98-9.98 9.98-9.981z"></path>
+                          </svg>
+                      </div>
+                  </a>
+          </div>
+          <div class="thread__details" id="chatLog">
+              ${data.body}
+          </div>
+      </div>` );
+};
+
 connect();
+
+
