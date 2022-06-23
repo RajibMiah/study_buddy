@@ -2,6 +2,7 @@ import json
 
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 
 from .models import Message, Room, User
@@ -16,6 +17,7 @@ class RoomConsumer(WebsocketConsumer):
         self.user = None  # new
         self.user_details = None
 
+    @login_required(login_url='/')
     def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_id']
         self.room_group_name = f'chat_{self.room_name}'

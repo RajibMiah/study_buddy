@@ -68,6 +68,10 @@ a {
   width: 90%;
   margin: auto;
 }
+.submit-btn {
+  display: flex;
+  justify-content: center;
+}
 
 .btn {
   background-color: transparent;
