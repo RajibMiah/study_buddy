@@ -42,22 +42,21 @@ class RoomConsumer(WebsocketConsumer):
         self.send(json.dumps(data))
 
     def to_json_msg(self, msg):
-        # msg_body = json.dumps(msg)
         try:
             # TODO:: HANDLE THE EXCEPTION FORM AND RETURN DOUBLE MESSAGE
-            obj = User.objects.get(Q(username=self.user)
-                                   and Q(uuid=self.user_details.uuid))
-            print('to_json_obj_user_details=======', obj)
+            user = User.objects.get(Q(username=self.user)
+                                    and Q(uuid=self.user_details.uuid))
+            msg_set = user.message_set.all()[:1]
         except Exception as e:
             print('exception in new_msg' + str(e))
 
         return{
-            'id': obj.id,
-            'message_id': 'obj',
-            'username': str(obj.name),
+            'id': user.id,
+            'message_id': str(msg_set[0].id),
+            'username': str(user.name),
             'body': str(msg),
-            'created': '',
-            'avator': str(obj.avator.url),
+            'created': str(msg_set[0].created),
+            'avator': str(user.avator.url),
 
         }
 

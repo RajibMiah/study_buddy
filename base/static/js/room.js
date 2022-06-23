@@ -97,10 +97,9 @@ const createRoomNewMessage = (data) => {
                       </div>
                       <span>${data.username}</span>
                   </a>
-                  <span class="thread__date"> 20 seconds
-                      ago</span>
+                  <span class="thread__date">${data.created}|timesince ago</span>
               </div>
-                  <a href="#">
+                  <a href="{% url 'delete-message' ${data.message_id} %}">
                       <div class="thread__delete">
                           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
                               <title>remove</title>
