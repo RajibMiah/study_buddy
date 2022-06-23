@@ -1123,6 +1123,23 @@ body {
   overflow-x: hidden;
 }
 
+/* --------------- profile media container-------------------- */
+.profile-media-container {
+  display: flex;
+  padding-right: 3rem;
+}
+
+.profile-media-container .media-content {
+  display: flex;
+  flex: auto;
+  justify-content: flex-end;
+}
+
+.media-icon-content {
+  padding: 9px;
+  cursor: pointer;
+}
+
 /*------scroll bar---------------------*/
 
 ::-webkit-scrollbar {
