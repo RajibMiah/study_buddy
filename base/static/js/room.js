@@ -93,9 +93,9 @@ const createRoomNewMessage = (data) => {
               <div class="thread__author">
                   <a href="#" class="thread__authorInfo">
                       <div class="avatar avatar--small">
-                          <img src= "#"/>
+                          <img src=${data.avator}/>
                       </div>
-                      <span></span>
+                      <span>${data.username}</span>
                   </a>
                   <span class="thread__date"> 20 seconds
                       ago</span>

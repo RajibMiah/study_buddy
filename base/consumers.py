@@ -2,7 +2,7 @@ import json
 
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
-from channels.layers import get_channel_layer
+from django.db.models import Q
 
 from .models import Message, Room, User
 
@@ -20,7 +20,9 @@ class RoomConsumer(WebsocketConsumer):
         self.room_name = self.scope['url_route']['kwargs']['room_id']
         self.room_group_name = f'chat_{self.room_name}'
         self.room = Room.objects.get(pk=self.room_name)
+        self.user_details = User.objects.get(name=self.scope['user'])
         self.user = self.scope['user']  # new
+
         # connection has to be accepted
         self.accept()
 
@@ -43,18 +45,19 @@ class RoomConsumer(WebsocketConsumer):
         # msg_body = json.dumps(msg)
         try:
             # TODO:: HANDLE THE EXCEPTION FORM AND RETURN DOUBLE MESSAGE
-            obj = User.objects.get(username=self.user)
+            obj = User.objects.get(Q(username=self.user)
+                                   and Q(uuid=self.user_details.uuid))
             print('to_json_obj_user_details=======', obj)
         except Exception as e:
             print('exception in new_msg' + str(e))
 
         return{
-            'id': '',
+            'id': obj.id,
             'message_id': 'obj',
             'username': str(obj.name),
             'body': str(msg),
             'created': '',
-            'avator': str(obj.avator),
+            'avator': str(obj.avator.url),
 
         }
 
