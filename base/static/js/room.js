@@ -18,7 +18,6 @@ chatLog.scrollTop = chatLog.scrollHeight
 //   tab.scrollTop = tab.scrollHeight;
 // });
 
-console.log("user id" , request.user.id)
 
 chatMessageInput.onkeyup = function (e) {
   if (e.keyCode === 13) {
@@ -30,10 +29,9 @@ chatMessageInput.onkeyup = function (e) {
 
 // clear the 'chatMessageInput' and forward the message
 chatMessageSend.onclick = function () {
-  console.log('user id' , request.user.id)
-  if (user_id == isNaN){
-    window.location.replace("http://127.0.0.1:8000/login/")
-  }
+  // if (user_id == isNaN){
+  //   window.location.replace("http://127.0.0.1:8000/login/")
+  // }
   if (chatMessageInput.value.length === 0) return;
   chatSocket.send(
     JSON.stringify({
