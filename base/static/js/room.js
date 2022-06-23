@@ -57,8 +57,8 @@ function connect() {
     const data = JSON.parse(e.data);
 
     switch (data["command"]) {
-      case "chat_message":
-        chatLog.value += data.user + ": " + data.message + "\n"; // new
+      case "LOAD_CHAT_MSG":
+        console.log('Group message loadded' , data.message)
         break;
       case "NEW_MSG":
         console.log("new message", data.message);

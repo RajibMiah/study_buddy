@@ -43,18 +43,18 @@ class RoomConsumer(WebsocketConsumer):
         # msg_body = json.dumps(msg)
         try:
             # TODO:: HANDLE THE EXCEPTION FORM AND RETURN DOUBLE MESSAGE
-            # obj = User.objects.filter(user=self.user).values()[0:1]
-            pass
+            obj = User.objects.get(username=self.user)
+            print('to_json_obj_user_details=======', obj)
         except Exception as e:
             print('exception in new_msg' + str(e))
 
         return{
             'id': '',
             'message_id': 'obj',
-            'username': str(obj.user.name),
+            'username': str(obj.name),
             'body': str(msg),
             'created': '',
-            'avator': '',
+            'avator': str(obj.avator),
 
         }
 
