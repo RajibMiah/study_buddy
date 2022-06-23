@@ -4,16 +4,24 @@ console.log("Sanity check from room.js.");
 
 const roomId = JSON.parse(document.getElementById("roomId").textContent);
 let chatLog = document.querySelector("#chatLog");
+console.log('chat log' ,chatLog.scrollTop , chatLog.scrollHeight)
 let chatMessageInput = document.querySelector("#chatMessageInput");
 let chatMessageSend = document.querySelector("#chatMessageSend");
 let onlineUsersSelector = document.querySelector("#onlineUsersSelector");
 
 chatMessageInput.focus();
+chatLog.scrollTop = chatLog.scrollHeight
+
+// $( document ).ready(function() {
+//   console.log("ready on it");
+//   var tab = chatLog;
+//   tab.scrollTop = tab.scrollHeight;
+// });
 
 chatMessageInput.onkeyup = function (e) {
   if (e.keyCode === 13) {
     // enter key
-    e.preventDefault()
+    e.preventDefault();
     chatMessageSend.click();
   }
 };
@@ -30,6 +38,7 @@ chatMessageSend.onclick = function () {
 
   chatMessageInput.value = "";
   chatLog.scrollTop = chatLog.scrollHeight;
+  console.log(chatLog.scrollTop)
 };
 
 let chatSocket = null;
@@ -58,7 +67,7 @@ function connect() {
 
     switch (data["command"]) {
       case "LOAD_CHAT_MSG":
-        console.log('Group message loadded' , data.message)
+        console.log("Group message loadded", data.message);
         break;
       case "NEW_MSG":
         console.log("new message", data.message);
@@ -71,7 +80,7 @@ function connect() {
 
     // scroll 'chatLog' to the bottom
     chatLog.scrollTop = chatLog.scrollHeight;
-    console.log("chat log" ,chatLog)
+    console.log("chat log", chatLog);
   };
 
   chatSocket.onerror = function (err) {
@@ -81,11 +90,9 @@ function connect() {
   };
 }
 
-// $(document).ready(function (e) {
-//   console.log("ready on it");
-//   var tab = document.getElementsByClassName("scroll");
-//   tab.scrollTop = tab.scrollHeight;
-// });
+
+
+
 
 const createRoomNewMessage = (data) => {
   return `<div class="thread">

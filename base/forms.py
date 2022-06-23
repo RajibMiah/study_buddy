@@ -1,8 +1,12 @@
 
 from dataclasses import fields
+
+from django.contrib.auth import get_user_model
 from django.forms import ModelForm
+
 from .models import Room
-from django.contrib.auth.models import User
+
+User = get_user_model()
 
 
 class RoomForm(ModelForm):
@@ -11,7 +15,14 @@ class RoomForm(ModelForm):
         fields = '__all__'
         exclude = ['host', 'participants']
 
+
 class UserForm(ModelForm):
     class Meta:
         model = User
-        fields = ['username' ,  'email'] 
+        fields = ['username',  'email']
+
+
+class UserRegisterFrom(ModelForm):
+    class Meta:
+        model = User
+        fields = ['name', 'username', 'email', 'password']

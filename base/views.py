@@ -9,7 +9,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Q
 from django.shortcuts import HttpResponse, redirect, render
 
-from .forms import RoomForm, UserForm
+from .forms import RoomForm, UserForm, UserRegisterFrom
 from .models import Message, Room, Topic, User
 
 # Create your views here.
@@ -57,9 +57,9 @@ def registerPage(request):
         return redirect('home')
 
     page = 'register'
-    form = UserCreationForm()
+    form = UserRegisterFrom()
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = UserRegisterFrom(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             user.username = user.username.lower()

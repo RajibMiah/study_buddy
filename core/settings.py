@@ -121,16 +121,12 @@ USE_TZ = True
 AUTH_USER_MODEL = 'base.User'
 
 STATIC_URL = 'static/'
-
-MEDIA_URL = '/images/'
-
 STATICFILES_DIRS = [
     BASE_DIR / 'STATIC'
 ]
 
-MEDIA_ROOT = BASE_DIR / 'static/images'
-
-AUTH_USER_MODEL = 'base.User'
+MEDIA_ROOT = BASE_DIR / 'static/'
+MEDIA_URL = '/images/'
 
 
 # Default primary key field type

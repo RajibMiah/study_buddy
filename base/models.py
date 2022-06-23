@@ -15,7 +15,7 @@ class User(AbstractUser):
         primary_key=False, default=uuid.uuid4, editable=False)
 
     avator = models.ImageField(
-        null=True, blank=True, default='images/avatar.svg')
+        null=True, blank=True, default='/user.png')
     # USERNAME_FIELD ='email'
     # REQUIRED_FIELDS = ['username' , 'email' , 'password']
 
