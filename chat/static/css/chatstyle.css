@@ -1139,6 +1139,9 @@ body {
   padding: 9px;
   cursor: pointer;
 }
+.media-icon-content:hover {
+  padding: 9px;
+}
 
 /*------scroll bar---------------------*/
 
