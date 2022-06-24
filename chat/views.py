@@ -4,26 +4,13 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
 from django.db.models.query_utils import Q
-from django.dispatch import receiver
 from django.shortcuts import redirect, render
 from django.utils.safestring import mark_safe
 
 from .chatconsumer import ChatConsumer
-from .forms import RegistrationForm
 from .models import Message, contact
 
 User = get_user_model()
-
-
-def signup(request):
-    if request.method == 'POST':
-        form = RegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('chat')
-    else:
-        form = RegistrationForm()
-    return render(request, 'registration/register.html', {'form': form})
 
 
 @login_required
@@ -32,6 +19,12 @@ def chatpage(request):
     user_contact = User.objects.filter(username=recipient).first()
 
     return redirect('/chat/' + str(user_contact.uuid) + '/')
+
+
+def chatroom(request, reciver_uuid):
+    print("reciver uuid", reciver_uuid)
+    # context = 
+    return render(request, 'chat/chatroom.html', {'recipient_uuid': mark_safe(json.dumps(reciver_uuid))})
 
 
 @login_required
