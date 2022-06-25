@@ -20,6 +20,7 @@ socket.onopen = function (e) {
 
 socket.onmessage = function (e) {
   var data = JSON.parse(e.data);
+
   switch (data["command"]) {
     case "PING":
       socket.send(JSON.stringify({ command: "PONG" }));
@@ -38,6 +39,7 @@ socket.onmessage = function (e) {
         status = "online";
         img = data.message.pic;
       }
+    
       createContact(ID, name, data.message.content, status, false, img);
       $("#chat-log" + ID).append(createMessage(data.message));
       scrollToEnd(ID);
@@ -72,6 +74,9 @@ socket.onmessage = function (e) {
       id = data["message"];
       toggleStatus(id, "online", "offline");
       break;
+    case "NOTIFY":
+      console.log('notify' , data) 
+      break;
     case "NEW_CONT":
       createContact(
         data["id"],
@@ -86,6 +91,7 @@ socket.onmessage = function (e) {
 };
 
 function scrollToEnd(id) {
+  console.log('scroll id' , id)
   var tab = document.getElementById("chat-tab" + id);
   tab.scrollTop = tab.scrollHeight;
 }

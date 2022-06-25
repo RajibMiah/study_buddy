@@ -1,7 +1,6 @@
 import json
 import threading
 import time
-import uuid
 
 from asgiref.sync import async_to_sync
 from channels.exceptions import StopConsumer
@@ -11,7 +10,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models.query_utils import Q
 
-from .models import Message, contact
+from .models import Message, Notification, contact
 
 User = get_user_model()
 
@@ -161,7 +160,7 @@ class ChatConsumer(WebsocketConsumer):
         self.send_to_socket({
             'command': 'NEW_MSG',
             'message': msg,
-            'user_uuid': str(json.loads(self.user.uuid)),
+            'user_uuid': str(self.user.uuid),
 
         })
         if(msg["sid"] not in self.user_list and msg['sid'] != self.user.id):
@@ -210,11 +209,24 @@ class ChatConsumer(WebsocketConsumer):
                 recipient=recipient_user,
                 content=data["content"],
             )
+            notify = Notification.objects.create(
+                user=recipient_user, notification_body=data["content"], is_seen=False)
+
+            # send group socket for upcomming new message
             self.send_to_socket({
                 "command": "NEW_MSG",
                 "message": self.to_json_msg(msg)
             })
 
+            # send notificition message socket
+            self.send_to_socket({
+                "command": "NOTIFY",
+                "message": {
+                    "user_id": str(notify.user.id),
+                    "notification_body": str(notify.notification_body),
+                    "is_seen": notify.is_seen,
+                }
+            })
             self.send_chat_msg(msg=self.to_json_msg(
                 msg), type="chat.message", reciever=recipient_user)
 
@@ -244,7 +256,7 @@ class ChatConsumer(WebsocketConsumer):
     def search_result(self, data):
 
         try:
-            result_set = User.objects.values('id', 'username', 'avator' , 'uuid').filter(
+            result_set = User.objects.values('id', 'username', 'avator', 'uuid').filter(
                 username__contains=data["text"]).exclude(id=self.user.id)[:10]
             contact_list = list()
 
