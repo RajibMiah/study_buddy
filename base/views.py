@@ -23,21 +23,19 @@ def login(request):
 
     if request.method == 'POST':
         username = request.POST.get("username")
-        # email = request.POST.get('email').lower()
         password = request.POST.get('password')
-
         try:
-            # pass
-            # user = User.objects.get(email=email)
+
             user = User.objects.get(username=username)
         except:
             messages.error(request, 'User does not exist')
         print("username", username, 'passwrod', password)
-        # user = authenticate(request, email=email, password=password)
         user = authenticate(request, username=username, password=password)
         print('user', user)
         if user is not None:
             auth_login(request, user)
+            messages.success(
+                request, 'Login successfull . Redirect to home page')
             return redirect('home')
         else:
             messages.error(request, 'Username OR password does not exit')
