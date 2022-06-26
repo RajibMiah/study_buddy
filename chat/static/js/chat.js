@@ -39,8 +39,8 @@ socket.onmessage = function (e) {
         status = "online";
         img = data.message.pic;
       }
-      console.log("new message" , data)
-      createContact(ID, name, data.message.content, status, false, img , data.recipient_uuid);
+    
+      createContact(ID, name, data.message.content, status, false, img , data.reciver_uuid);
       $("#chat-log" + ID).append(createMessage(data.message));
       scrollToEnd(ID);
       break;
@@ -132,6 +132,7 @@ function createresults(id, name, pic, uname , recipient_uuid) {
 }
 $("#chat-input-box").on("keyup", function (e) {
   if (e.keyCode === 13) {
+    e.preventDefault();
     $("#chat-submit").click();
   }
 });
@@ -173,7 +174,7 @@ function createContact(
   img,
   recipient_uuid
 ) {
-  console.log('recipient uuid' , recipient_uuid)
+ 
   var contact;
   if (preview === "") {
     preview = "No Message";
@@ -218,6 +219,7 @@ function createContact(
     $("#contact" + sid).slideDown("fast");
   }
   $("#contact" + sid).click(function () {
+    
     $("#chat-tab" + activeContact).css("display", "none");
     $("#contact" + activeContact).removeClass("active");
 
@@ -260,6 +262,7 @@ const load_msg_fun = (msg_list) => {
       var msgs = msg_list[i].messages;
       len = msgs.length;
       var img = msg_list[i].pic;
+     
       createContact(
         cid,
         cname,
@@ -348,7 +351,7 @@ $(document).ready(function (e) {
   }
   $(".msg" + data.contact).removeClass("un");
 
-  console.log('-----document init----' , data)
+  // console.log('-----document init----' , data)
 });
 
 $("#search-bar").on("keyup", function (e) {
