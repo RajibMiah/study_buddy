@@ -215,7 +215,8 @@ class ChatConsumer(WebsocketConsumer):
             # send group socket for upcomming new message
             self.send_to_socket({
                 "command": "NEW_MSG",
-                "message": self.to_json_msg(msg)
+                "message": self.to_json_msg(msg),
+                "reciver_uuid": str(recipient_user.uuid)
             })
 
             # send notificition message socket

@@ -39,13 +39,14 @@ socket.onmessage = function (e) {
         status = "online";
         img = data.message.pic;
       }
-    
-      createContact(ID, name, data.message.content, status, false, img);
+      console.log("new message" , data)
+      createContact(ID, name, data.message.content, status, false, img , data.recipient_uuid);
       $("#chat-log" + ID).append(createMessage(data.message));
       scrollToEnd(ID);
       break;
     case "LOAD_MSGS":
       var msg_list = data["msg_list"];
+      console.log('load message data' , msg_list)
       load_msg_fun(msg_list);
       break;
     case "SEARCH":
@@ -172,7 +173,7 @@ function createContact(
   img,
   recipient_uuid
 ) {
-
+  console.log('recipient uuid' , recipient_uuid)
   var contact;
   if (preview === "") {
     preview = "No Message";
@@ -226,12 +227,17 @@ function createContact(
     $("#chat-tab" + activeContact).css("display", "block");
     $("#contact" + activeContact).addClass("active");
 
+    $("#user-media-call").attr('href' ,"http://127.0.0.1:8000/chat/group:call/"+ recipient_uuid + "/" )
+    $("#media-video-call").attr('href' , "http://127.0.0.1:8000/chat/group:call/"+ recipient_uuid + "/" )
+
     if ($(".msg" + sid).hasClass("un")) {
       sendMAR(sid);
     }
     $(".msg" + sid).removeClass("un");
+
+
    
- 
+
     history.replaceState(
       {
         id: sid,
@@ -288,7 +294,7 @@ function createChattab(id) {
   tab = $('<div id="chat-tab' + id + '" class="messages"></div>').html(tab);
 
   $("#chat-parent").append(tab);
-  $("#chat-tab" + id).css("display", "none");
+  $("#chat-tab" + id).css("display", "block");
 }
 
 function createMessage(msg) {
@@ -322,12 +328,27 @@ function createMessage(msg) {
 $(document).ready(function (e) {
   console.log(JSON.parse(my_context));
   data = JSON.parse(my_context)
-  // load_msg_fun(JSON.parse(my_context), (is_just_load = true));
-  console.log('-----document init----')
-  if(socket.onopen){
-   
+
+  $("#active-contact").text(data.name);
+  $("#active-contact-img").attr("src", data.pic);
+  $("#chat-tab" + data.contact).css("display", "block");
+  $("#contact" + data.contact).addClass("active");
+
+  $("#user-media-call").attr(
+    "href",
+    "http://127.0.0.1:8000/chat/group:call/" + data.recipient_uuid + "/"
+  );
+  $("#media-video-call").attr(
+    "href",
+    "http://127.0.0.1:8000/chat/group:call/" + data.recipient_uuid + "/"
+  );
+
+  if ($(".msg" + data.contact).hasClass("un")) {
+    sendMAR(data.contact);
   }
-  
+  $(".msg" + data.contact).removeClass("un");
+
+  console.log('-----document init----' , data)
 });
 
 $("#search-bar").on("keyup", function (e) {

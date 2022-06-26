@@ -57,7 +57,7 @@ def targeted_recipient(request, reciver_uuid):
         'username': mark_safe(json.dumps(request.user.username)),
         'userid': mark_safe(json.dumps(request.user.id)),
         'domain': mark_safe(json.dumps(get_current_site(request).domain)),
-        'reciver_uuid': reciver_uuid,
+        'reciver_uuid': mark_safe(reciver_uuid),
         'loaded_msg_details': mark_safe(json.dumps(ctx))
     })
 
