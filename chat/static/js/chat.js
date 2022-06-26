@@ -2,6 +2,7 @@ var activeContact;
 var userid;
 var username;
 var contactList = Object();
+var chat_data = Object()
 var srchactive = false;
 var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
 const _uuid = JSON.parse(document.getElementById("reciver_uuid").textContent);
@@ -47,6 +48,8 @@ socket.onmessage = function (e) {
     case "LOAD_MSGS":
       var msg_list = data["msg_list"];
       console.log('load message data' , msg_list)
+      chat_data = msg_list
+      console.log('chat data' , chat_data)
       load_msg_fun(msg_list);
       break;
     case "SEARCH":
@@ -219,27 +222,35 @@ function createContact(
     $("#contact" + sid).slideDown("fast");
   }
   $("#contact" + sid).click(function () {
-    
-    $("#chat-tab" + activeContact).css("display", "none");
-    $("#contact" + activeContact).removeClass("active");
 
-    activeContact = sid;
-    $("#active-contact").text(contactList[activeContact].name);
-    $("#active-contact-img").attr("src", contactList[activeContact].pic);
-    $("#chat-tab" + activeContact).css("display", "block");
-    $("#contact" + activeContact).addClass("active");
+    onclickobject = chat_data.map((data) => {
+      if (data.contact === sid) {
+        $("#chat-tab" + activeContact).css("display", "none");
+        $("#contact" + activeContact).removeClass("active");
 
-    $("#user-media-call").attr('href' ,"http://127.0.0.1:8000/chat/group:call/"+ recipient_uuid + "/" )
-    $("#media-video-call").attr('href' , "http://127.0.0.1:8000/chat/group:call/"+ recipient_uuid + "/" )
+        activeContact = sid;
+        $("#active-contact").text(data.name);
+        $("#active-contact-img").attr("src", data.pic);
+        $("#chat-tab" + activeContact).css("display", "block");
+        $("#contact" + activeContact).addClass("active"); 
+        for (let i  = 0; i < data.messages.length; i++) {
+          $("#chat-log" + String(sid)).prepend(createMessage(data.messages[i]));
+        }
+        $("#user-media-call").attr(
+          "href",
+          "http://127.0.0.1:8000/chat/group:call/" + data.recipient_uuid + "/"
+        );
+        $("#media-video-call").attr(
+          "href",
+          "http://127.0.0.1:8000/chat/group:call/" + data.recipient_uuid + "/"
+        );
 
-    if ($(".msg" + sid).hasClass("un")) {
-      sendMAR(sid);
-    }
-    $(".msg" + sid).removeClass("un");
-
-
-   
-
+        if ($(".msg" + sid).hasClass("un")) {
+          sendMAR(sid);
+        }
+        $(".msg" + sid).removeClass("un");
+      }
+    });
     history.replaceState(
       {
         id: sid,
@@ -274,9 +285,9 @@ const load_msg_fun = (msg_list) => {
       );
     
 
-      for (var j = 0; j < len; j++) {
-        $("#chat-log" + String(cid)).prepend(createMessage(msgs[j]));
-      }
+      // for (var j = 0; j < len; j++) {
+      //   $("#chat-log" + String(cid)).prepend(createMessage(msgs[j]));
+      // }
       scrollToEnd(cid);
     }
   }
@@ -293,6 +304,7 @@ function sendMAR(sid) {
 }
 
 function createChattab(id) {
+  console.log('create chat tab id' , id)
   var tab = '<ul id="chat-log' + id + '"></ul>';
   tab = $('<div id="chat-tab' + id + '" class="messages"></div>').html(tab);
 
@@ -336,6 +348,9 @@ $(document).ready(function (e) {
   $("#active-contact-img").attr("src", data.pic);
   $("#chat-tab" + data.contact).css("display", "block");
   $("#contact" + data.contact).addClass("active");
+  for (let i  = 0; i < data.messages.length; i++) {
+    $("#chat-log" + String(sid)).prepend(createMessage(data.messages[i]));
+  }
 
   $("#user-media-call").attr(
     "href",
@@ -350,8 +365,8 @@ $(document).ready(function (e) {
     sendMAR(data.contact);
   }
   $(".msg" + data.contact).removeClass("un");
-
-  // console.log('-----document init----' , data)
+  createChattab(data.contact)
+  console.log('-----document init----' , data)
 });
 
 $("#search-bar").on("keyup", function (e) {
