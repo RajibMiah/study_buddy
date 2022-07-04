@@ -1,8 +1,12 @@
+import asyncio
 import json
 import threading
 import time
+from datetime import datetime
 
 from asgiref.sync import async_to_sync
+from channels.consumer import AsyncConsumer
+from channels.db import database_sync_to_async
 from channels.exceptions import StopConsumer
 from channels.generic.websocket import WebsocketConsumer
 from channels.layers import get_channel_layer
@@ -356,3 +360,63 @@ class ChatConsumer(WebsocketConsumer):
             self.check_user_load(recv_data)
         else:
             pass
+
+
+# VIDEO CALL STATUS
+
+VC_CONTACTING, VC_NOT_AVAILABLE, VC_ACCEPTED, VC_REJECTED, VC_BUSY, VC_PROCESSING, VC_ENDED = 0, 1, 2, 3, 4, 5, 6,
+
+
+class VideoChatConsumer(AsyncConsumer):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(args, kwargs)
+        self.room_name = None
+        self.room_group_name = None
+        self.room = None
+        self.user = None  # new
+        self.user_details = None
+        self.recciver_uuid = None
+
+    async def websocket_connect(self, event):
+
+        self.user = self.scope['user']
+        self.user_room_id = f"videochat_{self.user.id}"
+
+        await self.channel_layer.group_add(
+            self.user_room_id,
+            self.channel_name
+        )
+
+        await self.send({
+            'type': 'websocket.accept'
+        })
+
+    async def websocket_disconnect(self, event):
+        video_thread_id = self.scope['session'].get('video_thread_id', None)
+        videothread = await self.change_videothread_status(video_thread_id, VC_ENDED)
+
+        if videothread is not None:
+            await self.change_videothread_datetime(video_thread_id, False)
+
+            await self.channel_layer.group_send(
+                f"videochat_{videothread.caller.id}",
+                {
+                    'type': 'chat_message',
+                    'message': json.dumps({'type': "offerResult", 'status': VC_ENDED, 'video_thread_id': videothread.id})
+                })
+
+            await self.channel_layer.group_send({
+                f"videochat_{videothread.calle.id}",
+                {
+                    'type': 'chat_message',
+                    'message': json.dumps({'type': "offerResult", 'status': VC_ENDED, 'video_thread_id': videothread.id})
+                }
+            })
+
+            await self.channel_layer.group_discard(
+                self.user_room_id,
+                self.channel_name
+            )
+
+            raise StopConsumer
