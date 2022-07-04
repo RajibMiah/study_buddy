@@ -14,7 +14,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models.query_utils import Q
 
-from .models import Message, Notification, contact
+from .models import Message, Notification, VideoThread, contact
 
 User = get_user_model()
 
@@ -420,3 +420,53 @@ class VideoChatConsumer(AsyncConsumer):
             )
 
             raise StopConsumer
+
+    async def websocket_receive(self, event):
+        text_data = event.get('text', None)
+        bytes_data = event.get('bytes', None)
+
+        if text_data:
+
+            text_data_json = json.loads(text_data)
+            message_type = text_data_json['type']
+            print('<======= message type ==========>', message_type)
+            if message_type == "createOffer":
+                pass
+            elif message_type == "cancelOffer":
+                pass
+            elif message_type == "acceptoffer":
+                pass
+            elif message_type == 'rejectOffer':
+                pass
+            elif message_type == 'hangUp':
+                pass
+            elif message_type == 'callerData':
+                pass
+            elif message_type == 'calleeData':
+                pass
+            else:
+                pass
+
+    @database_sync_to_async
+    def get_videothread(self, id):
+        pass
+
+    @database_sync_to_async
+    def create_videothread(self, callee_username):
+        pass
+
+    @database_sync_to_async
+    def change_videothread_status(self, id, status):
+
+        try:
+            videothread = VideoThread.objects.get(id=id)
+            videothread.status = status
+            videothread.save()
+            return videothread
+
+        except VideoThread.DoesNotExist:
+            return None
+
+    @database_sync_to_async
+    def change_videothread_date_time(self, id, is_start):
+        pass
