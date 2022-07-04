@@ -2,7 +2,7 @@ var activeContact;
 var userid;
 var username;
 var contactList = Object();
-var chat_data = Object()
+var chat_data = Object();
 var srchactive = false;
 var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
 const _uuid = JSON.parse(document.getElementById("reciver_uuid").textContent);
@@ -16,7 +16,6 @@ socket.onopen = function (e) {
       command: "GET_ALL_CACHE_CHAT",
     })
   );
-  
 };
 
 socket.onmessage = function (e) {
@@ -40,16 +39,24 @@ socket.onmessage = function (e) {
         status = "online";
         img = data.message.pic;
       }
-    
-      createContact(ID, name, data.message.content, status, false, img , data.reciver_uuid);
+
+      createContact(
+        ID,
+        name,
+        data.message.content,
+        status,
+        false,
+        img,
+        data.reciver_uuid
+      );
       $("#chat-log" + ID).append(createMessage(data.message));
       scrollToEnd(ID);
       break;
     case "LOAD_MSGS":
       var msg_list = data["msg_list"];
-      console.log('load message data' , msg_list)
-      chat_data = msg_list
-      console.log('chat data' , chat_data)
+      console.log("load message data", msg_list);
+      chat_data = msg_list;
+      console.log("chat data", chat_data);
       load_msg_fun(msg_list);
       break;
     case "SEARCH":
@@ -61,7 +68,7 @@ socket.onmessage = function (e) {
           var id = list[i].id;
           var name = list[i].name;
           var img = list[i].pic;
-          createresults(id, name, img, uname , list[i].recipient_uuid);
+          createresults(id, name, img, uname, list[i].recipient_uuid);
         }
       }
 
@@ -79,7 +86,7 @@ socket.onmessage = function (e) {
       toggleStatus(id, "online", "offline");
       break;
     case "NOTIFY":
-      console.log('notify' , data) 
+      console.log("notify", data);
       break;
     case "NEW_CONT":
       createContact(
@@ -89,19 +96,18 @@ socket.onmessage = function (e) {
         data["status"],
         false,
         data["pic"],
-        data['recipient_uuid']
+        data["recipient_uuid"]
       );
   }
 };
 
 function scrollToEnd(id) {
-  console.log('scroll id' , id)
+  console.log("scroll id", id);
   var tab = document.getElementById("chat-tab" + id);
   tab.scrollTop = tab.scrollHeight;
 }
 
-function createresults(id, name, pic, uname , recipient_uuid) {
-
+function createresults(id, name, pic, uname, recipient_uuid) {
   contact = $(
     '<li id="tcontact' +
       id +
@@ -122,7 +128,7 @@ function createresults(id, name, pic, uname , recipient_uuid) {
     var preview = "";
     if (contactList[id]) {
       preview = "already added,start chating!";
-      createContact(id, uname, preview, "", false, pic , recipient_uuid);
+      createContact(id, uname, preview, "", false, pic, recipient_uuid);
     } else {
       socket.send(
         JSON.stringify({
@@ -168,16 +174,7 @@ function toggleStatus(sid, from, to) {
   contactList[sid].status = to;
 }
 // ============= create contact table and show table==============
-function createContact(
-  sid,
-  name,
-  preview,
-  status,
-  mode,
-  img,
-  recipient_uuid
-) {
- 
+function createContact(sid, name, preview, status, mode, img, recipient_uuid) {
   var contact;
   if (preview === "") {
     preview = "No Message";
@@ -222,7 +219,6 @@ function createContact(
     $("#contact" + sid).slideDown("fast");
   }
   $("#contact" + sid).click(function () {
-
     onclickobject = chat_data.map((data) => {
       if (data.contact === sid) {
         $("#chat-tab" + activeContact).css("display", "none");
@@ -232,8 +228,8 @@ function createContact(
         $("#active-contact").text(data.name);
         $("#active-contact-img").attr("src", data.pic);
         $("#chat-tab" + activeContact).css("display", "block");
-        $("#contact" + activeContact).addClass("active"); 
-        for (let i  = 0; i < data.messages.length; i++) {
+        $("#contact" + activeContact).addClass("active");
+        for (let i = 0; i < data.messages.length; i++) {
           $("#chat-log" + String(sid)).prepend(createMessage(data.messages[i]));
         }
         $("#user-media-call").attr(
@@ -260,12 +256,9 @@ function createContact(
       `http://127.0.0.1:8000/chat/${recipient_uuid}/`
     );
   });
-
-  
 }
 
 const load_msg_fun = (msg_list) => {
-
   for (var i = 0; i < msg_list.length; i++) {
     if (!contactList[msg_list[i].contact]) {
       var cid = msg_list[i].contact;
@@ -273,7 +266,7 @@ const load_msg_fun = (msg_list) => {
       var msgs = msg_list[i].messages;
       len = msgs.length;
       var img = msg_list[i].pic;
-     
+
       createContact(
         cid,
         cname,
@@ -283,7 +276,6 @@ const load_msg_fun = (msg_list) => {
         img,
         msg_list[i].recipient_uuid
       );
-    
 
       // for (var j = 0; j < len; j++) {
       //   $("#chat-log" + String(cid)).prepend(createMessage(msgs[j]));
@@ -292,7 +284,6 @@ const load_msg_fun = (msg_list) => {
     }
   }
 };
-
 
 function sendMAR(sid) {
   socket.send(
@@ -304,7 +295,7 @@ function sendMAR(sid) {
 }
 
 function createChattab(id) {
-  console.log('create chat tab id' , id)
+  console.log("create chat tab id", id);
   var tab = '<ul id="chat-log' + id + '"></ul>';
   tab = $('<div id="chat-tab' + id + '" class="messages"></div>').html(tab);
 
@@ -342,13 +333,13 @@ function createMessage(msg) {
 
 $(document).ready(function (e) {
   console.log(JSON.parse(my_context));
-  data = JSON.parse(my_context)
+  data = JSON.parse(my_context);
 
   $("#active-contact").text(data.name);
   $("#active-contact-img").attr("src", data.pic);
   $("#chat-tab" + data.contact).css("display", "block");
   $("#contact" + data.contact).addClass("active");
-  for (let i  = 0; i < data.messages.length; i++) {
+  for (let i = 0; i < data.messages.length; i++) {
     $("#chat-log" + String(sid)).prepend(createMessage(data.messages[i]));
   }
 
@@ -365,8 +356,8 @@ $(document).ready(function (e) {
     sendMAR(data.contact);
   }
   $(".msg" + data.contact).removeClass("un");
-  createChattab(data.contact)
-  console.log('-----document init----' , data)
+  createChattab(data.contact);
+  console.log("-----document init----", data);
 });
 
 $("#search-bar").on("keyup", function (e) {
@@ -398,4 +389,3 @@ function startsearch() {
   $("#contact-list").css("display", "none");
   $("#search-list").css("display", "block");
 }
-
