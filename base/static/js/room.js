@@ -5,22 +5,21 @@ console.log("Sanity check from room.js.");
 const roomId = JSON.parse(document.getElementById("roomId").textContent);
 
 let chatLog = document.querySelector("#chatLog");
-console.log('chat log' ,chatLog.scrollTop , chatLog.scrollHeight)
+
 
 let chatMessageInput = document.querySelector("#chatMessageInput");
 let chatMessageSend = document.querySelector("#chatMessageSend");
 let onlineUsersSelector = document.querySelector("#onlineUsersSelector");
 
 chatMessageInput.focus();
-chatLog.scrollTop = chatLog.scrollHeight.value
-console.log('chat log' , chatLog.scrollTop)
+chatLog.scrollTop = chatLog.scrollHeight;
+console.log("chat log", chatLog.scrollTop);
 
 // $( document ).ready(function() {
 //   console.log("ready on it");
 //   var tab = chatLog;
 //   tab.scrollTop = tab.scrollHeight;
 // });
-
 
 chatMessageInput.onkeyup = function (e) {
   if (e.keyCode === 13) {
@@ -45,7 +44,7 @@ chatMessageSend.onclick = function () {
 
   chatMessageInput.value = "";
   chatLog.scrollTop = chatLog.scrollHeight;
-  console.log(chatLog.scrollTop)
+  console.log(chatLog.scrollTop);
 };
 
 let chatSocket = null;
@@ -74,11 +73,16 @@ function connect() {
 
     switch (data["command"]) {
       case "LOAD_CHAT_MSG":
-        console.log("Group message loadded", data.message);
+        // console.log("Group message loadded", data.message);
         break;
       case "NEW_MSG":
-        console.log("new message", data.message);
+        // console.log("new message", data.message);
         $("#room-chat-list").append(createRoomNewMessage(data.message));
+
+        break;
+      case "PARTICIPANTS_ADDED":
+        console.log("participants added ", data.message);
+        $("#participants_list").append(createParticipants(data.message));
         break;
       default:
         console.error("Unknown message type!");
@@ -96,10 +100,6 @@ function connect() {
     chatSocket.close();
   };
 }
-
-
-
-
 
 const createRoomNewMessage = (data) => {
   return `<div class="thread">
@@ -122,10 +122,23 @@ const createRoomNewMessage = (data) => {
                       </div>
                   </a>
           </div>
-          <div class="thread__details" >
+          <div class="thread__details" id = "chatLog" >
               ${data.body}
           </div>
       </div>`;
 };
 
+const createParticipants = (data) => {
+  return ` 
+        <a href="{% url 'user-profile' user.id %}" class="participant">
+            <div class="avatar avatar--medium">
+                <img src="{{ user.avator.url }}"/>
+            </div>
+            <p>
+                 ${data.username}
+                <span>@${data.username}</span>
+            </p>
+        </a>
+`;
+};
 connect();

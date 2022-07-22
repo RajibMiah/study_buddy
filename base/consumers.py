@@ -20,7 +20,7 @@ class RoomConsumer(WebsocketConsumer):
         self.room_id = self.scope['url_route']['kwargs']['room_id']
         self.room_group_name = f'chat_{self.room_id}'
         self.room = Room.objects.get(pk=self.room_id)
-        self.user_details = User.objects.get(id=self.room_id)
+        # self.user_details = User.objects.get(id=self.room_id)
         self.user = self.scope['user']  # new
 
         # connection has to be accepted
@@ -42,13 +42,14 @@ class RoomConsumer(WebsocketConsumer):
         self.send(json.dumps(data))
 
     def to_json_msg(self, msg):
+
         try:
-            # TODO:: HANDLE THE EXCEPTION FORM AND RETURN DOUBLE MESSAGE
-            user = User.objects.get(Q(username=self.user)
-                                    and Q(uuid=self.user_details.uuid))
+            user = User.objects.get(
+                Q(username=self.user) and Q(uuid=self.user.uuid))
             msg_set = user.message_set.all()[:1]
+
         except Exception as e:
-            print('exception in new_msg' + str(e))
+            print('exception in new_msg ' + str(e))
 
         return{
             'id': user.id,
@@ -73,6 +74,26 @@ class RoomConsumer(WebsocketConsumer):
             #     "command": 'NEW_MSG',
             #     'message': self.to_json_msg(new_msg_obj)
             # })
+            room = Room.objects.get(id=self.room_id)
+            if not room.participants.filter(uuid=self.user.uuid).exists():
+                room.participants.add(self.user)
+                user = User.objects.get(
+                    Q(username=self.user) and Q(uuid=self.user.uuid))
+
+                ctx = {
+                    'id': user.id,
+                    'username': str(user.name),
+                    'avator': str(user.avator.url),
+                }
+
+                self.send_to_socket({
+                    'command': 'PARTICIPANTS_ADDED',
+                    'message': ctx
+                })
+                self.send_room_msg(msg=ctx, type='chat.message')
+            else:
+                print('user exit')
+
             self.send_room_msg(msg=self.to_json_msg(
                 new_msg_obj), type='chat.message')
 
