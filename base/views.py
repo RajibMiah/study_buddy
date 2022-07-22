@@ -108,13 +108,13 @@ def room(request, pk):
     room_messages = room_details.message_set.all()
     participants = room_details.participants.all()
 
-    # if request.method == 'POST':
-    #     message = Message.objects.create(
-    #         user=request.user,
-    #         room=room_details,
-    #         body=request.POST.get('body')
-    #     )
-    # room_details.participants.add(request.user)
+    if request.method == 'POST':
+        message = Message.objects.create(
+            user=request.user,
+            room=room_details,
+            body=request.POST.get('body')
+        )
+    room_details.participants.add(request.user)
     context = {'room': room_details, 'room_messages': room_messages,
                'participants': participants}
     return render(request, "base/room.html", context)
