@@ -3,14 +3,17 @@
 console.log("Sanity check from room.js.");
 
 const roomId = JSON.parse(document.getElementById("roomId").textContent);
+
 let chatLog = document.querySelector("#chatLog");
 console.log('chat log' ,chatLog.scrollTop , chatLog.scrollHeight)
+
 let chatMessageInput = document.querySelector("#chatMessageInput");
 let chatMessageSend = document.querySelector("#chatMessageSend");
 let onlineUsersSelector = document.querySelector("#onlineUsersSelector");
 
 chatMessageInput.focus();
-chatLog.scrollTop = chatLog.scrollHeight
+chatLog.scrollTop = chatLog.scrollHeight.value
+console.log('chat log' , chatLog.scrollTop)
 
 // $( document ).ready(function() {
 //   console.log("ready on it");
@@ -119,7 +122,7 @@ const createRoomNewMessage = (data) => {
                       </div>
                   </a>
           </div>
-          <div class="thread__details" id="chatLog">
+          <div class="thread__details" >
               ${data.body}
           </div>
       </div>`;
