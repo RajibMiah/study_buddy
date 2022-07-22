@@ -10,17 +10,17 @@ from .models import Message, Room, User
 class RoomConsumer(WebsocketConsumer):
     def __init__(self, *args, **kwargs):
         super().__init__(args, kwargs)
-        self.room_name = None
+        self.room_id = None
         self.room_group_name = None
         self.room = None
         self.user = None  # new
         self.user_details = None
 
     def connect(self):
-        self.room_name = self.scope['url_route']['kwargs']['room_id']
-        self.room_group_name = f'chat_{self.room_name}'
-        self.room = Room.objects.get(pk=self.room_name)
-        self.user_details = User.objects.get(name=self.scope['user'])
+        self.room_id = self.scope['url_route']['kwargs']['room_id']
+        self.room_group_name = f'chat_{self.room_id}'
+        self.room = Room.objects.get(pk=self.room_id)
+        self.user_details = User.objects.get(id=self.room_id)
         self.user = self.scope['user']  # new
 
         # connection has to be accepted
