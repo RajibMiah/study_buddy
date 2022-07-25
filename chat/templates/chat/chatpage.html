@@ -18,9 +18,18 @@
         <div id="frame">
 
             <div id="sidepanel">
+                <a href="{% url 'home' %}">
+                    <div class="sidepanel_backbutton_container">
+                        <span class="sidepanel_icon_container">Go Home</span>
+                    </div>
+                </a>
+
                 <div id="profile">
                     <div class="wrap">
-                        <img id="profile-img" src="{{ user.avator.url }}" class="online" alt=""/>
+                        <a href="{% url 'user-profile' user.id %}">
+                            <img id="profile-img" src="{{ user.avator.url }}" class="online" alt=""/>
+                        </a>
+
                         <p id="username">{{ user.username }}</p>
                     </div>
                 </div>

@@ -13,7 +13,7 @@ from .models import Message, contact
 User = get_user_model()
 
 
-@login_required
+@login_required(login_url='/login')
 def chatpage(request):
     recipient = contact.objects.filter()[:1].get()
     user_contact = User.objects.filter(username=recipient).first()
@@ -23,11 +23,11 @@ def chatpage(request):
 
 def chatroom(request, reciver_uuid):
     print("reciver uuid", reciver_uuid)
-    # context = 
+    # context =
     return render(request, 'chat/chatroom.html', {'recipient_uuid': mark_safe(json.dumps(reciver_uuid))})
 
 
-@login_required
+@login_required(login_url='/login')
 def targeted_recipient(request, reciver_uuid):
 
     if reciver_uuid:

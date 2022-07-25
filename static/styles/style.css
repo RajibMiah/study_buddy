@@ -471,7 +471,7 @@ a {
   width: 90%;
   max-width: 48rem;
   min-height: 40rem;
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -46%);
@@ -1970,7 +1970,7 @@ a {
   height: 275px;
 }
 
-.header__NyBc :selection {
+:selection {
   color: #fff;
   background: #1890ff;
 }
@@ -2351,10 +2351,10 @@ dd:after,
   padding-bottom: 20px;
 }
 
-.sidebar-base__2RIZ ul li {
+/* .sidebar-base__2RIZ ul li {
   list-style: none;
   padding-right: 20px;
-}
+} */
 
 .toggle-arrow__3ZiC {
   display: none;

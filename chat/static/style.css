@@ -557,6 +557,7 @@
   overflow: hidden;
   position: relative;
 }
+
 @media screen and (max-width: 735px) {
   #frame .content {
     width: calc(100% - 58px);
@@ -595,6 +596,13 @@
 }
 #frame .content .contact-profile .social-media i:hover {
   color: #435f7a;
+}
+#frame #sidepanel #back_ref .sidepanel_backbutton_container {
+  padding: 15px;
+}
+#frame #sidepanel #back_ref .sidepanel_icon_container {
+  color: white;
+  font-size: 18px;
 }
 #frame .content .messages {
   height: auto;
