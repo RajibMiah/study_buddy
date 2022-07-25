@@ -3,237 +3,422 @@
 {% block content %}
     <div class="profile_update_container">
         <div>
-            <div class="page-wrapper chiller-theme toggled">
-                <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
-                    <i class="fas fa-bars"></i>
-                </a>
-                <nav id="sidebar" class="sidebar-wrapper">
-                    <div class="sidebar-content">
-                        <div class="sidebar-brand">
-                            <a href="{{ request.META.HTTP_REFERER }}">Go Home</a>
-                            <div id="close-sidebar">
-                                <i class="fas fa-times"></i>
-                            </div>
+            <div class="header__NyBc snipcss0-0-0-1 snipcss-tI5yo">
+                <div class="bg-wrapper__teZt snipcss0-1-1-2">
+                    <div class="background__26YF snipcss0-2-2-3"></div>
+                </div>
+                <div class="container__28Ei container snipcss0-1-1-4">
+                    <div class="avatar-base__19M6 snipcss0-2-4-5">
+                        <a class="snipcss0-3-5-6 snip-a">
+                            <img class="avatar__2sMj snipcss0-4-6-7 snip-img" src={{ user.avator.url }} alt="md_rajib's avatar"></a>
                         </div>
-                        <div class="sidebar-header">
-                            <div class="user-pic">
-                                <img class="img-responsive img-rounded" src="{{ user.avator.url }}" alt="User picture"></div>
-                                <div class="user-info">
-                                    <span class="user-name">{{ request.user.username }}
-                                        <strong>{{ request.user.username }}</strong>
-                                    </span>
-                                    <span class="user-role">Administrator</span>
-                                    <span class="user-status">
-                                        <i class="fa fa-circle"></i>
-                                        <span>Online</span>
-                                    </span>
+                        <div class="user-info__2aLr snipcss0-2-4-8">
+                            <div class="name__3EWH snipcss0-3-8-9">
+                                <div class="left-side__1lmO snipcss0-4-9-10"></div>
+                                <div class="container__1Mii snipcss0-4-9-11">
+                                    <a href={% url 'user-profile' user.id %}>
+                                        <span class="name-text__1-NA snipcss0-5-11-12">{{ user.name }}</span>
+                                    </a>
+
+                                </div>
+                                <div class="right-side__3zuc snipcss0-4-9-13">
+                                    <a class="public__2p3C snipcss0-5-13-14 snip-a">
+                                        <i class="fa fa-external-link snipcss0-6-14-15"></i>
+                                    </a>
                                 </div>
                             </div>
-                            <!-- sidebar-header  -->
-                            <div class="sidebar-search">
-
-                                <div class="sidebar-menu">
-                                    <ul>
-                                        <li class="header-menu">
-                                            <span>General</span>
-                                        </li>
-                                        <li class="sidebar-dropdown">
-                                            <a href="#">
-                                                <i class="fa fa-tachometer-alt"></i>
-                                                <span>Dashboard</span>
-                                                <span class="badge badge-pill badge-warning">New</span>
-                                            </a>
-                                            <div class="sidebar-submenu">
-                                                <ul>
-                                                    <li><a href="#">Dashboard 1<span class="badge badge-pill badge-success">Pro</span></a></li>
-                                                    <li><a href="#">Dashboard 2</a></li>
-                                                    <li><a href="#">Dashboard 3</a></li>
-                                                </ul>
-                                            </div>
-                                        </li>
-                                        <li class="sidebar-dropdown">
-                                            <a href="#">
-                                                <i class="fa fa-shopping-cart"></i>
-                                                <span>E-commerce</span>
-                                                <span class="badge badge-pill badge-danger">3</span>
-                                            </a>
-                                            <div class="sidebar-submenu">
-                                                <ul>
-                                                    <li><a href="#">Products</a></li>
-                                                    <li><a href="#">Orders</a></li>
-                                                    <li><a href="#">Credit cart</a></li>
-                                                </ul>
-                                            </div>
-                                        </li>
-                                        <li class="sidebar-dropdown">
-                                            <a href="#">
-                                                <i class="far fa-gem"></i>
-                                                <span>Components</span>
-                                            </a>
-                                            <div class="sidebar-submenu">
-                                                <ul>
-                                                    <li><a href="#">General</a></li>
-                                                    <li><a href="#">Panels</a></li>
-                                                    <li><a href="#">Tables</a></li>
-                                                    <li><a href="#">Icons</a></li>
-                                                    <li><a href="#">Forms</a></li>
-                                                </ul>
-                                            </div>
-                                        </li>
-                                        <li class="sidebar-dropdown">
-                                            <a href="#">
-                                                <i class="fa fa-chart-line"></i>
-                                                <span>Charts</span>
-                                            </a>
-                                            <div class="sidebar-submenu">
-                                                <ul>
-                                                    <li><a href="#">Pie chart</a></li>
-                                                    <li><a href="#">Line chart</a></li>
-                                                    <li><a href="#">Bar chart</a></li>
-                                                    <li><a href="#">Histogram</a></li>
-                                                </ul>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <a href="#">
-                                                <i class="fa fa-calendar"></i>
-                                                <span>Calendar</span>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">
-                                                <i class="fa fa-folder"></i>
-                                                <span>Examples</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <!-- sidebar-menu  -->
-                            </div>
-                        </nav>
-
-                    </div>
-
-                    <div class="edit_profile_container">
-
-                        <div class="edit_profile_nav_container"></div>
-
-                        <div class="edit_profile_section">
-                            <div class="edit_profile_details_container">
-                                <div class="user_profile_name_container">
-                                    <div>
-                                        <p>Rajib Miah</p>
-                                    </div>
-                                    <div>
-                                        <p>senior softwere engineer and xyz.company</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="profile_edit_section">
-                                <div class="profile_edit_main_section">
-                                    <div>
-                                        <div>
-                                            <p>Lorem ipsum dolor sit amet</p>
-                                        </div>
-                                        <div class="profile_img_section">
-                                            <div>
-                                                <!-- <img id="profile-img" src="{{ user.avator.url }}" class="online" alt=""/> -->
-                                            </div>
-                                            <div>
-                                                <div>
-                                                    <button>Chnage Your Profile</button>
-                                                </div>
-                                                <div>
-                                                    <button>icon Edit</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <p>Lorem ipsum dolor sit amet</p>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div>
-                                            <p>First Name</p>
-                                            <input type="text" name='first_name' placeholder="Name" value=""/>
-                                        </div>
-                                        <div>
-                                            <p>Last Name</p>
-                                            <input type="text" name='last_name' placeholder="Name" value=""/>
-                                        </div>
-                                        <div>
-                                            <div>
-                                                <p>Email</p>
-                                                <input type="email" name='email' placeholder="email" value="xyz@gmail.com"/>
-                                            </div>
-                                            <div>
-                                                <button>Modifier</button>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <p>Phone Number</p>
-                                            <input type="number" name='phone_number' placeholder="+880.." value=""/>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="company_caption">
-                                    <div>
-                                        <p>Lorem ipsum dolor sit amet</p>
-                                    </div>
-                                    <div>
-                                        <p>Lorem ipsum dolor, sit amet consectetur adipisicing emolestiae optio perferendis.</p>
-                                    </div>
-                                </div>
-                            </div>
-
+                            <div class="leetcodeId__13b9 snipcss0-3-8-16">LeetCode ID:
+                                {{ user.username }}</div>
                         </div>
-
                     </div>
                 </div>
+                <div class="container nav-toggled__2eeW nav__29df snipcss-i9Id5">
+                    <div class="side__2nDe">
+                        <div class="sidebar-base__2RIZ">
+                            <ul class="snip-ul">
+                                <li>
+                                    <a aria-current="page" class="active__1IwF snip-a" href="/profile/">
+                                        <i class="fa fa-address-card"></i>
+                                        &nbsp; Basic Info
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/profile/points/" class="snip-a">
+                                        <i class="fa fa-database"></i>
+                                        &nbsp; Points
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/profile/account/" class="snip-a">
+                                        <i class="fa fa-cog"></i>
+                                        &nbsp; Account
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/profile/lab" class="snip-a">
+                                        <i class="fa fa-user-secret"></i>
+                                        &nbsp; Lab
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/profile/privacy/" class="snip-a">
+                                        <i class="fa fa-shield"></i>
+                                        &nbsp; Privacy
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/profile/notifications/" class="snip-a">
+                                        <i class="fa fa-bell"></i>
+                                        &nbsp; Notifications
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/subscription/" target="_blank" class="snip-a">
+                                        <i class="fa fa-credit-card"></i>
+                                        &nbsp; Billing &nbsp;
+                                        <i class="fa fa-external-link external-link__3zeB"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/store/orders/" target="_blank" class="snip-a">
+                                        <i class="fa fa-paper-plane"></i>
+                                        &nbsp; Orders &nbsp;
+                                        <i class="fa fa-external-link external-link__3zeB"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="content-toggled__1u8I content__equW">
+                        <div class="container__2Jyj">
+                            <div class="container-header">
+                                <div class="toggle-arrow__3ZiC">
+                                    <i class="fa fa-angle-left"></i>
+                                </div>
+                                <div class="container header__3sy_">
+                                    <span class="toggle-menu__1Iw2">
+                                        <i class="fa fa-list-ul"></i>
+                                    </span>
+                                    <i class="fa fa-angle-right"></i>
+                                    Basic Info
+                                </div>
+                            </div>
+                            <div class="section__2T0q">
+                                <div class="title__3Mve">
+                                    Basic Info
+                                </div>
+                                <div>
+                                    <div class="row-wrapper__1dH2">
+                                        <div class="row__3ftQ">
+                                            <div class="content__9cJ2">
+                                                <div class="title__14re">
+                                                    Name
+                                                </div>
+                                                <div class="desc__2m9Y">
+                                                    {{ user.name }}
+                                                </div>
+                                                <div class="right-wrapper__3rVj">
+                                                    <span class="text-disabled">
+                                                        <span title="+2 LeetCode">
+                                                            <i class="fa fa-database"></i>
+                                                            +2
+                                                        </span>
+                                                    </span>
+                                                    <span class="edit__J5pK">
+                                                        Edit
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-wrapper__1dH2">
+                                        <div class="row__3ftQ">
+                                            <div class="content__9cJ2">
+                                                <div class="title__14re">
+                                                    Gender
+                                                </div>
+                                                <div class="desc__2m9Y">
+                                                    Male
+                                                </div>
+                                                <div class="right-wrapper__3rVj">
+                                                    <span class="edit__J5pK">
+                                                        Edit
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-wrapper__1dH2">
+                                        <div class="row__3ftQ">
+                                            <div class="placeholder__18ft content__9cJ2">
+                                                <div class="title__14re">
+                                                    Location
+                                                </div>
+                                                <div class="desc__2m9Y">
+                                                    Your location
+                                                </div>
+                                                <div class="right-wrapper__3rVj">
+                                                    <span class="text-disabled">
+                                                        <span title="+2 LeetCode">
+                                                            <i class="fa fa-database"></i>
+                                                            +2
+                                                        </span>
+                                                    </span>
+                                                    <span class="edit__J5pK">
+                                                        Edit
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-wrapper__1dH2">
+                                        <div class="row__3ftQ">
+                                            <div class="content__9cJ2">
+                                                <div class="title__14re">
+                                                    Birthday
+                                                </div>
+                                                <div class="desc__2m9Y">
+                                                    <div>
+                                                        January 2, 1998
+                                                    </div>
+                                                </div>
+                                                <div class="right-wrapper__3rVj">
+                                                    <span class="edit__J5pK">
+                                                        Edit
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-wrapper__1dH2">
+                                        <div class="row__3ftQ">
+                                            <div class="placeholder__18ft content__9cJ2">
+                                                <div class="title__14re">
+                                                    Summary
+                                                </div>
+                                                <div class="desc__2m9Y">
+                                                    Tell us about yourself (interests, experience, etc.)
+                                                </div>
+                                                <div class="right-wrapper__3rVj">
+                                                    <span class="text-disabled">
+                                                        <span title="+2 LeetCode">
+                                                            <i class="fa fa-database"></i>
+                                                            +2
+                                                        </span>
+                                                    </span>
+                                                    <span class="edit__J5pK">
+                                                        Edit
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-wrapper__1dH2">
+                                        <div class="row__3ftQ">
+                                            <div class="content__9cJ2">
+                                                <div class="title__14re">
+                                                    Website
+                                                </div>
+                                                <div class="desc__2m9Y">
+                                                    <div>
+                                                        <div class="website__1VxW">
+                                                            <div class="title__3AT2">
+                                                                <a href="https://www.linkedin.com/in/rajib-miah-680021149/" class="snip-a">
+                                                                    https://www.linkedin.com/in/rajib-miah-680021149/
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="right-wrapper__3rVj">
+                                                    <span class="edit__J5pK">
+                                                        Edit
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-wrapper__1dH2">
+                                        <div class="row__3ftQ">
+                                            <div class="content__9cJ2">
+                                                <div class="title__14re">
+                                                    Github
+                                                </div>
+                                                <div class="desc__2m9Y">
+                                                    https://github.com/RajibMiah
+                                                </div>
+                                                <div class="right-wrapper__3rVj">
+                                                    <span class="edit__J5pK">
+                                                        Edit
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-wrapper__1dH2">
+                                        <div class="row__3ftQ">
+                                            <div class="content__9cJ2">
+                                                <div class="title__14re">
+                                                    LinkedIn
+                                                </div>
+                                                <div class="desc__2m9Y">
+                                                    https://linkedin.com/in/rajib-miah-680021149
+                                                </div>
+                                                <div class="right-wrapper__3rVj">
+                                                    <span class="edit__J5pK">
+                                                        Edit
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-wrapper__1dH2">
+                                        <div class="row__3ftQ">
+                                            <div class="placeholder__18ft content__9cJ2">
+                                                <div class="title__14re">
+                                                    Twitter
+                                                </div>
+                                                <div class="desc__2m9Y">
+                                                    Your Twitter username or url
+                                                </div>
+                                                <div class="right-wrapper__3rVj">
+                                                    <span class="text-disabled">
+                                                        <span title="+2 LeetCode">
+                                                            <i class="fa fa-database"></i>
+                                                            +2
+                                                        </span>
+                                                    </span>
+                                                    <span class="edit__J5pK">
+                                                        Edit
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="section__2T0q">
+                                <div class="title__3Mve">
+                                    Experience
+                                </div>
+                                <div>
+                                    <div class="row-wrapper__1dH2">
+                                        <div class="row__3ftQ">
+                                            <div class="content__9cJ2">
+                                                <div class="title__14re">
+                                                    Work
+                                                </div>
+                                                <div class="desc__2m9Y">
+                                                    <div>
+                                                        <div class="experience__3za5">
+                                                            <div class="title__MC_o">
+                                                                Inverse.AI - softwere engineer
+                                                            </div>
+                                                            <div class="time__3FUK">
+                                                                04/2021 - 09/2021
+                                                            </div>
+                                                        </div>
+                                                        <div class="experience__3za5">
+                                                            <div class="title__MC_o">
+                                                                Console-IT - softwere developer
+                                                            </div>
+                                                            <div class="time__3FUK">
+                                                                06/2019 - 04/2021
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="right-wrapper__3rVj">
+                                                    <span class="edit__J5pK">
+                                                        Edit
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-wrapper__1dH2">
+                                        <div class="row__3ftQ">
+                                            <div class="placeholder__18ft content__9cJ2">
+                                                <div class="title__14re">
+                                                    Education
+                                                </div>
+                                                <div class="desc__2m9Y">
+                                                    Add a school
+                                                </div>
+                                                <div class="right-wrapper__3rVj">
+                                                    <span class="text-disabled">
+                                                        <span title="+2 LeetCode">
+                                                            <i class="fa fa-database"></i>
+                                                            +2
+                                                        </span>
+                                                    </span>
+                                                    <span class="edit__J5pK">
+                                                        Edit
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="section__2T0q">
+                                <div class="title__3Mve">
+                                    Skills
+                                </div>
+                                <div>
+                                    <div class="row-wrapper__1dH2">
+                                        <div class="row__3ftQ">
+                                            <div class="content__9cJ2">
+                                                <div class="title__14re">
+                                                    Technical Skills
+                                                </div>
+                                                <div class="desc__2m9Y">
+                                                    <div class="tags-block">
+                                                        <span class="tags__3AYs">
+                                                            django
+                                                        </span>
+                                                        <span class="tags__3AYs">
+                                                            reactjs
+                                                        </span>
+                                                        <span class="tags__3AYs">
+                                                            nextjs
+                                                        </span>
+                                                        <span class="tags__3AYs">
+                                                            sql
+                                                        </span>
+                                                        <span class="tags__3AYs">
+                                                            git
+                                                        </span>
+                                                        <span class="tags__3AYs">
+                                                            html
+                                                        </span>
+                                                        <span class="tags__3AYs">
+                                                            css
+                                                        </span>
+                                                        <span class="tags__3AYs">
+                                                            typescript
+                                                        </span>
+                                                        <span class="tags__3AYs">
+                                                            unity
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="right-wrapper__3rVj">
+                                                    <span class="edit__J5pK">
+                                                        Edit
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div></div>
+                </div>
+
+
             </div>
-
-
-        {% endblock content %}
-
-
-        <!-- 
-                                                                                                                                                                                                                                                                                                                        <main class="update-account layout">
-                                                                                                                                                                                                                                                                                                                          <div class="container">
-                                                                                                                                                                                                                                                                                                                            <div class="layout__box">
-                                                                                                                                                                                                                                                                                                                              <div class="layout__boxHeader">
-                                                                                                                                                                                                                                                                                                                                <div class="layout__boxTitle">
-                                                                                                                                                                                                                                                                                                                                  <a href="{% url 'home' %}">
-                                                                                                                                                                                                                                                                                                                                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-                                                                                                                                                                                                                                                                                                                                      <title>arrow-left</title>
-                                                                                                                                                                                                                                                                                                                                      <path
-                                                                                                                                                                                                                                                                                                                                        d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z">
-                                                                                                                                                                                                                                                                                                                                      </path>
-                                                                                                                                                                                                                                                                                                                                    </svg>
-                                                                                                                                                                                                                                                                                                                                  </a>
-                                                                                                                                                                                                                                                                                                                                  <h3>Edit your profile</h3>
-                                                                                                                                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                                                                                                                              </div>
-                                                                                                                                                                                                                                                                                                                              <div class="layout__body">
-                                                                                                                                                                                                                                                                                                                                <form class="form" action="" method="POST" enctype="multipart/form-data">
-                                                                                                                                                                                                                                                                                                                                  {% csrf_token %}
-                                                                                                                                                                                                                                                                                                                        
-                                                                                                                                                                                                                                                                                                                                  {% for field in form %}
-                                                                                                                                                                                                                                                                                                                                  <div class="form__group">
-                                                                                                                                                                                                                                                                                                                                    <label for="profile_pic">{{field.label}}</label>
-                                                                                                                                                                                                                                                                                                                                    {{field}}
-                                                                                                                                                                                                                                                                                                                                  </div>
-                                                                                                                                                                                                                                                                                                                                  {% endfor %}
-                                                                                                                                                                                                                                                                                                                        
-                                                                                                                                                                                                                                                                                                                        
-                                                                                                                                                                                                                                                                                                                                  <div class="form__action">
-                                                                                                                                                                                                                                                                                                                                    <a class="btn btn--dark" href="{% url 'home'%}">Cancel</a>
-                                                                                                                                                                                                                                                                                                                                    <button class="btn btn--main" type="submit">Update</button>
-                                                                                                                                                                                                                                                                                                                                  </div>
-                                                                                                                                                                                                                                                                                                                                </form>
-                                                                                                                                                                                                                                                                                                                              </div>
-                                                                                                                                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                                                                                                                                          </div>
-                                                                                                                                                                                                                                                                                                                          </div>
-                                                                                                                                                                                                                                                                                                                        </main> -->
+        </div>
+    {% endblock content %}
