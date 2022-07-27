@@ -8,7 +8,7 @@ from django.shortcuts import redirect, render
 from django.utils.safestring import mark_safe
 
 from .chatconsumer import ChatConsumer
-from .models import Message, contact
+from .models import Message, VideoThread, contact
 
 User = get_user_model()
 
@@ -21,10 +21,19 @@ def chatpage(request):
     return redirect('/chat/' + str(user_contact.uuid) + '/')
 
 
+@login_required(login_url='/login')
 def chatroom(request, reciver_uuid):
     print("reciver uuid", reciver_uuid)
     # context =
     return render(request, 'chat/chatroom.html', {'recipient_uuid': mark_safe(json.dumps(reciver_uuid))})
+
+
+@login_required
+def video_chat(request):
+    current_user = request.user
+    call_logs = VideoThread.objects.filter(Q(caller_id=current_user.id) | Q(
+        callee_id=current_user.id)).order_by('-date_created')[:5]
+    return render(request, 'chat/video_chat.html', {'call_logs': call_logs})
 
 
 @login_required(login_url='/login')
