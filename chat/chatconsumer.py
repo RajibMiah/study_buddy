@@ -370,8 +370,8 @@ class ChatConsumer(WebsocketConsumer):
 
 
 # Video Call Status
-VC_CONTACTING, VC_NOT_AVAILABLE, VC_ACCEPTED, VC_REJECTED, VC_BUSY, VC_PROCESSING, VC_ENDED = \
-    0, 1, 2, 3, 4, 5, 6
+VC_CONTACTING, VC_NOT_AVAILABLE, VC_ACCEPTED, VC_REJECTED, VC_BUSY, VC_PROCESSING, VC_ENDED, VC_DROP = \
+    0, 1, 2, 3, 4, 5, 6, 7
 
 
 class VideoChatConsumer(AsyncConsumer):
@@ -467,7 +467,26 @@ class VideoChatConsumer(AsyncConsumer):
                             'message': json.dumps({'type': "offerFinished"}),
                         }
                     )
+            elif message_type == "dropOffer":
+                video_thread_id = text_data_json['video_thread_id']
+                videothread = await self.get_videothread(video_thread_id)
+                self.scope['session']['video_thread_id'] = None
+                self.scope['session'].save()
 
+                if videothread.status != VC_ACCEPTED or videothread.status != VC_REJECTED:
+                    await self.change_videothread_status(video_thread_id, VC_DROP)
+                    await self.send({
+                        'type': 'websocket.send',
+                        'text': json.dumps({'type': "offerResult", 'status': VC_DROP, 'video_thread_id': videothread.id})
+                    })
+                    await self.channel_layer.group_send(
+                        f"videochat_{videothread.callee.id}",
+                        {
+                            'type': 'chat_message',
+                            'message': json.dumps({'type': "offerFinished"}),
+                        }
+                    )
+                print('Offer has been droped')
             elif message_type == "acceptOffer":
                 video_thread_id = text_data_json['video_thread_id']
                 videothread = await self.change_videothread_status(video_thread_id, VC_PROCESSING)

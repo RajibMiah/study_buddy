@@ -33,7 +33,7 @@ def video_chat(request, reciver_uuid):
     current_user = request.user
     call_logs = VideoThread.objects.filter(Q(caller_id=current_user.id) | Q(
         callee_id=current_user.id)).order_by('-date_created')[:5]
-    return render(request, 'chat/chatroom.html', {'call_logs': call_logs, 'reciver_uuid': reciver_uuid})
+    return render(request, 'chat/video-chat.html', {'call_logs': call_logs, 'reciver_uuid': reciver_uuid})
 
 
 @login_required(login_url='/login')

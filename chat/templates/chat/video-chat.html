@@ -46,6 +46,8 @@
                             <label for="id_username" class="sr-only">Username</label>
 
                             <button id="btnCall" type="button" class="btn btn-primary mb-2 mr-2">Call</button>
+                            <button id="muteBtnCall" type="button" class="btn btn-secondary mb-2 mr-2">Mute</button>
+                            <button id="dropBtnCall" type="button" class="btn btn-danger mb-2 mr-2">drop call</button>
                             <button id="btnHangup" type="button" class="btn btn-danger mb-2 mr-2 d-none">Hang up</button>
                             <button type="button" class="btn btn-outline-dark mb-2" data-toggle="modal" data-target="#call-logs-modal">Call Logs</button>
                         </div>
@@ -67,9 +69,13 @@
                                 {% if cl.callee.id == user.id %}
                                     <li class="list-group-item">{{ cl.id }}
                                         -
-                                        {{ cl.caller.username }}
-                                        - Received -
-                                        {{ cl.status_name }}
+                                        {{ cl.callee.username }}
+                                        - Made -
+                                        {% if cl.status_name == True %}
+                                            {{ cl.status_name }}
+                                        {% else %}
+                                            Call drop
+                                        {% endif %}
                                         -
                                         {{ cl.duration }}</li>
                                 {% else %}
@@ -77,10 +83,15 @@
                                         -
                                         {{ cl.callee.username }}
                                         - Made -
-                                        {{ cl.status_name }}
+                                        {% if cl.status_name == True %}
+                                            {{ cl.status_name }}
+                                        {% else %}
+                                            Call drop
+                                        {% endif %}
                                         -
                                         {{ cl.duration }}</li>
                                 {% endif %}
+
                                 {% empty %}
                                 <p>There is no call log here yet.</p>
                             {% endfor %}
@@ -147,7 +158,8 @@
                 VC_REJECTED = 3,
                 VC_BUSY = 4,
                 VC_PROCESSING = 5,
-                VC_ENDED = 6;
+                VC_ENDED = 6,
+                VC_DROP = 7;
 
             var localVideo = document.querySelector('#video-emitter');
             var remoteVideo = document.querySelector('#video-receiver');
@@ -169,30 +181,44 @@
                                 break;
                             case VC_CONTACTING: video_thread_id = message.video_thread_id;
                                 document.querySelector('#call-status').innerHTML = "Contacting...";
+                                $('#dropBtnCall').show();
                                 CallTimeOutId = setInterval(() => {
                                     sendMessage({'type': 'cancelOffer'})
                                     clearInterval(CallTimeOutId);
-                                }, 25000);
+                                }, 20000);
                                 break;
                             case VC_NOT_AVAILABLE: clearInterval(CallTimeOutId);
                                 enableCallViews();
+                                $('#dropBtnCall').hide();
                                 $("#offer-status-modal").modal('show').find('.modal-body').text("User is not avaiable.");
                                 break;
                             case VC_ACCEPTED: clearInterval(CallTimeOutId);
                                 document.querySelector('#call-status').innerHTML = "User accepted. Connecting...";
                                 isOfferer = true;
+                                $('#dropBtnCall').hide();
                                 startWebRTC()
                                 break;
                             case VC_REJECTED: clearInterval(CallTimeOutId);
                                 enableCallViews();
+                                $('#dropBtnCall').hide();
                                 $("#offer-status-modal").modal('show').find('.modal-body').text("User rejected your call request.");
                                 break;
+                            case VC_DROP: clearInterval(CallTimeOutId);
+                                enableCallViews();
+                                $('#dropBtnCall').hide();
+                                $("#offer-status-modal").modal('show').find('.modal-body').text("Call has been droped.");
+
+                                break;
                             case VC_BUSY: enableCallViews();
+                                $('#dropBtnCall').hide();
                                 $("#offer-status-modal").modal('show').find('.modal-body').text("User is busy.");
+
                                 break;
                             case VC_ENDED: $('#btnCall').removeClass("d-none");
+                                $('#dropBtnCall').hide();
                                 $('#btnHangup').addClass("d-none");
                                 enableCallViews();
+
                                 pc.close();
                                 pc = null;
 
@@ -356,12 +382,17 @@
                 sendMessage({'type': "createOffer", 'uuid': _uuid})
             };
 
+            document.querySelector('#dropBtnCall').onclick = function (e) {
+                sendMessage({'type': 'dropOffer'})
+            }
+
             document.querySelector('#btnHangup').onclick = function (e) {
                 sendMessage({'type': "hangUp"})
             };
 
             document.querySelector('#btnAcceptOffer').onclick = function (e) {
                 $('#call-request-modal').modal('hide');
+                $('#dropBtnCall').hide();
                 sendMessage({'type': "acceptOffer"})
                 isOfferer = false;
                 startWebRTC()
@@ -369,9 +400,17 @@
 
             document.querySelector('#btnDeclineOffer').onclick = function (e) {
                 $('#call-request-modal').modal('hide');
+                $('#dropBtnCall').hide();
                 enableCallViews();
                 sendMessage({'type': "rejectOffer"})
             };
+
+            document.querySelector("#muteBtnCall").onclick = function (e) {
+                console.log('mute function excecute')
+                $("video-emitter").muted = true
+                $("video-receiver").muted = true
+            }
+
             socket.onopen = function (event) {
                 (function () {
                     document.querySelector('#call-status').innerHTML = "Looking for user...";
