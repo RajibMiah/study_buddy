@@ -3,6 +3,7 @@ import json
 import os
 import threading
 import time
+import uuid
 from datetime import datetime
 
 import django
@@ -374,10 +375,14 @@ VC_CONTACTING, VC_NOT_AVAILABLE, VC_ACCEPTED, VC_REJECTED, VC_BUSY, VC_PROCESSIN
 
 
 class VideoChatConsumer(AsyncConsumer):
+
     async def websocket_connect(self, event):
         self.user = self.scope['user']
+        self._uuid = self.scope['url_route']['kwargs']['reciver_uuid']
         self.user_room_id = f"videochat_{self.user.id}"
-
+        print('=================== print uuid =========================')
+        print("video chat uuid", self._uuid)
+        print('=================== end print uuid =====================')
         await self.channel_layer.group_add(
             self.user_room_id,
             self.channel_name
@@ -419,10 +424,13 @@ class VideoChatConsumer(AsyncConsumer):
         if text_data:
             text_data_json = json.loads(text_data)
             message_type = text_data_json['type']
-
+            # print('=================== print message_type =========================')
+            # print("video chat uuid", message_type)
+            # print('=================== end print message_type =====================')
+            print()
             if message_type == "createOffer":
-                callee_username = text_data_json['username']
-                status, video_thread_id = await self.create_videothread(callee_username)
+                callee_uuid = text_data_json['uuid']
+                status, video_thread_id = await self.create_videothread(callee_uuid)
 
                 await self.send({
                     'type': 'websocket.send',
@@ -550,9 +558,9 @@ class VideoChatConsumer(AsyncConsumer):
             return None
 
     @database_sync_to_async
-    def create_videothread(self, callee_username):
+    def create_videothread(self, callee_uuid):
         try:
-            callee = User.objects.get(username=callee_username)
+            callee = User.objects.get(uuid=callee_uuid)
         except User.DoesNotExist:
             return 404, None
 

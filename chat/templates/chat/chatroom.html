@@ -5,42 +5,23 @@
     <style>
         .call-emitter {
             width: 100%;
-            height: 15rem;
+            height: 90%;
         }
         .call-receiver {
             width: 100%;
-            height: 15rem;
+            height: 90%;
         }
     </style>
-    <div class="row mb-4">
-        <div class="col">
-            <div class="card">
-                <div class="card-header">
-                    Make a Call
-                </div>
-                <div class="card-body">
-                    <p class="card-text">You can make a video call here.</p>
-                    <div class="form-inline">
-                        <div class="form-group mr-2 mb-2">
-                            <label for="id_username" class="sr-only">Username</label>
-                            <input type="text" class="form-control" name="username" id="id_username" placeholder="Username"></div>
-                            <button id="btnCall" type="button" class="btn btn-primary mb-2 mr-2">Call</button>
-                            <button id="btnHangup" type="button" class="btn btn-danger mb-2 mr-2 d-none">Hang up</button>
-                            <button type="button" class="btn btn-outline-dark mb-2" data-toggle="modal" data-target="#call-logs-modal">Call Logs</button>
-                        </div>
-                        <div id="call-status" class="text-muted"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row mb-4">
+    <div class="row-6 mb">
+
+        <div class="row mb">
             <div class="col-6">
                 <div class="card">
                     <div class="card-header">
                         Caller
                     </div>
                     <div class="card-body">
-                        <video class="call-emitter" id="video-emitter" autoplay muted></video>
+                        <video class="call-emitter" id="video-emitter" autoplay></video>
                     </div>
                 </div>
             </div>
@@ -50,7 +31,25 @@
                         Callee
                     </div>
                     <div class="card-body">
-                        <video class="call-receiver" id="video-receiver" autoplay muted></video>
+                        <video class="call-receiver" id="video-receiver" autoplay></video>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 ">
+            <div class="card" align="center">
+
+                <div class="card-body d-flex justify-content-center">
+                    <div class="form-inline">
+                        <div class="form-group mr-2 mb-2">
+                            <label for="id_username" class="sr-only">Username</label>
+
+                            <button id="btnCall" type="button" class="btn btn-primary mb-2 mr-2">Call</button>
+                            <button id="btnHangup" type="button" class="btn btn-danger mb-2 mr-2 d-none">Hang up</button>
+                            <button type="button" class="btn btn-outline-dark mb-2" data-toggle="modal" data-target="#call-logs-modal">Call Logs</button>
+                        </div>
+                        <div id="call-status" class="text-muted"></div>
                     </div>
                 </div>
             </div>
@@ -126,7 +125,9 @@
     {% endblock content %}
 
     {% block scripts %}
+        {{ reciver_uuid|json_script:"reciver_uuid" }}
         <script>
+            const _uuid = JSON.parse(document.getElementById("reciver_uuid").textContent);
             const configuration = {
                 iceServers: [
                     {
@@ -135,8 +136,7 @@
                 ]
             };
 
-            const socket = new WebSocket('ws://' + window.location.host + '/ws/videochat/');
-
+            const socket = new WebSocket('ws://' + window.location.host + '/ws/videochat/' + _uuid + "/");
 
             let pc;
             var isOfferer = false;
@@ -243,8 +243,11 @@
             };
 
 
-            function onSuccess() {};
+            function onSuccess() {
+                console.log('socket server established')
+            };
             function onError(error) {
+                console.log('server error')
                 console.error(error);
             };
 
@@ -286,6 +289,7 @@
             function sendMessage(message) {
                 message['video_thread_id'] = video_thread_id;
                 socket.send(JSON.stringify(message));
+                console.log('message sent', message)
             }
 
             function sendRTCMessage(message) {
@@ -346,11 +350,10 @@
             }
 
             document.querySelector('#btnCall').onclick = function (e) {
-                var usernameInputDom = document.querySelector('#id_username');
-                var username = usernameInputDom.value;
+
                 document.querySelector('#call-status').innerHTML = "Looking for user...";
                 disableCallViews();
-                sendMessage({'type': "createOffer", 'username': username})
+                sendMessage({'type': "createOffer", 'uuid': _uuid})
             };
 
             document.querySelector('#btnHangup').onclick = function (e) {
@@ -369,5 +372,13 @@
                 enableCallViews();
                 sendMessage({'type': "rejectOffer"})
             };
+            socket.onopen = function (event) {
+                (function () {
+                    document.querySelector('#call-status').innerHTML = "Looking for user...";
+                    disableCallViews();
+                    sendMessage({'type': "createOffer", 'uuid': _uuid})
+                    console.log('offer creation sent')
+                })();
+            }
         </script>
     {% endblock scripts %}
