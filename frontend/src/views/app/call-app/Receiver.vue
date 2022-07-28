@@ -41,9 +41,9 @@
 
 <script>
 import Peer from "peerjs";
-import axios from "../../../axios";
 import MicButton from "../../../components/buttons/MicButton.vue";
 import VideoButton from "../../../components/buttons/VideoButton.vue";
+import axios from "../../../axios";
 
 export default {
   name: "Receiver",
