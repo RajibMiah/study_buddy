@@ -29,8 +29,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'base.apps.BaseConfig',
-    'chat.apps.BaseConfig',
+    # 'chat.apps.BaseConfig',
+    'debug_toolbar',
+    'corsheaders',
+    'chat'
+
 ]
 
 MIDDLEWARE = [
@@ -133,3 +138,14 @@ MEDIA_URL = '/images/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+CORS_ALLOWED_ORIGINS = [
+    'https://localhost:3000',
+    'https://127.0.0.1:3000',
+    'https://192.168.31.39:3000'
+]
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]

@@ -1,38 +1,22 @@
 {% for message in messages %}
     {% if 'success' in message.tags %}
-        <!-- <p -->
-        <!-- class="alert alert-success" role="alert"> -->
-        <!-- <span style="font-weight:bold">{{ message }}</span> -->
-            <div id="toast"> <div id="img">Icon</div>
+        <div id="toast">
+            <div id="img">Icon</div>
             <div id="desc">{{message}}</div>
         </div>
         <!-- </p> -->
     {% else %}
-        <!-- <p -->
-        <!-- class="alert alert-warning" role="alert"> -->
-        <!-- <span style="font-weight:bold">{{ message }}</span> -->
-            <div id="toast"> <div id="img">Icon</div>
+
+        <div id="toast">
+            <div id="img">Icon</div>
             <div id="desc">{{message}}</div>
         </div>
         <!-- </p> -->
     {% endif %}
 {% endfor %}
 
-<!-- <script>
-  function launch_toast() {
-        var x = document.getElementById("toast");
-        console.log("tost");
-        x.className = "show";
-        setTimeout(function () {
-            console.log("---toast init---");
-            x.className = x.className.replace("show", "");
-        }, 5000);
-    }
-    launch_toast()
-  
-</script> -->
 
-
+<!-- 
 <script>
     // close alert after 3 seconds
     window.setTimeout(function () {
@@ -40,4 +24,4 @@
             $(this).remove();
         });
     }, 3000);
-</script>
+</script> -->

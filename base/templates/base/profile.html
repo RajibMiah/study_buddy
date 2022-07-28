@@ -21,7 +21,9 @@
                             <!-- <p>@{{ user.username }}</p> -->
 
                             {% if request.user != user %}
-                                <a href="{% url 'message-chat' user.uuid %}">
+
+                                <!-- <a href="{% url 'message-chat' user.uuid %}"> -->
+                                <a href='https://localhost:3000'>
                                     <div class="header__user">
                                         <button type="button" class="icon-button">
                                             <span class="material-symbols-outlined">chat</span>
