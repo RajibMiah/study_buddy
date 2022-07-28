@@ -7,8 +7,9 @@ from django.urls import include, path
 urlpatterns = [
     path('__debug__/', include('debug_toolbar.urls')),
     path('admin/', admin.site.urls),
-    path('',  include('base.urls')),
-    path('chat/', include('chat.urls'), name='chat')
+    path('',  include('base.urls'), name='base'),
+    path('chat/', include('chat.urls'), name='chat'),
+    path('shop/', include('shop.urls'), name='shop')
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

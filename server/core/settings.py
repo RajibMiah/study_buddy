@@ -31,9 +31,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
-    'base.apps.BaseConfig',
     'debug_toolbar',
-    'chat'
+    'ckeditor',
+    'base.apps.BaseConfig',
+    'chat',
+    'shop.apps.HomeConfig',
 
 ]
 
@@ -159,10 +161,3 @@ CORS_ORIGIN_ALLOW_ALL = True
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
-
-# CORS_ALLOW_HEADERS = (
-#     'x-requested-with',
-#     'content-type',
-#     'accept',
-#     'origin',
-# )
