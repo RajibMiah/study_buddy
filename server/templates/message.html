@@ -1,0 +1,27 @@
+{% for message in messages %}
+    {% if 'success' in message.tags %}
+        <div id="toast">
+            <div id="img">Icon</div>
+            <div id="desc">{{message}}</div>
+        </div>
+        <!-- </p> -->
+    {% else %}
+
+        <div id="toast">
+            <div id="img">Icon</div>
+            <div id="desc">{{message}}</div>
+        </div>
+        <!-- </p> -->
+    {% endif %}
+{% endfor %}
+
+
+<!-- 
+<script>
+    // close alert after 3 seconds
+    window.setTimeout(function () {
+        $(".toast").fadeTo(500, 0).slideUp(500, function () {
+            $(this).remove();
+        });
+    }, 3000);
+</script> -->
