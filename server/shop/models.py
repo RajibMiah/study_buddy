@@ -25,10 +25,12 @@ class Profile(models.Model):
 
 
 class Course(models.Model):
+    course_holder = models.ForeignKey(
+        settings.AUTH_USER_MODEL, related_name='course_holder', on_delete=models.CASCADE)
     course_name = models.CharField(max_length=100)
     course_description = RichTextField()
     is_premium = models.BooleanField(default=False)
-    course_image = models.ImageField(upload_to="course")
+    course_image = models.ImageField(upload_to="course/")
     slug = models.SlugField(blank=True)
 
     def save(self, *args, **kwargs):

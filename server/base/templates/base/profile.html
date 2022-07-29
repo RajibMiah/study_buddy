@@ -17,17 +17,31 @@
                     </div>
                     <div class="profile__info">
                         <div class="profile_info_container">
-                            <h3>{{ user.name }}</h3>
+                            <div>
+                                <h3>{{ user.name }}</h3>
+                            </div>
+                            <div>
+                                {% if request.user != user %}
+                                    <a href='https://localhost:3000'>
+                                        <div class="header__user">
+                                            <button type="button" class="icon-button">
+                                                <span class="material-symbols-outlined">chat</span>
+                                            </button>
+                                        </div>
+                                    </a>
+                                    <a href="{% url 'shop-home' user.uuid %}" target="_blank">
+                                        <div class="header__user">
+                                            <button type="button" class="icon-button">
+                                                <span class="material-symbols-outlined">
+                                                    storefront
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </a>
+
+                                {% endif %}
+                            </div>
                             <!-- <p>@{{ user.username }}</p> -->
-                            {% if request.user != user %}
-                                <a href='https://localhost:3000'>
-                                    <div class="header__user">
-                                        <button type="button" class="icon-button">
-                                            <span class="material-symbols-outlined">chat</span>
-                                        </button>
-                                    </div>
-                                </a>
-                            {% endif %}
                         </div>
 
                         {% if request.user == user %}

@@ -1,3 +1,4 @@
+import json
 from datetime import datetime, timedelta
 
 import stripe
@@ -13,10 +14,12 @@ from .models import *
 User = get_user_model()
 
 
-def home(request):
-    course = Course.objects.all()
+@login_required(login_url='/login/')
+def home(request, uuid):
+    course = Course.objects.filter(course_holder__uuid=uuid)
+    print('course', course)
     context = {'course': course}
-
+    # print(context)
     if request.user.is_authenticated:
         profile = Profile.objects.filter(user=request.user).first()
         request.session['profile'] = profile.is_pro
@@ -25,6 +28,7 @@ def home(request):
     return render(request, 'home.html', context)
 
 
+@login_required(login_url='/login/')
 def view_course(request, slug):
     course = Course.objects.filter(slug=slug).first()
     course_modules = CourseModule.objects.filter(course=course)

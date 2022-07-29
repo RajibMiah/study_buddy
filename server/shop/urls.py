@@ -5,7 +5,7 @@ from shop.views import *
 
 urlpatterns = [
 
-    path('', home, name="shop-home"),
+    path('<str:uuid>', home, name="shop-home"),
     path('course/<slug>', view_course, name="course"),
     path('become_pro/', become_pro, name="become_pro"),
     path('charge/', charge, name="charge"),

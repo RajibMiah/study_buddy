@@ -920,7 +920,7 @@ a {
   text-align: center;
 }
 .profile_info_container {
-  display: flex;
+  display: inherit;
   align-items: center;
   justify-content: center;
 }
