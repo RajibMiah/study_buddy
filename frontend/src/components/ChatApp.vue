@@ -7,8 +7,9 @@
             <ul class="list-unstyled mb-0">
               <li class="media">
                 <img
+                  id="img-icon"
                   class="align-self-center mr-2"
-                  src="	http://themesbox.in/admin-templates/gappa/html/light/assets/images/logo.svg"
+                  src="http://127.0.0.1:8000/static/images/study-mate.png"
                   alt="Generic placeholder image"
                 />
                 <div class="media-body">
