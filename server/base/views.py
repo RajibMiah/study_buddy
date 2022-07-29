@@ -15,28 +15,28 @@ from .models import Message, Room, Topic, User
 
 
 def login(request):
-
     page = 'login'
     if request.user.is_authenticated:
         return redirect('home')
-
     if request.method == 'POST':
         username = request.POST.get("username")
         password = request.POST.get('password')
         try:
-
             user = User.objects.get(username=username)
+            print("user found", user)
         except:
             messages.error(request, 'User does not exist')
+            print('user does not exist')
         print("username", username, 'passwrod', password)
         user = authenticate(request, username=username, password=password)
-        print('user', user)
+
         if user is not None:
             auth_login(request, user)
             messages.success(
                 request, 'Login successfull . Redirect to home page')
             return redirect('home')
         else:
+            print('username and password does not match')
             messages.error(request, 'Username OR password does not exit')
 
     context = {'page': page}

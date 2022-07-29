@@ -5,7 +5,7 @@ from base.views import *
 
 urlpatterns = [
 
-    path('login/', login, name='login'),
+    path('login/', login, name='login-user'),
     path('logout/', logout, name='logout'),
     path('register/', registerPage, name='register-user'),
     path('delete-message/<str:pk>', deleteMessage, name='delete-message'),

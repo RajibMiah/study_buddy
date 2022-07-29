@@ -85,49 +85,49 @@ def charge(request):
     return render(request, 'charge.html')
 
 
-def login_attempt(request):
-    if request.method == "POST":
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+# def login_attempt(request):
+#     if request.method == "POST":
+#         username = request.POST.get('username')
+#         password = request.POST.get('password')
 
-        user = User.objects.filter(username=username).first()
+#         user = User.objects.filter(username=username).first()
 
-        if user is None:
-            context = {'message': 'No user found', 'class': 'danger'}
-            return render(request, 'login.html', context)
-        else:
-            user = authenticate(username=username, password=password)
-            print(user)
-            if user is None:
-                context = {'message': 'Invalid credentials', 'class': 'danger'}
-                return render(request, 'login.html', context)
-            else:
-                login(request, user)
-                return redirect('home')
-    return render(request, 'login.html')
-
-
-def register(request):
-    if request.method == "POST":
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
-        user = User.objects.filter(email=email)
-        if user:
-            context = {'message': 'User already exists', 'class': 'danger'}
-            return render(request, 'register.html', context)
-        else:
-            context = {'message': 'User created successfully',
-                       'class': 'success'}
-            user = User(username=username)
-            user.set_password(password)
-            user.save()
-            return render(request, 'register.html', context)
-
-    return render(request, 'register.html')
+#         if user is None:
+#             context = {'message': 'No user found', 'class': 'danger'}
+#             return render(request, 'login.html', context)
+#         else:
+#             user = authenticate(username=username, password=password)
+#             print(user)
+#             if user is None:
+#                 context = {'message': 'Invalid credentials', 'class': 'danger'}
+#                 return render(request, 'login.html', context)
+#             else:
+#                 login(request, user)
+#                 return redirect('home')
+#     return render(request, 'login.html')
 
 
-def logout_attempt(request):
-    request.session.profile = None
-    logout(request)
-    return redirect('/')
+# def register(request):
+#     if request.method == "POST":
+#         username = request.POST.get('username')
+#         password = request.POST.get('password')
+
+#         user = User.objects.filter(email=email)
+#         if user:
+#             context = {'message': 'User already exists', 'class': 'danger'}
+#             return render(request, 'register.html', context)
+#         else:
+#             context = {'message': 'User created successfully',
+#                        'class': 'success'}
+#             user = User(username=username)
+#             user.set_password(password)
+#             user.save()
+#             return render(request, 'register.html', context)
+
+#     return render(request, 'register.html')
+
+
+# def logout_attempt(request):
+#     request.session.profile = None
+#     logout(request)
+#     return redirect('/')
