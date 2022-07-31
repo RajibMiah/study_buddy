@@ -89,10 +89,11 @@ class UserSerializer(serializers.ModelSerializer):
     online = serializers.BooleanField(source='profile.online')
     status = serializers.CharField(source='profile.status')
     messages = serializers.SerializerMethodField()
+    avator = serializers.ImageField(required=False)
 
     class Meta:
         model = User
-        fields = ('name', 'username', 'online', 'status', 'messages')
+        fields = ('name', 'username', 'online', 'status', 'messages', 'avator')
 
     def get_name(self, obj):
         if obj.first_name:

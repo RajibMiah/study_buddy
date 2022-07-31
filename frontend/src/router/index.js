@@ -1,4 +1,4 @@
-import {createRouter, createWebHistory} from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 import store from "../store";
 
 const routes = [
@@ -54,7 +54,7 @@ router.beforeEach((to, from, next) => {
                 path: '/',
                 params: {nextUrl: to.fullPath}
             })
-        } else {
+        } else { 
             next()
         }
     } else if (to.matched.some(record => record.meta.guest)) {

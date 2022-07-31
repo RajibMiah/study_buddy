@@ -4,13 +4,15 @@
       <div class="col-9">
         <ul class="list-unstyled mb-0">
           <li class="media">
-            <img
+            <!-- <img
               class="align-self-center mr-2"
-              src="http://themesbox.in/admin-templates/gappa/html/light/assets/images/logo.svg"
+              :src="$store.state.activeUser.avator"
               alt="Generic placeholder image"
-            />
+            /> -->
             <div class="media-body">
-              <h5 class="mb-0 mt-2">{{ $store.state.activeUser.name }}</h5>
+              <h5 class="mb-0 mt-2">
+                User: @{{ $store.state.activeUser.name }}
+              </h5>
             </div>
           </li>
         </ul>

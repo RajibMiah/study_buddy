@@ -1,13 +1,13 @@
 <template>
   <section class="chat-layout">
     <div class="chat-leftbar">
-      <left-header></left-header>
+      <left-header :user="users"></left-header>
 
       <search-bar></search-bar>
 
       <user-list v-model="selected_user" :users="users"></user-list>
 
-      <div class="chat-menu">
+      <!-- <div class="chat-menu">
         <ul
           class="nav nav-pills nav-justified mb-0"
           id="pills-tab-justified"
@@ -66,7 +66,7 @@
             </a>
           </li>
         </ul>
-      </div>
+      </div> -->
     </div>
 
     <div class="chat-rightbar show">
@@ -122,6 +122,12 @@ export default {
           this.users = response.data;
           console.log("user", response.data);
         })
+        .then(() => {
+          if (this.users) {
+            this.selected_user = this.users[0];
+            console.log("select user", this.selected_user);
+          }
+        })
         .catch((error) => {
           console.log(error);
         });
@@ -149,6 +155,7 @@ export default {
     this.fetchUsers();
     this.$store.dispatch("generatePeerId");
   },
+
   created() {
     this.connection = new WebSocket(
       `${import.meta.env.VITE_WS_ENDPOINT}ws/notification/`
