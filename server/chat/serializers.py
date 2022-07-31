@@ -67,7 +67,8 @@ class UsersWithMessageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('name', 'username',  'online', 'status', 'messages')
+        fields = ('name', 'username',  'online',
+                  'status', 'messages', 'avator')
 
     def get_name(self, obj):
         if obj.first_name:
