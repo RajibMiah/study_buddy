@@ -7,6 +7,7 @@ from chat.serializers import (RegistrationSerializer, UserSerializer,
                               UsersWithMessageSerializer)
 from django.contrib.auth import get_user_model
 from django.core import serializers
+from django.db.models import Max, Min
 from django.http import HttpResponse
 # Create your views here.
 from django.shortcuts import render
@@ -87,7 +88,11 @@ class UsersView(generics.ListAPIView):
 
     def get_queryset(self):
         users = User.objects.exclude(
-            pk=self.request.user.pk).order_by('-profile__online').all()
+            pk=self.request.user.pk).annotate(
+                last_message=Max('sender__date_time')
+        ).order_by('-last_message').all()
+       
+        # '-profile__status'
         return users
 
 

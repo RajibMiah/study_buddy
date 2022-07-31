@@ -912,6 +912,22 @@ a {
   margin-bottom: 3rem;
 }
 
+.profile-user-followers {
+  font-size: 1.5rem;
+  color: var(--color-dark);
+  font-weight: 400;
+  padding: 9px;
+}
+.follow-btn-style {
+  border-radius: 10rem;
+  font-size: 1.4rem;
+  font-weight: 700;
+  padding: 6px 2.5rem;
+  color: var(--color-main);
+  background: transparent;
+  border: 2px solid var(--color-main);
+  padding: 3px;
+}
 .profile__avatar {
   text-align: center;
 }

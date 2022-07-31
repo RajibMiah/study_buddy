@@ -18,7 +18,24 @@
                     <div class="profile__info">
                         <div class="profile_info_container">
                             <div>
-                                <h3>{{ user.name }}</h3>
+                                <div>
+                                    <div>
+                                        <h3>{{ user.name }}</h3>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="profile-user-followers">
+                                        <h4>@{{ user.name }}
+                                            {{ followers }}
+                                            followers</h4>
+                                    </div>
+                                    {% if request.user != user %}
+                                        <div class="btn btn--main btn--pill">
+                                            <a>Follow</a>
+                                        </div>
+
+                                    {% endif %}
+                                </div>
                             </div>
                             <div>
                                 {% if request.user != user %}

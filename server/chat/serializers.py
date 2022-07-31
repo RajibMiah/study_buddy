@@ -89,7 +89,7 @@ class UserSerializer(serializers.ModelSerializer):
     online = serializers.BooleanField(source='profile.online')
     status = serializers.CharField(source='profile.status')
     messages = serializers.SerializerMethodField()
-    avator = serializers.ImageField(required=False)
+    avator = serializers.ImageField(required=True)
 
     class Meta:
         model = User

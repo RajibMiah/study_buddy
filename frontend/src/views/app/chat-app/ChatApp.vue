@@ -151,8 +151,8 @@ export default {
       // window.open(routeData.href, '_blank')
     },
   },
-  mounted() {
-    this.fetchUsers();
+  async mounted() {
+    await this.fetchUsers();
     this.$store.dispatch("generatePeerId");
   },
 

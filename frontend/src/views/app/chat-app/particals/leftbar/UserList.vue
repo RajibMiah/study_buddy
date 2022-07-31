@@ -51,6 +51,7 @@ export default {
       selected_user: store.selected_user,
     };
   },
+
   methods: {
     setSelectedUser(user) {
       user.messages.filter((value) => (value.read = true));
