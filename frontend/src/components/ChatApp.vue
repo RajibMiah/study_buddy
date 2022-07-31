@@ -9,7 +9,7 @@
                 <img
                   id="img-icon"
                   class="align-self-center mr-2"
-                  src="http://127.0.0.1:8000/static/images/study-mate.png"
+                  :src="require(`@/assets/study-mate.png`)"
                   alt="Generic placeholder image"
                 />
                 <div class="media-body">
@@ -527,6 +527,7 @@ import ChatWindow from "./ChatWindow.vue";
 
 export default {
   name: "ChatApp",
+
   components: {
     "chat-window": ChatWindow,
   },

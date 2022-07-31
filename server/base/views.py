@@ -92,12 +92,8 @@ def home(request):
         Q(host__username__icontains=q) |
         Q(description__icontains=q)
     )
-    if request.user.is_authenticated:
-        #  and Q(room__participants=request.user)
-        room_messages = Message.objects.filter(
-            Q(room__topic__name__icontains=q) and Q(room__participants=request.user))
-        print('room message', room_messages)
-
+    room_messages = Message.objects.filter(Q(room__topic__name__icontains=q))
+    print('room message', room_messages)
     topic = Topic.objects.all()
     room_count = room.count()
     context = {"rooms": room, 'topics': topic,
