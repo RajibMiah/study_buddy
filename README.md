@@ -1,1 +1,2 @@
-# study_buddy
+# study_Mate
+
