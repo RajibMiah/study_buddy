@@ -1,2 +1,2 @@
-# study_Mate
+# Study Mate
 
