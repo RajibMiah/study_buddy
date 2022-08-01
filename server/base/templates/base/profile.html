@@ -1,4 +1,5 @@
 {% extends 'main.html' %}
+{% load static %}
 
 {% block content %}
     <main class="profile-page layout layout--3">
@@ -30,8 +31,8 @@
                                             followers</h4>
                                     </div>
                                     {% if request.user != user %}
-                                        <div class="btn btn--main btn--pill">
-                                            <a>Follow</a>
+                                        <div class="btn btn--main btn--pill" id='followers'>
+                                            <a class="follow-span">Follow</a>
                                         </div>
 
                                     {% endif %}
@@ -82,5 +83,7 @@
             {% include 'base/activity_component.html' %}
             <!-- Activities End -->
         </div>
+        <script type="text/javascript" src="{% static 'js/profile.js' %}"></script>
     </main>
+
 {% endblock content %}

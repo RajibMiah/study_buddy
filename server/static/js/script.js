@@ -24,3 +24,7 @@ if (conversationThread)
   conversationThread.scrollTop = conversationThread.scrollHeight;
 
 // close alert after 3 seconds
+
+
+//profile javascript module
+
