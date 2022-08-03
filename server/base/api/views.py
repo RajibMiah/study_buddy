@@ -26,7 +26,7 @@ def getTopics(request):
 
 @api_view(['GET'])
 def getRooms(request):
-    rooms = Room.objects.all()
+    rooms = Room.objects.all().order_by('?')
     serializer = RoomSerializer(rooms, many=True)
     return Response(serializer.data)
 

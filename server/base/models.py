@@ -23,6 +23,11 @@ class User(AbstractUser):
 class Topic(models.Model):
     name = models.CharField(max_length=255)
 
+   
+    def total_Rooms(self):
+        print(self)
+        return "5"
+
     def __str__(self) -> str:
         return self.name
 
