@@ -11,7 +11,6 @@ window.onload = function() {
 
     } else {
         // jQuery is not loaded
-
         alert("Doesn't Work");
     }
 }

@@ -22,8 +22,8 @@ const routes = [
                 path: "/call-view", component: () => import('../views/app/call-app/BaseCallView.vue'),
                 children: [
                     {
-                        name: 'callerView',
                         path: 'sender/:username/:receiver',
+                        name: 'callerView',
                         component: () => import('../views/app/call-app/Sender.vue')
                     },
                     {

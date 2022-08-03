@@ -1,19 +1,27 @@
-from base.api import serializers
-from base.models import Room
+
+from base.models import Room, Topic
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .serializers import RoomSerializer
+from .serializers import RoomSerializer, TopicSerializer
 
 
 @api_view(['GET'])
 def getRoutes(request):
     routes = [
         'GET /api',
+        'GET /api/topics',
         'GET /api/rooms',
         'GET /api/rooms/:id'
     ]
     return Response(routes)
+
+
+@api_view(['GET'])
+def getTopics(request):
+    topic_instance = Topic.objects.all()
+    serializers = TopicSerializer(topic_instance, many=True)
+    return Response(serializers.data)
 
 
 @api_view(['GET'])

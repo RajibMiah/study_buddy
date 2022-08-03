@@ -1,5 +1,5 @@
 
-from django.urls import path
+from django.urls import include, path
 
 from base.views import *
 
@@ -21,5 +21,7 @@ urlpatterns = [
 
     path('topics/', topicsPage, name="topics"),
     path('activity/', activityPage, name="activity"),
+
+    path('api/', include('base.api.urls'))
 
 ]

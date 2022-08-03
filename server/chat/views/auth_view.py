@@ -1,5 +1,3 @@
-import json
-
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from chat.authentication import BearerAuthentication
@@ -27,7 +25,6 @@ User = get_user_model()
 
 
 class Login(ObtainAuthToken):
-    print('user login hit')
 
     def post(self, request, *args, **kwargs):
         """
@@ -44,7 +41,7 @@ class Login(ObtainAuthToken):
         token, created = Token.objects.get_or_create(user=user)
         self.__change_status(user)
         serialize_user = UserSerializer(user, many=False)
-        print('user login')
+
         return Response({
             'token': token.key,
             'user': serialize_user.data,
@@ -91,7 +88,7 @@ class UsersView(generics.ListAPIView):
             pk=self.request.user.pk).annotate(
                 last_message=Max('sender__date_time')
         ).order_by('-last_message').all()
-       
+
         # '-profile__status'
         return users
 
