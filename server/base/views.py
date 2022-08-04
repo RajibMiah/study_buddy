@@ -73,12 +73,9 @@ def registerPage(request):
 def userProfile(request, pk):
     user = User.objects.get(id=pk)
     rooms = user.room_set.all()
-    print(request.user.id)
     room_messages = user.message_set.all()
     topic = Topic.objects.all()
     followers = UserFollowing.objects.filter(following_user_id=pk)
-
-    print("followers====>", followers.count())
     context = {'user': user, 'rooms': rooms,
                'room_messages': room_messages, 'topics': topic, 'followers': followers.count()}
     # print(context)

@@ -1,7 +1,14 @@
 
 from django.urls import include, path
+from rest_framework.routers import DefaultRouter
 
 from base.views import *
+
+from .api.views import GetRooms, UserProfile
+
+router = DefaultRouter()
+router.register('rooms', GetRooms, basename='room-details')
+router.register('profile', UserProfile, basename='user-profile')
 
 urlpatterns = [
 
@@ -22,6 +29,6 @@ urlpatterns = [
     path('topics/', topicsPage, name="topics"),
     path('activity/', activityPage, name="activity"),
 
-    path('api/', include('base.api.urls'))
-
+    path('api/v1/', include(router.urls)),
+    path('api/', include('api.urls'))
 ]

@@ -1,20 +1,47 @@
 
-from base.models import Room, Topic
-from rest_framework.decorators import api_view
+from base.models import Room, Topic, User
+from rest_framework import generics, viewsets
+from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 
-from .serializers import RoomSerializer, TopicSerializer
+from .serializers import RoomSerializer, TopicSerializer, UserProfielSerializer
 
 
 @api_view(['GET'])
 def getRoutes(request):
     routes = [
         'GET /api',
+        'GET /api/profile',
         'GET /api/topics',
         'GET /api/rooms',
         'GET /api/rooms/:id'
     ]
     return Response(routes)
+
+# TODO:: RESOLVE ERROR ON USER PROFILE API
+
+
+class UserProfile(generics.RetrieveUpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserProfielSerializer
+    lookup_fields = 'pk'
+
+
+class GetRooms(viewsets.ModelViewSet):
+
+    queryset = Room.objects.all().order_by('?')
+    serializer_class = RoomSerializer
+    lookup_field = 'pk'
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly,
+    #                       IsOwnerOrReadOnly]
+
+    @action(detail=True)
+    def highlight(self, request, *args, **kwargs):
+        snippet = self.get_object()
+        return Response(snippet.highlighted)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 
 @api_view(['GET'])
