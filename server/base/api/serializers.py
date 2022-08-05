@@ -1,19 +1,40 @@
 
 from base.models import Room, Topic, User
 from rest_framework import serializers
-from stripe import Source
 
-
-class UserProfielSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = '__all__'
+# from stripe import Source
 
 
 class RoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
         fields = '__all__'
+
+
+class UserProfielSerializer(serializers.ModelSerializer):
+
+    user_created_rooms = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = (
+            'pk',
+            'id',
+            'uuid',
+            'username',
+            'name',
+            'first_name',
+            'last_name',
+            'email',
+            'bio',
+            'avator',
+            'user_created_rooms'
+        )
+
+    def get_user_created_rooms(self, obj):
+        user = User.objects.get(pk=obj.pk)
+        user_room_details = user.room_set.all()
+        return RoomSerializer(user_room_details, many=True).data
 
 
 class TopicSerializer(serializers.ModelSerializer):

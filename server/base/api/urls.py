@@ -1,20 +1,16 @@
 from django.urls import path
+from rest_framework.routers import SimpleRouter
 
 from . import views
 
-getRooms_details = views.GetRooms.as_view({
-    'get': 'retrieve',
-    'post': 'update',
-    'patch': 'partial_update',
-    'delete': 'destroy'
-})
+router = SimpleRouter()
+router.register(r'rooms', views.RoomModelViewSet, basename='room-details')
+router.register(r'topic', views.TopicsModelViewSet, basename='topics')
+router.register(r'profile', views.UserProfileModelViewSet,
+                basename='user-profile')
 
 
 urlpatterns = [
-    path('',  views.getRoutes),
-    path('rooms/', getRooms_details),
-    path('topics/', views.getTopics),
-    path('profile/', views.UserProfile.as_view(), name='user-profile')
-    # path('rooms/<str:pk>/', views.getRoom),
+    # path('',  views.getRoutes),
 
-]
+] + router.urls
