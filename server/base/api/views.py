@@ -2,7 +2,8 @@
 from base.models import Room, Topic, User
 from rest_framework import viewsets
 
-from .serializers import RoomSerializer, TopicSerializer, UserProfielSerializer
+from .serializers import RoomSerializer, TopicSerializer
+from .UserSerializers import UserProfielSerializer
 
 # @api_view(['GET'])
 # def getRoutes(request):
@@ -38,8 +39,13 @@ class RoomModelViewSet(viewsets.ModelViewSet):
     # permission_classes = [permissions.IsAuthenticatedOrReadOnly,
     #                       IsOwnerOrReadOnly]
 
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+    # def perform_create(self, serializer):
+    #     return super().perform_create(serializer)
+
+    # def perform_update(self, serializer):
+    #     return super().perform_update(serializer)
+    # def perform_create(self, serializer):
+    #     serializer.save(user=self.request.user)
 
 
 class TopicsModelViewSet(viewsets.ModelViewSet):
