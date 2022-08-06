@@ -3,6 +3,7 @@ from rest_framework import serializers
 
 
 class SimplateRoomSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Room
         fields = '__all__'

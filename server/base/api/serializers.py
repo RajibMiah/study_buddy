@@ -6,6 +6,7 @@ from rest_framework import serializers
 
 
 class SimpleUserSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
     name = serializers.CharField(read_only=True)
     avator = serializers.ImageField(read_only=True)
     uuid = serializers.UUIDField(read_only=True)
@@ -13,15 +14,19 @@ class SimpleUserSerializer(serializers.Serializer):
 
 class RoomSerializer(serializers.ModelSerializer):
     participants = serializers.SerializerMethodField(read_only=True)
+    room_host = SimpleUserSerializer(source='host', read_only=True)
 
     class Meta:
         model = Room
-        fields = '__all__'
+        fields = ['id', 'room_host', 'topic', 'participants',
+                  'name', 'description', 'updated', 'created']
 
     def get_participants(self, data):
         room = Room.objects.prefetch_related('participants').get(pk=data.pk)
         room_participants = room.participants.all()
         return SimpleUserSerializer(room_participants, many=True).data
+
+    # def get_owner(self, data):
 
 
 class TopicSerializer(serializers.ModelSerializer):

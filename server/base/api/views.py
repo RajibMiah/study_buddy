@@ -1,6 +1,7 @@
 
 from base.models import Room, Topic, User
-from rest_framework import viewsets
+from rest_framework import status, viewsets
+from rest_framework.response import Response
 
 from .serializers import RoomSerializer, TopicSerializer
 from .UserSerializers import UserProfielSerializer
@@ -39,13 +40,21 @@ class RoomModelViewSet(viewsets.ModelViewSet):
     # permission_classes = [permissions.IsAuthenticatedOrReadOnly,
     #                       IsOwnerOrReadOnly]
 
-    # def perform_create(self, serializer):
-    #     return super().perform_create(serializer)
+    def destroy(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        user = User.objects.get(room__id=pk)
 
-    # def perform_update(self, serializer):
-    #     return super().perform_update(serializer)
-    # def perform_create(self, serializer):
-    #     serializer.save(user=self.request.user)
+        if user == request.user:
+            return super().destroy(request, *args, **kwargs)
+        return Response({'msg': 'You are not authorized for delete this room'}, status=status.HTTP_400_BAD_REQUEST)
+
+    def update(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        user = User.objects.get(room__id=pk)
+
+        if user == request.user:
+            return super().destroy(request, *args, **kwargs)
+        return Response({'msg': 'You are not authorized for update'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class TopicsModelViewSet(viewsets.ModelViewSet):
