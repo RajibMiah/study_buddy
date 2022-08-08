@@ -12,6 +12,9 @@ from chat.models import Message
 User = get_user_model()
 
 
+AVATOR_BASE_URL = 'http://127.0.0.1:8000/images/'
+
+
 class MessageSerializer(serializers.Serializer):
     text = serializers.CharField()
     read = serializers.BooleanField(read_only=True)
@@ -89,7 +92,7 @@ class UserSerializer(serializers.ModelSerializer):
     online = serializers.BooleanField(source='profile.online')
     status = serializers.CharField(source='profile.status')
     messages = serializers.SerializerMethodField()
-    avator = serializers.ImageField(required=True)
+    avator = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
@@ -102,6 +105,12 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_messages(self, obj):
         return []
+
+    def get_avator(self, user):
+        if user.avator:
+            avator_url = str(AVATOR_BASE_URL) + str(user.avator)
+            return avator_url
+        return None
 
 
 class RegistrationSerializer(serializers.ModelSerializer):

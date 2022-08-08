@@ -4,11 +4,15 @@
       <div class="col-9">
         <ul class="list-unstyled mb-0">
           <li class="media">
-            <!-- <img
+            <img
               class="align-self-center mr-2"
-              :src="$store.state.activeUser.avator"
+              :src="
+                $store.state.activeUser.avator
+                  ? $store.state.activeUser.avator
+                  : 'https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg'
+              "
               alt="Generic placeholder image"
-            /> -->
+            />
             <div class="media-body">
               <h5 class="mb-0 mt-2">
                 User: @{{ $store.state.activeUser.name }}
