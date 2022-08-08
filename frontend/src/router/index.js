@@ -2,17 +2,33 @@ import { createRouter, createWebHistory } from "vue-router";
 import store from "../store";
 
 const routes = [
+   
     {
-        path: '/', component: () => import('../views/auth/Layout.vue'),
-        children: [
-            {path: '', component: () => import('../views/auth/Login.vue')},
-            {path: 'registration', component: () => import('../views/auth/Registration.vue')},
-            {path: 'forget-password', component: () => import('../views/auth/ForgetPassword.vue')},
-            {path: 'reset-password', component: () => import('../views/auth/ResetPassword.vue')}
-        ],
+        path: '/', component: () => import('../views/Home/HomeView.vue'),
+        // children: [
+        //    { path: '/login', component: () => import('../views/auth/Layout.vue')},
+        //    {
+        //     children:[
+        //         {path: '', component: () => import('../views/auth/Login.vue')},
+        //         {path: 'registration', component: () => import('../views/auth/Registration.vue')},
+        //         {path: 'forget-password', component: () => import('../views/auth/ForgetPassword.vue')},
+        //         {path: 'reset-password', component: () => import('../views/auth/ResetPassword.vue')}
+        //     ]
+        //    }
+        // ],
         meta: {
-            guest: true
+            auth: true//guest: true
         }
+    },
+    {
+        path:'/profile/:uuid',
+        name:"profile",
+        component:()=> import('../views/profile/Profile.vue')
+    },
+    {
+        path:'/room/:roomid',
+        name:'room',
+        component:()=> import('../views/room/RoomView.vue'),
     },
     {
         path: '/app', component: () => import('../views/app/Layout.vue'),
@@ -37,7 +53,12 @@ const routes = [
         meta: {
             auth: true
         }
-    }
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name:"PageNotFound",
+        component:()=> import('../views/PageNotFound.vue')
+    },
 ]
 
 
