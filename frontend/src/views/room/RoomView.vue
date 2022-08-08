@@ -223,7 +223,7 @@ export default {
   methods: {
     fetchRoomDetails() {
       this.is_loading = true;
-      axios.get(`room/${this.$route.params.roomid}`).then((res) => {
+      axios.get(`api/room/${this.$route.params.roomid}`).then((res) => {
         console.log("picked room details data", res.data);
         this.room_details = res.data;
         this.room_paticipants = res.data.participants;

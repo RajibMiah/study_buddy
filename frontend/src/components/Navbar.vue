@@ -39,7 +39,7 @@
             <router-link
               :to="{
                 name: 'profile',
-                params: { uuid: 'uiijasdjif-0021sf-2121 ' },
+                params: { uuid: 'uiijasdjif-0021sf-2121' },
               }"
             >
               <div class="avatar avatar--medium active">
@@ -70,10 +70,10 @@
             </button>
           </div>
           <div class="header__user" href="#">
-            <a type="button" class="icon-button" href="#" target="_blank">
+            <router-link to="/chat" type="button" class="icon-button">
               <span class="material-symbols-outlined">chat</span>
               <span class="icon-button__badge">2</span>
-            </a>
+            </router-link>
           </div>
           <div class="header__user">
             <button type="button" class="icon-button">

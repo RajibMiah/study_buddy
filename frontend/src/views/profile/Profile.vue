@@ -74,9 +74,9 @@
 </template>
 
 <script>
-import ActivityComponentVue from "../components/ActivityComponent.vue";
-import FeedComponentVue from "../components/FeedComponent.vue";
-import TopicComponentVue from "../components/TopicComponent.vue";
+import ActivityComponentVue from "../../components/ActivityComponent.vue";
+import FeedComponentVue from "../../components/FeedComponent.vue";
+import TopicComponentVue from "../../components/TopicComponent.vue";
 export default {
   name: "Profile",
   components: {

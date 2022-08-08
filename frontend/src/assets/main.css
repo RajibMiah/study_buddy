@@ -18,22 +18,26 @@
 
 body {
   font-family: "Ubuntu", sans-serif;
-  background-color: var(--color-bg) I !important;
+  background-color: var(--color-bg) !important;
   min-height: 100vh;
   color: var(--color-text);
-  transition: color 0.5s, background-color 0.5s;
-  line-height: 1.6;
+  transition: color 0.5s, background-color 0.5s !important;
+  line-height: 1.6 !important;
   font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
-  font-size: 15px;
+  font-size: 13px !important;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 html {
-  font-size: 56.25% !important;
+  font-size: 50.25% !important;
+}
+
+a {
+  text-decoration: none !important;
 }
 
 /*========== components ==========*/
@@ -49,16 +53,16 @@ html {
 
 .btn {
   background-color: transparent;
-  border: none;
-  display: inline-flex;
-  align-items: center;
+  border: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
   gap: 1rem;
-  cursor: pointer;
-  transition: all ease-in-out 0.3s;
-  padding: 1rem 2rem;
-  border-radius: 5px;
-  box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.15);
-  font-weight: 500;
+  cursor: pointer !important;
+  transition: all ease-in-out 0.3s !important;
+  padding: 1rem 2rem !important;
+  border-radius: 5px !important;
+  box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.15) !important;
+  font-weight: 500 !important;
 }
 
 .btn--link {

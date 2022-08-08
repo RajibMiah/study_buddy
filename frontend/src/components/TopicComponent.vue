@@ -41,7 +41,7 @@ export default {
   // They can be bound as event listeners in templates.
   methods: {
     fetchTopic() {
-      axios.get("topic/").then((response) => {
+      axios.get("api/topic/").then((response) => {
         // console.log("Network response", response);
         this.topic_data_set = response.data;
         this.total_room = response.data.length;

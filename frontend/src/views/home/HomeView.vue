@@ -147,7 +147,7 @@ export default {
   methods: {
     featchFeedCardData() {
       this.is_loading = true;
-      axios.get("room/").then((res) => {
+      axios.get("api/room/").then((res) => {
         console.log("response", res);
         this.feed_room_data = res.data;
         this.available_study_room = res.data.length;

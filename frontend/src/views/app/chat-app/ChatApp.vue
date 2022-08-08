@@ -116,7 +116,7 @@ export default {
   methods: {
     fetchUsers() {
       axios
-        .get("users/")
+        .get("chat/users/")
         .then((response) => {
           // store.users = response.data
           this.users = response.data;
