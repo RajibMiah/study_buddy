@@ -1,7 +1,8 @@
 <template>
   <div v-if="is_loading"><h1>loading....</h1></div>
   <main v-else class="profile-page layout layout--2">
-    <pre>{{ room_details }}</pre>
+    <!-- <pre>{{ room_details }}</pre> -->
+
     <div class="container">
       <!-- Room Start -->
       <div class="room">
@@ -87,7 +88,7 @@
                 <div class="avatar avatar--small">
                   <img
                     :src="
-                      room_details.room_host.avator
+                      room_details.room_host?.avator
                         ? room_details.room_host?.avator
                         : 'https://www.pngkey.com/png/detail/230-2301779_best-classified-apps-default-user-profile.png'
                     "
@@ -223,7 +224,7 @@ export default {
   methods: {
     fetchRoomDetails() {
       this.is_loading = true;
-      axios.get(`api/room/${this.$route.params.roomid}`).then((res) => {
+      axios.get(`/api/room/${this.$route.params.roomid}/`).then((res) => {
         console.log("picked room details data", res.data);
         this.room_details = res.data;
         this.room_paticipants = res.data.participants;

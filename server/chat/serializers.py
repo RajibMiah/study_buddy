@@ -96,7 +96,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('name', 'username', 'online', 'status', 'messages', 'avator')
+        fields = ('name', 'username', 'online',
+                  'status', 'messages', 'avator', 'uuid')
 
     def get_name(self, obj):
         if obj.first_name:

@@ -1,6 +1,8 @@
 from base.models import Room, User
 from rest_framework import serializers
 
+from .serializers import RoomSerializer
+
 
 class SimplateRoomSerializer(serializers.ModelSerializer):
 
@@ -32,4 +34,4 @@ class UserProfielSerializer(serializers.ModelSerializer):
     def get_user_created_rooms(self, obj):
         user = User.objects.select_related('profile').get(pk=obj.pk)
         user_room_details = user.room_set.all()
-        return SimplateRoomSerializer(user_room_details, many=True).data
+        return RoomSerializer(user_room_details, many=True).data

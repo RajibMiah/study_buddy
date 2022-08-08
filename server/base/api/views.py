@@ -11,11 +11,11 @@ class UserProfileModelViewSet(viewsets.ModelViewSet):
 
     queryset = User.objects.all()
     serializer_class = UserProfielSerializer
-    lookup_field = 'pk'
+    lookup_field = "uuid"
     http_method_names = ['get', 'patch', ]  # put
 
     def get_queryset(self):
-        pk = self.kwargs.get("pk")
+        pk = self.kwargs.get("uuid")
         if pk is not None:
             return super().get_queryset()
         return User.objects.none()

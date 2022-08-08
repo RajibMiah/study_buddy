@@ -8,7 +8,7 @@
       <div>
         <div class="roomListRoom__header">
           <router-link
-            :to="{ name: 'profile', params: { uuid: data.id } }"
+            :to="{ name: 'profile', params: { uuid: data.room_host?.uuid } }"
             class="roomListRoom__author"
           >
             <div class="avatar avatar--small">

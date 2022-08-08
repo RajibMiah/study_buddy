@@ -33,63 +33,66 @@
       </form>
       <nav class="header__menu">
         <!-- Logged In -->
-
-        <div class="menu__container">
-          <div class="header__user">
-            <router-link
-              :to="{
-                name: 'profile',
-                params: { uuid: 'uiijasdjif-0021sf-2121' },
-              }"
-            >
-              <div class="avatar avatar--medium active">
-                <img
-                  id="profile-img"
-                  src="../assets/images/user.png"
-                  class="online"
-                  alt=""
-                />
-              </div>
-              <p>
-                @root
-                <!-- {{ request.user.username }} -->
-                <!-- <span>@{{ request.user.username }}</span> -->
-              </p>
-            </router-link>
-            <button class="dropdown-button">
-              <svg
-                version="1.1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="32"
-                height="32"
-                viewbox="0 0 32 32"
+        <div>
+          <div v-if="$store.state.token !== null" class="menu__container">
+            <div class="header__user">
+              <router-link
+                :to="{
+                  name: 'profile',
+                  params: { uuid: $store.state.activeUser.uuid },
+                }"
               >
-                <title>chevron-down</title>
-                <path d="M16 21l-13-13h-3l16 16 16-16h-3l-13 13z"></path>
-              </svg>
-            </button>
+                <div class="avatar avatar--medium active">
+                  <img
+                    id="profile-img"
+                    :src="$store.state.activeUser.avator"
+                    class="online"
+                    alt=""
+                  />
+                </div>
+                <p>
+                  <!-- {{ $store.state.activeUser.username }} -->
+                  <span> @{{ $store.state.activeUser.username }} </span>
+                  <!-- <span>@{{ request.user.username }}</span> -->
+                </p>
+              </router-link>
+              <button class="dropdown-button">
+                <svg
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="32"
+                  height="32"
+                  viewbox="0 0 32 32"
+                >
+                  <title>chevron-down</title>
+                  <path d="M16 21l-13-13h-3l16 16 16-16h-3l-13 13z"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="header__user" href="#">
+              <router-link to="/chat" type="button" class="icon-button">
+                <span class="material-symbols-outlined">chat</span>
+                <span class="icon-button__badge">2</span>
+              </router-link>
+            </div>
+            <div class="header__user">
+              <button type="button" class="icon-button">
+                <span class="material-icons">notifications</span>
+                <span class="icon-button__badge">2</span>
+              </button>
+            </div>
           </div>
-          <div class="header__user" href="#">
-            <router-link to="/chat" type="button" class="icon-button">
-              <span class="material-symbols-outlined">chat</span>
-              <span class="icon-button__badge">2</span>
+          <div v-else>
+            <router-link to="login">
+              <img src="../assets/images/user.png" alt="profile" />
+              <p>Login</p>
             </router-link>
-          </div>
-          <div class="header__user">
-            <button type="button" class="icon-button">
-              <span class="material-icons">notifications</span>
-              <span class="icon-button__badge">2</span>
-            </button>
           </div>
         </div>
 
         <!-- Not Logged In -->
-        <!-- <a href="#">
-          <img src="" alt="profile" />
-          <p>Login</p>
-        </a> -->
 
-        <!-- <div class="dropdown-menu">
+        <div class="dropdown-menu">
           <a href="#" class="dropdown-link">
             <svg
               version="1.1"
@@ -123,7 +126,7 @@
             </svg>
             Logout
           </a>
-        </div> -->
+        </div>
       </nav>
     </div>
   </header>

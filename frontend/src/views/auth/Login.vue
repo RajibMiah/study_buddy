@@ -69,11 +69,14 @@ export default {
   methods: {
     async login() {
       await axios
-        .post("login/", this.user)
+        .post("/chat/login/", this.user)
         .then((response) => {
           this.$store.commit("SET_TOKEN", response.data.token);
           this.$store.commit("UPDATE_USER", response.data.user);
-          this.$router.replace({ path: "/app" });
+          this.$router.replace({
+            path: "/profile",
+            params: { uuid: $store.state.activeUser.uuid },
+          });
         })
         .catch((error) => {
           console.log(error);
