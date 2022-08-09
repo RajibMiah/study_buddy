@@ -62,46 +62,6 @@
         </div>
         <!-- START POPUP COMPONENT -->
 
-        <!-- Modal -->
-        <div
-          class="modal fade"
-          id="exampleModalCenter"
-          tabindex="-1"
-          role="dialog"
-          aria-labelledby="exampleModalCenterTitle"
-          aria-hidden="true"
-        >
-          <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">
-                  Modal title
-                </h5>
-                <button
-                  type="button"
-                  class="close"
-                  data-dismiss="modal"
-                  aria-label="Close"
-                >
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">...</div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  data-dismiss="modal"
-                >
-                  Close
-                </button>
-                <button type="button" class="btn btn-primary">
-                  Save changes
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
         <!-- <pre>{{ is_loading }}</pre> -->
 
         <div
@@ -120,6 +80,8 @@
       <!-- Activities End -->
     </div>
   </main>
+  <!-- Modal -->
+  <room-from-model />
 </template>
 
 <script>
@@ -127,27 +89,33 @@ import axios from "../../axios";
 import ActivityComponentVue from "../../components/ActivityComponent.vue";
 import FeedComponentVue from "../../components/FeedComponent.vue";
 import TopicComponentVue from "../../components/TopicComponent.vue";
+import RoomFormVue from "../../components/RoomForm.vue";
+
 export default {
   name: "home",
   components: {
     TopicComponentVue,
     FeedComponentVue,
     ActivityComponentVue,
+    "room-from-model": RoomFormVue,
   },
   data() {
     return {
       is_loading: false,
       available_study_room: 0,
       feed_room_data: [],
-      search: this.$route.params.q,
+      // search: this.$route.params.q,
     };
   },
 
-  watch: {
-    search(to, from) {
-      // Put your logic here...
-      console.log("router");
-    },
+  created() {
+    this.$watch(
+      () => this.$route.params,
+      (toParams, previousParams) => {
+        // react to route changes...
+        console.log("asdf");
+      }
+    );
   },
 
   // Methods are functions that mutate state and trigger updates.

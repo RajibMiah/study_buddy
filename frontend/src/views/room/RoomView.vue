@@ -2,13 +2,13 @@
   <div v-if="is_loading"><h1>loading....</h1></div>
   <main v-else class="profile-page layout layout--2">
     <!-- <pre>{{ room_details }}</pre> -->
-
+    <!-- <pre>{{ host }}</pre> -->
     <div class="container">
       <!-- Room Start -->
       <div class="room">
         <div class="room__top">
           <div class="room__topLeft">
-            <a>
+            <a data-toggle="modal" data-target="#exampleModalCenter">
               <svg
                 version="1.1"
                 xmlns="http://www.w3.org/2000/svg"
@@ -26,7 +26,7 @@
           </div>
 
           <div class="room__topRight">
-            <a>
+            <a data-toggle="modal" data-target="#exampleModalCenter">
               <svg
                 enable-background="new 0 0 24 24"
                 height="32"
@@ -81,20 +81,20 @@
               <router-link
                 :to="{
                   name: 'profile',
-                  params: { uuid: 'uiijasdjif-0021sf-2121 ' },
+                  params: { uuid: host?.uuid ? host.uuid : 222 },
                 }"
                 class="room__author"
               >
                 <div class="avatar avatar--small">
                   <img
                     :src="
-                      room_details.room_host?.avator
-                        ? room_details.room_host?.avator
+                      host?.avator
+                        ? host.avator
                         : 'https://www.pngkey.com/png/detail/230-2301779_best-classified-apps-default-user-profile.png'
                     "
                   />
                 </div>
-                <span>@{{ room_details?.room_host?.name }}</span>
+                <span>@{{ host.name }}</span>
               </router-link>
             </div>
             <div class="room__details" style="color: black">
@@ -161,11 +161,12 @@
       <div class="participants">
         <h3 class="participants__top">
           Participants
-          <span>({{ room_paticipants.length }} Joined)</span>
+          <span>({{ room_participants.length }} Joined)</span>
         </h3>
         <!-- <pre>{{ room_paticipants }}</pre> -->
         <div
-          v-for="participant in room_paticipants"
+          v-if="room_participants.length > 1"
+          v-for="participant in room_participants"
           :key="participant.id"
           class="participants__list scroll"
           id="participants_list"
@@ -201,21 +202,25 @@
           ></select>
         </div> -->
       </div>
-
-      <!--  End -->
     </div>
-    <!-- <script src="script.js"></script> -->
+
+    <room-from-model />
   </main>
 </template>
 <script>
 import axios from "../../axios";
+import RoomFormVue from "../../components/RoomForm.vue";
 export default {
   name: "RoomView",
+  components: {
+    "room-form-model": RoomFormVue,
+  },
   data() {
     return {
       is_loading: false,
       room_details: [],
-      room_paticipants: [],
+      room_participants: [],
+      host: [],
     };
   },
 
@@ -227,7 +232,8 @@ export default {
       axios.get(`/api/room/${this.$route.params.roomid}/`).then((res) => {
         console.log("picked room details data", res.data);
         this.room_details = res.data;
-        this.room_paticipants = res.data.participants;
+        this.room_participants = res.data.participants;
+        this.host = res.data.room_host;
         this.is_loading = false;
       });
     },
