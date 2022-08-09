@@ -1,9 +1,10 @@
-import {createStore} from "vuex";
+import { Peer } from "peerjs";
+import { createStore } from "vuex";
 import createPersistedState from 'vuex-persistedstate';
-import {Peer} from "peerjs";
 
 const store = createStore({
     state: {
+        searchKeyward:null,
         activeUser: null,
         token: null,
         peer_id: null,
@@ -22,6 +23,10 @@ const store = createStore({
         },
         SET_ACTIVE_MESSAGE(state, payload) {
             state.active_message = payload
+        },
+        SET_SEARCH_KEYWORDS(state , payload){
+            console.log('pyalod' , payload)
+            state.searchKeyward = payload.text
         }
     },
     actions: {
@@ -34,6 +39,9 @@ const store = createStore({
             peer.on('open', (id) => {
                 context.commit('SET_PEER', id)
             })
+        },
+        getSearchKeyword(context , payload){
+            return context.commit("SET_SEARCH_KEYWORDS" , payload)
         }
     }
 })

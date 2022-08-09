@@ -8,11 +8,11 @@ AVATOR_BASE_URL = 'http://127.0.0.1:8000/images/'
 
 
 class SimpleUserSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    name = serializers.CharField(read_only=True)
-    username = serializers.CharField(read_only=True)
-    uuid = serializers.UUIDField(read_only=True)
-    avator = serializers.SerializerMethodField(read_only=True)
+    id = serializers.IntegerField()
+    name = serializers.CharField()
+    username = serializers.CharField()
+    uuid = serializers.UUIDField()
+    avator = serializers.SerializerMethodField()
 
     def get_avator(self, user):
         if user.avator:
@@ -22,8 +22,8 @@ class SimpleUserSerializer(serializers.Serializer):
 
 
 class SimpleTopicSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    name = serializers.CharField(read_only=True)
+    id = serializers.IntegerField()
+    name = serializers.CharField()
 
 
 class RoomSerializer(serializers.ModelSerializer):
@@ -41,7 +41,7 @@ class RoomSerializer(serializers.ModelSerializer):
         room = Room.objects.prefetch_related('participants').get(pk=data.pk)
         room_participants = room.participants.all()
 
-        return SimpleUserSerializer(room_participants, many=True).data
+        return SimpleUserSerializer(room_participants, many=True, read_only=True).data
 
 
 class TopicSerializer(serializers.ModelSerializer):

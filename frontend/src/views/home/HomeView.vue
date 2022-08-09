@@ -139,7 +139,15 @@ export default {
       is_loading: false,
       available_study_room: 0,
       feed_room_data: [],
+      search: this.$route.params.q,
     };
+  },
+
+  watch: {
+    search(to, from) {
+      // Put your logic here...
+      console.log("router");
+    },
   },
 
   // Methods are functions that mutate state and trigger updates.
@@ -147,6 +155,7 @@ export default {
   methods: {
     featchFeedCardData() {
       this.is_loading = true;
+      console.log("router========", this.$router);
       axios.get("api/room/").then((res) => {
         console.log("response", res);
         this.feed_room_data = res.data;
@@ -161,6 +170,8 @@ export default {
   // This function will be called when the component is mounted.
   async mounted() {
     await this.featchFeedCardData();
+
+    // console.log("router q value is", this.$route.params.q);
   },
 };
 </script>

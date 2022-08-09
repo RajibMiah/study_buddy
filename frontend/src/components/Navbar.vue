@@ -5,7 +5,12 @@
         <img src="../assets/images/study-mate.png" />
         <h1>StudyMate</h1>
       </router-link>
-      <form class="header__search" method="GET" action="#">
+      <form
+        @submit.prevent="onSubmit"
+        class="header__search"
+        method="GET"
+        action="#"
+      >
         <label>
           <svg
             version="1.1"
@@ -28,7 +33,7 @@
               />
             </svg>
           </svg>
-          <input name="q" placeholder="Search for posts" />
+          <input name="q" v-model="search" placeholder="Search for posts" />
         </label>
       </form>
       <nav class="header__menu">
@@ -158,6 +163,22 @@
 <script>
 export default {
   name: "NavBar",
+
+  data() {
+    return {
+      search: "",
+    };
+  },
+  methods: {
+    onSubmit() {
+      console.log("search text", this.search);
+      this.$router.push({ path: "/", query: { q: this.search } });
+      // this.$store.dispatch("getSearchKeyword", { text: this.search });
+    },
+  },
+  // computed: {
+  //   filterFun() {},
+  // },
 };
 </script>
 <style scoped></style>

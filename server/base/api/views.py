@@ -1,5 +1,6 @@
 
 from base.models import Room, Topic, User
+from django.db.models import Q
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 
@@ -28,6 +29,19 @@ class RoomModelViewSet(viewsets.ModelViewSet):
     lookup_field = 'pk'
     # permission_classes = [permissions.IsAuthenticatedOrReadOnly,
     #                       IsOwnerOrReadOnly]
+
+    def get_queryset(self):
+
+        q = self.request.GET.get('q')
+        if q is not None:
+            room = super().get_queryset().filter(
+                Q(topic__name__icontains=q) |
+                Q(name__icontains=q) |
+                Q(host__username__icontains=q) |
+                Q(description__icontains=q)
+            )
+            return room
+        return super().get_queryset()
 
     def update(self, request, *args, **kwargs):
         pk = self.kwargs.get('pk')
