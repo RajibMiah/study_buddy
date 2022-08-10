@@ -62,9 +62,30 @@ class Room(models.Model):
         return self.name
 
 
+class Vote(models.Model):
+    user = models.ForeignKey(
+        User, related_name='voted_user', on_delete=models.CASCADE)
+    room = models.ForeignKey(
+        Room, related_name='voted_room', on_delete=models.CASCADE)
+    upvote = models.PositiveIntegerField(blank=True,  default=0)
+    downvote = models.PositiveIntegerField(blank=True,  default=0)
+
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def total_vote(self):
+        return str(self.updated - self.downvote)
+
+    def __str__(self) -> str:
+        return str(f'{self.user.username} voted on {self.room.name} room')
+
+
 class Message(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    voted_message = models.ManyToManyField(
+        Vote, related_name='voted_message', blank=True)
     body = models.TextField(max_length=255)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)

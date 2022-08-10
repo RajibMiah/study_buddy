@@ -1,7 +1,7 @@
 
 from django.contrib import admin
 
-from .models import Message, Room, Topic, User, UserFollowing
+from .models import Message, Room, Topic, User, UserFollowing, Vote
 
 # Register your models here.
 
@@ -29,3 +29,6 @@ class Topic(admin.ModelAdmin):
 @admin.register(UserFollowing)
 class UserFollowing(admin.ModelAdmin):
     pass
+
+
+admin.site.register(Vote)
