@@ -7,9 +7,9 @@ AVATOR_BASE_URL = 'http://127.0.0.1:8000/images/'
 
 
 class SimpleVoteSerializer(serializers.Serializer):
-    user = serializers.CharField(read_only=True)
-    room = serializers.CharField(read_only=True)
-    total_vote = serializers.IntegerField(read_only=True)
+    user = serializers.CharField()
+    room = serializers.CharField()
+    total_vote = serializers.IntegerField()
 
 
 class SimpleUserSerializer(serializers.Serializer):
@@ -52,10 +52,11 @@ class RoomSerializer(serializers.ModelSerializer):
 
     def get_vote(self,  data):
 
-        user_voted_room = Vote.objects.filter(room__id=data.id)
+        user_voted_room = Vote.objects.prefetch_related(
+            'user').filter(room__id=data.id)
         print('voted room', user_voted_room)
 
-        return SimpleVoteSerializer(user_voted_room).data
+        return SimpleVoteSerializer(user_voted_room,  many=True, read_only=True).data
 
 
 class TopicSerializer(serializers.ModelSerializer):

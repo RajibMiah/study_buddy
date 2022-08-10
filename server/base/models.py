@@ -75,7 +75,7 @@ class Vote(models.Model):
 
     @property
     def total_vote(self):
-        return str(self.updated - self.downvote)
+        return str(self.upvote - self.downvote)
 
     def __str__(self) -> str:
         return str(f'{self.user.username} voted on {self.room.name} room')
