@@ -78,7 +78,15 @@
         <span class="material-symbols-outlined"> add </span>
       </div>
       <div class="view-more snip-div">
-        <a href="#" title="" class="snip-a"> View More </a>
+        <router-link
+          :to="{
+            name: 'top-profiles',
+          }"
+          title=""
+          class="snip-a"
+        >
+          View More
+        </router-link>
       </div>
     </div>
   </div>

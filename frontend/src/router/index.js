@@ -31,6 +31,11 @@ const routes = [
         component:()=> import('../views/profile/EditProfile.vue'),
     },
     {
+        path:'/top-profiles',
+        name:'top-profiles',
+        component:()=> import('../views/profile/AllTopRankProfile.vue'),
+    },
+    {
         path:'/room/:roomid',
         name:'room',
         component:()=> import('../views/room/RoomView.vue'),
