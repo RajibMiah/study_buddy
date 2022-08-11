@@ -24,7 +24,8 @@ class UserProfileModelViewSet(viewsets.ModelViewSet):
 
 class RoomModelViewSet(viewsets.ModelViewSet):
 
-    queryset = Room.objects.all().order_by('?')
+    queryset = Room.objects.select_related(
+        'host', 'topic').all().order_by('?')
     serializer_class = RoomSerializer
     lookup_field = 'pk'
     # permission_classes = [permissions.IsAuthenticatedOrReadOnly,
@@ -70,4 +71,4 @@ class VoteModelViewSet(viewsets.ModelViewSet):
 
     queryset = Vote.objects.all()
     serializer_class = VoteModelSerializer
-    http_method_names = ['get', 'patch', ]
+    http_method_names = ['get', 'patch']

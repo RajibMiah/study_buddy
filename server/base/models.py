@@ -73,6 +73,10 @@ class Vote(models.Model):
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
 
+    @property
+    def total_vote(self):
+        return str(self.upvote - self.downvote)
+
     def __str__(self) -> str:
         return str(f'{self.user.username} voted on {self.room.name} room')
 

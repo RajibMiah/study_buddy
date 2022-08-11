@@ -34,28 +34,26 @@ class RoomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Room
-        fields = ['id', 'room_host',  'total_vote', 'topic', 'participants',
+        fields = ['id', 'room_host', 'topic', 'total_vote', 'participants',
                   'name', 'description', 'updated', 'created']
 
     def get_participants(self, data):
-        room = Room.objects.get(pk=data.pk)
-        room_participants = room.participants.all()
-
-        return SimpleUserSerializer(room_participants, many=True, read_only=True).data
+        room = Room.objects.select_related(
+            'host', 'topic').get(pk=data.pk).participants.all()
+        return SimpleUserSerializer(room, many=True, read_only=True).data
 
     def get_total_vote(self, data):
         self.upvote = 0
         self.downvote = 0
-        votes = Vote.objects.prefetch_related(
-            'room').filter(room__id=data.id)
+        votes = Vote.objects.select_related(
+            'room', 'user').filter(room__id=data.id)
         for vote in votes:
             if (vote.upvote > 0):
                 self.upvote += 1
             else:
                 self.downvote += 1
-
-        cumalative_vote = self.upvote - self.downvote
-        return str(cumalative_vote)
+        cumulative_vote = self.upvote - self.downvote
+        return str(cumulative_vote)
 
 
 class TopicSerializer(serializers.ModelSerializer):
