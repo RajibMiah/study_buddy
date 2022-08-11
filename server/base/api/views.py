@@ -1,10 +1,10 @@
 
-from base.models import Room, Topic, User
+from base.models import Room, Topic, User, Vote
 from django.db.models import Q
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 
-from .serializers import RoomSerializer, TopicSerializer
+from .serializers import RoomSerializer, TopicSerializer, VoteModelSerializer
 from .UserSerializers import UserProfielSerializer
 
 
@@ -64,3 +64,10 @@ class TopicsModelViewSet(viewsets.ModelViewSet):
     queryset = Topic.objects.all()
     serializer_class = TopicSerializer
     http_method_names = ['get']
+
+
+class VoteModelViewSet(viewsets.ModelViewSet):
+
+    queryset = Vote.objects.all()
+    serializer_class = VoteModelSerializer
+    http_method_names = ['get', 'patch', ]

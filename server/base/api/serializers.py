@@ -6,12 +6,6 @@ from rest_framework import serializers
 AVATOR_BASE_URL = 'http://127.0.0.1:8000/images/'
 
 
-class SimpleVoteSerializer(serializers.Serializer):
-    user = serializers.CharField()
-    room = serializers.CharField()
-    total_vote = serializers.IntegerField()
-
-
 class SimpleUserSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     name = serializers.CharField()
@@ -36,27 +30,32 @@ class RoomSerializer(serializers.ModelSerializer):
     room_host = SimpleUserSerializer(
         source='host', read_only=True)
     topic = SimpleTopicSerializer(read_only=True)
-    vote = serializers.SerializerMethodField(read_only=True)
+    total_vote = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Room
-        fields = ['id', 'room_host', 'vote', 'topic', 'participants',
+        fields = ['id', 'room_host',  'total_vote', 'topic', 'participants',
                   'name', 'description', 'updated', 'created']
-        deep = 1
 
     def get_participants(self, data):
-        room = Room.objects.prefetch_related('voted_room').get(pk=data.pk)
+        room = Room.objects.get(pk=data.pk)
         room_participants = room.participants.all()
 
         return SimpleUserSerializer(room_participants, many=True, read_only=True).data
 
-    def get_vote(self,  data):
+    def get_total_vote(self, data):
+        self.upvote = 0
+        self.downvote = 0
+        votes = Vote.objects.prefetch_related(
+            'room').filter(room__id=data.id)
+        for vote in votes:
+            if (vote.upvote > 0):
+                self.upvote += 1
+            else:
+                self.downvote += 1
 
-        user_voted_room = Vote.objects.prefetch_related(
-            'user').filter(room__id=data.id)
-        print('voted room', user_voted_room)
-
-        return SimpleVoteSerializer(user_voted_room,  many=True, read_only=True).data
+        cumalative_vote = self.upvote - self.downvote
+        return str(cumalative_vote)
 
 
 class TopicSerializer(serializers.ModelSerializer):
