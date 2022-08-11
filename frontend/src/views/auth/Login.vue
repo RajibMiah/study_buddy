@@ -69,7 +69,7 @@ export default {
   methods: {
     async login() {
       await axios
-        .post("/chat/login/", this.user)
+        .post("chat/login/", this.user)
         .then((response) => {
           this.$store.commit("SET_TOKEN", response.data.token);
           this.$store.commit("UPDATE_USER", response.data.user);

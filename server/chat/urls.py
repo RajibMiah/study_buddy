@@ -7,7 +7,7 @@ from chat.views.message_view import MessageView
 
 urlpatterns = [
     path('api-token-auth/', views.obtain_auth_token),
-    path('login/', Login.as_view()),
+    path('login/', Login.as_view(), name='login'),
     path('registration/', RegisterView.as_view()),
     path('logout/', LogOutView.as_view()),
     path('users/', UsersView.as_view()),

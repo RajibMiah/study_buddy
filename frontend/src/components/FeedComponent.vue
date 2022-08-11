@@ -50,7 +50,9 @@
           <div type="buton" class="vote-btn">
             <span class="material-symbols-outlined"> thumb_up </span>
             <span class="vote-span">{{
-              vote?.upvote__sum > 0 ? vote?.upvote__sum : 0
+              data.vote?.upvote__sum > 0 && data.vote?.upvote__sum !== null
+                ? data.vote?.upvote__sum
+                : 0
             }}</span>
           </div>
         </div>
@@ -58,7 +60,9 @@
           <div type="button" class="vote-btn">
             <span class="material-symbols-outlined"> thumb_down_off </span>
             <span class="vote-span">{{
-              vote?.downvote__sum > 0 ? vote?.downvote__sum : 0
+              data.vote?.downvote__sum > 0 && data.vote?.downvote__sum !== null
+                ? data.vote?.downvote__sum
+                : 0
             }}</span>
           </div>
         </div>
@@ -66,7 +70,7 @@
       <div class="room_participation_container">
         <div class="room_commects_container">
           <span class="material-symbols-outlined"> comment </span>
-          <span>100 comments</span>
+          <span>{{ data.total_messages }} comments</span>
         </div>
       </div>
 

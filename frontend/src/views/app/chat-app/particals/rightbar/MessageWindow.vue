@@ -1,11 +1,13 @@
 <template>
-
   <section v-if="selected_user">
     <active-user :user="selected_user"></active-user>
 
     <div class="chat-body" ref="chatBody">
-      <div v-for="message in selected_user.messages" class="chat-message"
-           :class="message.sender !== selected_user.username ? 'right': 'left'">
+      <div
+        v-for="message in selected_user.messages"
+        class="chat-message"
+        :class="message.sender !== selected_user.username ? 'right' : 'left'"
+      >
         <div class="text">
           <span>{{ message.text }}</span>
         </div>
@@ -21,12 +23,24 @@
         <form @submit.prevent="sendMessage">
           <div class="input-group">
             <div class="input-group-prepend">
-              <a href="#" id="button-addonmic"><i class="feather icon-mic"></i></a>
+              <a href="#" id="button-addonmic"
+                ><i class="feather icon-mic"></i
+              ></a>
             </div>
-            <input v-model="message" type="text" class="form-control" placeholder="Type a message..." aria-label="Text">
+            <input
+              v-model="message"
+              type="text"
+              class="form-control"
+              placeholder="Type a message..."
+              aria-label="Text"
+            />
             <div class="input-group-append">
-              <a href="#" class="mr-3" id="button-addonlink"><i class="feather icon-paperclip"></i></a>
-              <a href="#" id="button-addonsend"><i class="feather icon-send"></i></a>
+              <a href="#" class="mr-3" id="button-addonlink"
+                ><i class="feather icon-paperclip"></i
+              ></a>
+              <a href="#" id="button-addonsend"
+                ><i class="feather icon-send"></i
+              ></a>
             </div>
           </div>
         </form>
@@ -37,36 +51,35 @@
   <section v-else>
     <default-message-window></default-message-window>
   </section>
-
 </template>
 
 <script>
-import ActiveUser from "./ActiveUser.vue";
-import axios from "../../../../../axios";
 import moment from "moment";
+import axios from "../../../../../axios";
 import DefaultMessageWindow from "../../../../../components/DefaultMessageWindow.vue";
+import ActiveUser from "./ActiveUser.vue";
 
 export default {
   name: "MessageWindow",
-  props: ['selected_user'],
+  props: ["selected_user"],
   components: {
-    'active-user': ActiveUser,
-    'default-message-window': DefaultMessageWindow
+    "active-user": ActiveUser,
+    "default-message-window": DefaultMessageWindow,
   },
   data() {
     return {
-      message: ''
-    }
+      message: "",
+    };
   },
   watch: {
-    'selected_user.messages': {
+    "selected_user.messages": {
       deep: true,
       handler() {
-        if (this.$refs.hasOwnProperty('chatBody')) {
-          this.scrollDown()
+        if (this.$refs.hasOwnProperty("chatBody")) {
+          this.scrollDown();
         }
-      }
-    }
+      },
+    },
   },
   methods: {
     sendMessage() {
@@ -74,34 +87,34 @@ export default {
         text: this.message,
         read: true,
         date_time: moment().format(),
-        sender_id: 'me'
-      })
-      axios.post('message/', {
-        text: this.message,
-        receiver: this.selected_user.username
-      }).then(response => {
-        console.log(response)
-      }).catch(error => {
-        console.log(error)
-      }).finally(e => {
-        this.message = ''
-      })
+        sender_id: "me",
+      });
+      axios
+        .post("chat/message/", {
+          text: this.message,
+          receiver: this.selected_user.username,
+        })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .finally((e) => {
+          this.message = "";
+        });
     },
 
     dateHumanize(date) {
-      return moment(date).fromNow()
+      return moment(date).fromNow();
     },
 
     scrollDown() {
-      this.$refs.chatBody.scrollTop = this.$refs.chatBody.scrollHeight
-    }
+      this.$refs.chatBody.scrollTop = this.$refs.chatBody.scrollHeight;
+    },
   },
-  mounted() {
-
-  }
-}
+  mounted() {},
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

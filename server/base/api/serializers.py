@@ -69,7 +69,7 @@ class RoomSerializer(serializers.ModelSerializer):
 
         room_message = Message.objects.select_related('user', 'room').filter(
             room__id=data.pk).count()
-        print(room_message)
+        # print(room_message)
 
         return room_message
         # return MessageSerializer(room_message, many=True, read_only=True).data

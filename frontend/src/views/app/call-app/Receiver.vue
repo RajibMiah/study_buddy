@@ -167,7 +167,7 @@ export default {
         peer_id: this.remote_peer_id,
       };
       axios
-        .post("end-call/", data)
+        .post("chat/end-call/", data)
         .then((response) => {
           console.log(response);
         })

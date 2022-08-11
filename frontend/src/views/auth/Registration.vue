@@ -88,6 +88,8 @@ export default {
         .then((response) => {
           console.log(response);
           toastr.success(response.data.message, "Success");
+          this.$store.commit("SET_TOKEN", response.data.token);
+          this.$store.commit("UPDATE_USER", response.data.user);
           this.$router.replace("/");
         })
         .catch((error) => {

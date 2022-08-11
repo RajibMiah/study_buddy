@@ -62,7 +62,7 @@ export default {
       window.open(
         routeData.href,
         "_blank",
-        "popup,height=650,width=550,resizable=0,location=no,toolbar=no,menubar=no,resizable=no"
+        "popup,height=650,width=550,resizable=0,location=no,toolbar=no,menubar=no,resizable=no "
       );
       // window.open(routeData.href, '_blank')
     },
