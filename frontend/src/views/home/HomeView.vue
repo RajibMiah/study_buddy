@@ -62,7 +62,7 @@
         </div>
       </div>
 
-      <div>
+      <div class="top-rated-profile-container">
         <top-profile-component />
         <!-- <activity-component-vue /> -->
       </div>
@@ -122,4 +122,10 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.top-rated-profile-container {
+  position: sticky;
+  height: 95vh;
+  top: 13px;
+}
+</style>

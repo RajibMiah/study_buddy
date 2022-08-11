@@ -439,7 +439,6 @@ section {
   border: 0;
   font-size: 100%;
   font: inherit;
-  vertical-align: baseline;
   float: left;
   width: 100%;
   position: relative;
@@ -778,7 +777,6 @@ i {
   text-transform: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   font-style: normal;
   font-variant: normal;
   line-height: 1;
