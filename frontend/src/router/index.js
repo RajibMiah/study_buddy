@@ -20,11 +20,15 @@ const routes = [
             guest: true
         }
     },
-
     {
         path:'/profile/:uuid',
         name:"profile",
         component:()=> import('../views/profile/Profile.vue')
+    },
+    {
+        path:'/edit-profile/:uuid',
+        name:'edit-profile',
+        component:()=> import('../views/profile/EditProfile.vue'),
     },
     {
         path:'/room/:roomid',

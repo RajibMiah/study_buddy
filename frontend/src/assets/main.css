@@ -77,8 +77,9 @@ a {
 }
 
 .btn--main {
-  background-color: var(--color-main);
+  background-color: var(--color-main) !important;
   color: var(--color-dark);
+  font-size: 1.5rem !important;
 }
 
 .btn:hover {
@@ -102,9 +103,11 @@ a {
   font-size: 1.4rem;
   font-weight: 700;
   padding: 6px 2.5rem;
-  color: var(--color-main);
+  color: var(--color-dark) !important;
   background: transparent;
   border: 2px solid var(--color-main);
+  font-size: 1.3rem !important;
+  margin: 9px !important;
 }
 
 .action-button {
@@ -145,6 +148,7 @@ a {
 .avatar.avatar--small img {
   width: 2.8rem;
   height: 2.8rem;
+  /* margin-right: 17px; */
 }
 
 .avatar.avatar--small:after {
@@ -152,17 +156,18 @@ a {
   height: 0.7rem;
   bottom: 0px;
   right: -6px;
+  /* margin-right: 13px; */
 }
 
 .avatar.avatar--medium img {
-  width: 3.6rem;
-  height: 3.6rem;
+  width: 4.6rem;
+  height: 4.6rem;
   border-radius: 50%;
 }
 
 .avatar.avatar--medium:after {
-  width: 0.7rem;
-  height: 0.7rem;
+  width: 1.7rem;
+  height: 1.7rem;
   bottom: 0px;
   right: -6px;
 }
@@ -211,7 +216,7 @@ a {
 .dropdown-menu a {
   padding: 1.2rem 4rem;
   display: block;
-  color: var(--color-light) !important;
+  color: var(--color-dark);
   font-weight: 500;
   font-size: 1.4rem;
 }
@@ -747,6 +752,7 @@ a {
 .roomListRoom__topic {
   padding: 5px 1.5rem;
   background-color: var(--color-dark-light);
+  color: var(--color-main-light);
   border-radius: 5rem;
   font-weight: 500;
   font-size: 1.3rem;

@@ -19,18 +19,7 @@
                   data-dismiss="modal"
                   aria-label="Close"
                 >
-                  <svg
-                    version="1.1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="32"
-                    height="32"
-                    viewBox="0 0 32 32"
-                  >
-                    <title>arrow-left</title>
-                    <path
-                      d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z"
-                    ></path>
-                  </svg>
+                  <span class="material-symbols-outlined"> arrow_back </span>
                 </button>
                 <h3>Create/Update Study Room</h3>
               </div>
@@ -105,10 +94,6 @@
                   >
                     Submit
                   </button>
-                  <!-- <div class="modal-footer">
-                          <button class="">Close</button>
-                          <button type="button">Save changes</button>
-                        </div> -->
                 </div>
               </form>
             </div>

@@ -42,6 +42,16 @@
                   >
                     <a class="follow-span">Follow</a>
                   </div>
+                  <div v-else class="btn btn--main btn--pill" id="edit-profile">
+                    <router-link
+                      :to="{
+                        name: 'edit-profile',
+                        params: { uuid: $store.state.activeUser.uuid },
+                      }"
+                      class="follow-span"
+                      >Edit Profile</router-link
+                    >
+                  </div>
                 </div>
               </div>
               <div class="profile-contact-conatiner">

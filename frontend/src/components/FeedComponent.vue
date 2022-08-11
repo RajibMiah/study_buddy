@@ -7,84 +7,139 @@
     >
       <div>
         <div class="roomListRoom__header">
-          <router-link
-            :to="{ name: 'profile', params: { uuid: data.room_host?.uuid } }"
-            class="roomListRoom__author"
-          >
-            <div class="avatar avatar--small">
-              <img
-                :src="
-                  data.room_host?.avator
-                    ? data.room_host?.avator
-                    : 'https://www.pngkey.com/png/detail/230-2301779_best-classified-apps-default-user-profile.png'
-                "
-              />
+          <div class="room_detail_container">
+            <router-link
+              :to="{ name: 'profile', params: { uuid: data.room_host?.uuid } }"
+              class="roomListRoom__author"
+            >
+              <div class="avatar avatar--small">
+                <img
+                  :src="
+                    data.room_host?.avator
+                      ? data.room_host?.avator
+                      : 'https://www.pngkey.com/png/detail/230-2301779_best-classified-apps-default-user-profile.png'
+                  "
+                />
+              </div>
+              <span>@{{ data.room_host?.name }}</span>
+            </router-link>
+            <div class="roomListRoom__actions">
+              <span>{{ data.created }} ago</span>
             </div>
-            <span>@{{ data.room_host?.name }}</span>
-          </router-link>
-          <div class="roomListRoom__actions">
-            <span>{{ data.created }} ago</span>
           </div>
         </div>
+
         <div class="roomListRoom__content">
           <a href="#">{{ data.name }}</a>
         </div>
       </div>
     </router-link>
+    <div class="image-card-container">
+      <div class="card image-card">
+        <img
+          class="card-img-top card-img"
+          src="https://www.lighthouselabs.ca/uploads/post/open_graph_image/414/JavaScript-Uses-Cases-Programming-Language-.jpg"
+          alt="room_image"
+        />
+      </div>
+    </div>
     <div class="roomListRoom__meta">
-      <a href="#" class="roomListRoom__joined">
-        <svg
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          width="32"
-          height="32"
-          viewBox="0 0 32 32"
-        >
-          <title>user-group</title>
-          <path
-            d="M30.539 20.766c-2.69-1.547-5.75-2.427-8.92-2.662 0.649 0.291 1.303 0.575 1.918 0.928 0.715 0.412 1.288 1.005 1.71 1.694 1.507 0.419 2.956 1.003 4.298 1.774 0.281 0.162 0.456 0.487 0.456 0.85v4.65h-4v2h5c0.553 0 1-0.447 1-1v-5.65c0-1.077-0.56-2.067-1.461-2.584z"
-          ></path>
-          <path
-            d="M22.539 20.766c-6.295-3.619-14.783-3.619-21.078 0-0.901 0.519-1.461 1.508-1.461 2.584v5.65c0 0.553 0.447 1 1 1h22c0.553 0 1-0.447 1-1v-5.651c0-1.075-0.56-2.064-1.461-2.583zM22 28h-20v-4.65c0-0.362 0.175-0.688 0.457-0.85 5.691-3.271 13.394-3.271 19.086 0 0.282 0.162 0.457 0.487 0.457 0.849v4.651z"
-          ></path>
-          <path
-            d="M19.502 4.047c0.166-0.017 0.33-0.047 0.498-0.047 2.757 0 5 2.243 5 5s-2.243 5-5 5c-0.168 0-0.332-0.030-0.498-0.047-0.424 0.641-0.944 1.204-1.513 1.716 0.651 0.201 1.323 0.331 2.011 0.331 3.859 0 7-3.141 7-7s-3.141-7-7-7c-0.688 0-1.36 0.131-2.011 0.331 0.57 0.512 1.089 1.075 1.513 1.716z"
-          ></path>
-          <path
-            d="M12 16c3.859 0 7-3.141 7-7s-3.141-7-7-7c-3.859 0-7 3.141-7 7s3.141 7 7 7zM12 4c2.757 0 5 2.243 5 5s-2.243 5-5 5-5-2.243-5-5c0-2.757 2.243-5 5-5z"
-          ></path>
-        </svg>
+      <!-- up and down vote section -->
+      <div class="vote-section">
+        <div clsss="vote-btn-section">
+          <div type="buton" class="vote-btn">
+            <span class="material-symbols-outlined"> thumb_up </span>
+            <span class="vote-span">{{
+              vote?.upvote__sum > 0 ? vote?.upvote__sum : 0
+            }}</span>
+          </div>
+        </div>
+        <div class="vote-btn-section">
+          <div type="button" class="vote-btn">
+            <span class="material-symbols-outlined"> thumb_down_off </span>
+            <span class="vote-span">{{
+              vote?.downvote__sum > 0 ? vote?.downvote__sum : 0
+            }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="room_participation_container">
+        <div class="room_commects_container">
+          <span class="material-symbols-outlined"> comment </span>
+          <span>100 comments</span>
+        </div>
+      </div>
+
+      <div class="roomListRoom__joined">
+        <span class="material-symbols-outlined"> group </span>
         {{ data.participants.length }} Joined
-      </a>
-      <p class="roomListRoom__topic">{{ data.topic?.name }}</p>
+      </div>
+      <div class="roomListRoom__joined">
+        <p class="roomListRoom__topic">{{ data.topic?.name }}</p>
+      </div>
     </div>
   </div>
 </template>
 <script>
 export default {
   name: "FeedComponent",
-  // Properties returned from data() become reactive state
-  // and will be exposed on `this`.
   props: ["data"],
   data() {
     return {
       is_loading: false,
-      count: 0,
     };
   },
-
-  // Methods are functions that mutate state and trigger updates.
-  // They can be bound as event listeners in templates.
   methods: {},
-
-  // Lifecycle hooks are called at different stages
-  // of a component's lifecycle.
-  // This function will be called when the component is mounted.
   async mounted() {},
 };
 </script>
+
 <style scoped>
 .room-list-link {
   width: 100%;
+}
+.vote-section {
+  display: flex;
+}
+.vote-btn-section {
+  padding: 0px 7px 0px 7px;
+}
+.vote-btn {
+  display: flex;
+  cursor: pointer;
+}
+.vote-span {
+  padding-left: 7px;
+}
+.room_commects_container {
+  justify-content: center;
+  color: var(--color-dark-medium);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+.room_participation_container {
+  display: flex;
+}
+.room_detail_container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.image-card-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 0px 7px 7px 0px;
+}
+.image-card {
+  height: 23rem;
+  width: 100%;
+}
+.card-img {
+  height: inherit;
 }
 </style>
