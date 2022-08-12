@@ -2,6 +2,8 @@
 from base.models import Room, Topic, User, Vote
 from django.db.models import Q
 from rest_framework import status, viewsets
+from rest_framework.decorators import action
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
 
 from .serializers import RoomSerializer, TopicSerializer, VoteModelSerializer
@@ -14,12 +16,24 @@ class UserProfileModelViewSet(viewsets.ModelViewSet):
     serializer_class = UserProfielSerializer
     lookup_field = "uuid"
     http_method_names = ['get', 'patch', ]  # put
+    parser_classes = (JSONParser, MultiPartParser, FormParser)
 
     def get_queryset(self):
         pk = self.kwargs.get("uuid")
         if pk is not None:
             return super().get_queryset()
         return User.objects.none()
+
+    @action(detail=True, methods=['patch', 'put'])
+    def avator(self, reqeust, pk=None):
+        print('user pk', pk)
+        user = self.get_object()
+        serializer = UserProfielSerializer(user, reqeust.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
 
 
 class RoomModelViewSet(viewsets.ModelViewSet):
@@ -28,6 +42,7 @@ class RoomModelViewSet(viewsets.ModelViewSet):
         'host', 'topic').all()  # order_by('?')
     serializer_class = RoomSerializer
     lookup_field = 'pk'
+    http_method_names = ['get', 'patch', ]
     # permission_classes = [permissions.IsAuthenticatedOrReadOnly,
     #                       IsOwnerOrReadOnly]
 
@@ -47,7 +62,8 @@ class RoomModelViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         pk = self.kwargs.get('pk')
         user = User.objects.get(room__id=pk)
-
+        print('user', user)
+        print('requested user', request.user)
         if user == request.user:
             return super().update(request, *args, **kwargs)
         return Response({'msg': 'You are not authorized for update'}, status=status.HTTP_400_BAD_REQUEST)
@@ -59,6 +75,17 @@ class RoomModelViewSet(viewsets.ModelViewSet):
         if user == request.user:
             return super().destroy(request, *args, **kwargs)
         return Response({'msg': 'You are not authorized for delete this room'}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['patch', 'put'])
+    def room_image(self, reqeust, pk=None):
+        print('room pk', pk)
+        room = self.get_object(id=pk)
+        serializer = RoomSerializer(room, reqeust.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
 
 
 class TopicsModelViewSet(viewsets.ModelViewSet):

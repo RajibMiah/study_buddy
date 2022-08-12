@@ -3,8 +3,8 @@ import uuid
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+
 # from django.contrib.auth.models import User
-from django.shortcuts import render
 
 
 class User(AbstractUser):
@@ -40,7 +40,8 @@ class Room(models.Model):
         User, related_name='participants', blank=True)
     name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
-
+    room_image = models.ImageField(
+        null=True, blank=True, default='/user.png')
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
 

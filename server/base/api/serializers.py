@@ -51,7 +51,7 @@ class RoomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Room
-        fields = ['id', 'room_host', 'topic', 'vote', 'participants', 'total_messages',
+        fields = ['id', 'room_host', 'room_image', 'topic', 'vote', 'participants', 'total_messages',
                   'name', 'description', 'updated', 'created']
 
     def get_participants(self, data):
