@@ -9,7 +9,8 @@ router.register(r'topic', views.TopicsModelViewSet, basename='topics')
 router.register(r'profile', views.UserProfileModelViewSet,
                 basename='user-profile')
 router.register(r'votes', views.VoteModelViewSet, basename='votes')
-
+router.register(r'userfollowing', views.UserFollowingModelViewSet,
+                basename='userfollowing')
 
 urlpatterns = [
     # path('',  views.getRoutes),

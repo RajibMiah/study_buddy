@@ -41,7 +41,7 @@ class Room(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
     room_image = models.ImageField(
-        null=True, blank=True, default='/user.png')
+        null=True, blank=True)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
 

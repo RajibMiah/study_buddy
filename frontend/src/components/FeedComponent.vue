@@ -24,7 +24,7 @@
               <span>@{{ data.room_host?.name }}</span>
             </router-link>
             <div class="roomListRoom__actions">
-              <span>{{ data.created }} ago</span>
+              <span>{{ dateHumanize(data.created) }}</span>
             </div>
           </div>
         </div>
@@ -85,6 +85,7 @@
   </div>
 </template>
 <script>
+import moment from "moment";
 export default {
   name: "FeedComponent",
   props: ["data"],
@@ -93,7 +94,11 @@ export default {
       is_loading: false,
     };
   },
-  methods: {},
+  methods: {
+    dateHumanize(date) {
+      return moment(date).fromNow();
+    },
+  },
   async mounted() {},
 };
 </script>

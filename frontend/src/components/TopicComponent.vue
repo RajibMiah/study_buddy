@@ -14,7 +14,7 @@
           </li>
 
           <li v-for="topic in topic_data_set" :key="topic.id">
-            <a href="#">
+            <a type="span" href="#">
               {{ topic.name }}<span>{{ topic.total_rooms }}</span>
             </a>
           </li>

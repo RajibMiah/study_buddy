@@ -41,6 +41,11 @@ const routes = [
         component:()=> import('../views/room/RoomView.vue'),
     },
     {
+        path:'/create-room',
+        name:'create-room',
+        component:()=> import('../components/CreateRoom.vue'),
+    },
+    {
         path: '/chat', component: () => import('../views/app/Layout.vue'),
         children: [
             {path: '', component: () => import('../views/app/chat-app/ChatApp.vue')},

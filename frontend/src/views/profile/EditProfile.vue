@@ -29,13 +29,13 @@
               </div>
             </div>
             <div class="leetcodeId__13b9 snipcss0-3-8-16">
-              LeetCode ID: root
+              Profile UUID : root
             </div>
           </div>
         </div>
       </div>
       <div class="container nav-toggled__2eeW nav__29df snipcss-i9Id5">
-        <div class="side__2nDe">
+        <div class="side__2nDe snipcss-9xJIr">
           <div class="sidebar-base__2RIZ">
             <ul class="snip-ul">
               <li>
@@ -44,57 +44,58 @@
                   class="active__1IwF snip-a"
                   href="/profile/"
                 >
-                  <i class="fa fa-address-card"></i>
+                  <i class="fa fa-address-card"> </i>
                   &nbsp; Basic Info
                 </a>
               </li>
               <li>
                 <a href="/profile/points/" class="snip-a">
-                  <i class="fa fa-database"></i>
+                  <i class="fa fa-database"> </i>
                   &nbsp; Points
                 </a>
               </li>
               <li>
                 <a href="/profile/account/" class="snip-a">
-                  <i class="fa fa-cog"></i>
+                  <i class="fa fa-cog"> </i>
                   &nbsp; Account
                 </a>
               </li>
               <li>
                 <a href="/profile/lab" class="snip-a">
-                  <i class="fa fa-user-secret"></i>
+                  <i class="fa fa-user-secret"> </i>
                   &nbsp; Lab
                 </a>
               </li>
               <li>
                 <a href="/profile/privacy/" class="snip-a">
-                  <i class="fa fa-shield"></i>
+                  <i class="fa fa-shield"> </i>
                   &nbsp; Privacy
                 </a>
               </li>
               <li>
                 <a href="/profile/notifications/" class="snip-a">
-                  <i class="fa fa-bell"></i>
+                  <i class="fa fa-bell"> </i>
                   &nbsp; Notifications
                 </a>
               </li>
               <li>
                 <a href="/subscription/" target="_blank" class="snip-a">
-                  <i class="fa fa-credit-card"></i>
+                  <i class="fa fa-credit-card"> </i>
                   &nbsp; Billing &nbsp;
-                  <i class="fa fa-external-link external-link__3zeB"></i>
+                  <i class="fa fa-external-link external-link__3zeB"> </i>
                 </a>
               </li>
               <li>
                 <a href="/store/orders/" target="_blank" class="snip-a">
-                  <i class="fa fa-paper-plane"></i>
+                  <i class="fa fa-paper-plane"> </i>
                   &nbsp; Orders &nbsp;
-                  <i class="fa fa-external-link external-link__3zeB"></i>
+                  <i class="fa fa-external-link external-link__3zeB"> </i>
                 </a>
               </li>
             </ul>
           </div>
         </div>
+
         <div class="content-toggled__1u8I content__equW">
           <div class="container__2Jyj">
             <div class="container-header">
@@ -344,4 +345,221 @@
 export default {};
 </script>
 
-<style scoped></style>
+<style scoped>
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.container {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+@media (min-width: 768px) {
+  .container {
+    width: 750px;
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+    width: 970px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    width: 1170px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    position: relative;
+  }
+}
+
+.nav__29df {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  position: relative;
+}
+
+.profile-app__KJyN {
+  -webkit-font-smoothing: antialiased;
+}
+
+.content-wrapper {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial,
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.65);
+  background-color: #fff;
+  min-width: 320px;
+  overflow-y: scroll;
+  height: 100%;
+  width: 100%;
+  font-variant: tabular-nums;
+  -webkit-font-feature-settings: "tnum";
+  font-feature-settings: "tnum";
+}
+
+html {
+  font-family: sans-serif;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  font-size: 10px;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  height: 100%;
+  width: 100%;
+  line-height: 1.15;
+  -ms-overflow-style: scrollbar;
+}
+
+.side__2nDe {
+  width: 25%;
+  min-height: 600px;
+}
+
+:after,
+:before {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+*,
+:before,
+:after {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+:selection {
+  color: #fff;
+  background: #1890ff;
+}
+
+ul {
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+
+.sidebar-base__2RIZ ul {
+  margin-top: 100px;
+  -webkit-padding-start: 0;
+}
+
+.sidebar-base__2RIZ ul li {
+  list-style: none;
+  padding-right: 20px;
+}
+
+a {
+  background-color: transparent;
+  color: #1890ff;
+  text-decoration: none;
+  outline: none;
+  cursor: pointer;
+  -webkit-transition: color 0.3s;
+  -o-transition: color 0.3s;
+  transition: color 0.3s;
+  -webkit-text-decoration-skip: objects;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+}
+
+.active__1IwF {
+  background-color: #64b9f9;
+  color: white !important;
+}
+
+.sidebar-base__2RIZ ul li > a {
+  display: block;
+  color: #5a5a5a;
+  padding: 15px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+a:active,
+a:hover {
+  outline: 0;
+}
+
+a:hover {
+  color: #40a9ff;
+  text-decoration: underline;
+}
+
+a:active,
+a:hover {
+  text-decoration: none;
+  outline: 0;
+}
+
+.fa {
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.fa-database:before {
+  content: "\f1c0";
+}
+
+.fa-gear:before,
+.fa-cog:before {
+  content: "\f013";
+}
+
+.fa-user-secret:before {
+  content: "\f21b";
+}
+
+.fa-shield:before {
+  content: "\f132";
+}
+
+.fa-bell:before {
+  content: "\f0f3";
+}
+
+.fa-credit-card:before {
+  content: "\f09d";
+}
+
+.external-link__3zeB {
+  color: #0088cc;
+}
+
+.fa-external-link:before {
+  content: "\f08e";
+}
+
+.fa-send:before,
+.fa-paper-plane:before {
+  content: "\f1d8";
+}
+</style>

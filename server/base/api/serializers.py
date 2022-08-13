@@ -1,4 +1,4 @@
-from base.models import Message, Room, Topic, User, Vote
+from base.models import Message, Room, Topic, User, UserFollowing, Vote
 from django.db.models import Sum
 from rest_framework import serializers
 
@@ -97,3 +97,10 @@ class TopicSerializer(serializers.ModelSerializer):
 
     def get_total_rooms(self, obj):
         return obj.total_rooms
+
+
+class UserFollowingModelSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserFollowing
+        fields = '__all__'
