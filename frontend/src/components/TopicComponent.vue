@@ -14,9 +14,14 @@
           </li>
 
           <li v-for="topic in topic_data_set" :key="topic.id">
-            <a type="span" href="#">
+            <router-link
+              :to="{
+                path: this.$route.path,
+                query: { q: topic.name },
+              }"
+            >
               {{ topic.name }}<span>{{ topic.total_rooms }}</span>
-            </a>
+            </router-link>
           </li>
         </ul>
       </div>
@@ -46,6 +51,10 @@ export default {
         this.topic_data_set = response.data;
         this.total_room = response.data.length;
       });
+    },
+    pushUrlQuery(search_topic_name) {
+      console.log("data on topic click", search_topic_name);
+      this.$router.push({ path: this.$route.path, query: search_topic_name });
     },
   },
 

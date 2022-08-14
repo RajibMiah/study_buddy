@@ -7,7 +7,7 @@
 
       <div class="roomList">
         <div class="mobile-menu">
-          <form action="#" method="GET" class="header__search">
+          <!-- <form action="#" method="GET" class="header__search">
             <label>
               <svg
                 version="1.1"
@@ -23,7 +23,7 @@
               </svg>
               <input name="q" placeholder="Search for posts" />
             </label>
-          </form>
+          </form> -->
           <div class="mobile-menuItems">
             <a class="btn btn--main btn--pill" href="{% url 'topics' %}"
               >Browse Topics</a
@@ -67,8 +67,8 @@
         <!-- <activity-component-vue /> -->
       </div>
     </div>
+    <room-from-model />
   </main>
-  <room-from-model />
 </template>
 
 <script>
@@ -93,17 +93,10 @@ export default {
       is_loading: false,
       available_study_room: 0,
       feed_room_data: [],
+      router: this.$route.params,
     };
   },
 
-  created() {
-    this.$watch(
-      () => this.$route.params,
-      (toParams, previousParams) => {
-        console.log("asdf");
-      }
-    );
-  },
   methods: {
     featchFeedCardData() {
       this.is_loading = true;
@@ -114,7 +107,32 @@ export default {
         this.is_loading = false;
       });
     },
+    featchQueryData(query) {
+      // console.log("fetached function called with", query);
+      this.is_loading = true;
+      axios.get("api/room/", { params: { q: query.q } }).then((res) => {
+        console.log("response", res);
+        this.feed_room_data = res.data;
+        this.available_study_room = res.data.length;
+        this.is_loading = false;
+      });
+    },
   },
+  watch: {
+    $route: async function () {
+      if (this.$route.query.q) {
+        // console.log("home router has query ", this.$route.query);
+        await this.featchQueryData(this.$route.query);
+      } else {
+        await this.featchFeedCardData();
+      }
+    },
+  },
+  // computed: {
+  //   route() {
+  //     console.log(this.route);
+  //   },
+  // },
 
   async mounted() {
     await this.featchFeedCardData();

@@ -149,13 +149,26 @@ export default {
   methods: {
     onSubmit() {
       console.log("search text", this.search);
-      this.$router.push({ path: "/", query: { q: this.search } });
+      if (this.search.length > 0) {
+        this.$router.push({ path: "/", query: { q: this.search } });
+      } else {
+        this.$router.push({ path: "/" });
+      }
       // this.$store.dispatch("getSearchKeyword", { text: this.search });
+    },
+    pushDefaultSearch() {
+      if (this.$route.query.q) {
+        console.log("pushed to ", this.$route.query.q);
+        this.search = this.$route.query.q;
+      }
     },
   },
   // computed: {
   //   filterFun() {},
   // },
+  created() {
+    this.pushDefaultSearch();
+  },
 };
 </script>
 <style scoped>

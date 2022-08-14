@@ -297,12 +297,9 @@
 </template>
 
 <script>
-import RoomFormVue from "../components/_RoomForm.vue";
 export default {
   name: "RoomView",
-  components: {
-    "create-room-form": RoomFormVue,
-  },
+
   data() {
     return {};
   },

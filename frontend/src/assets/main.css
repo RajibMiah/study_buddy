@@ -468,12 +468,14 @@ a {
 .layout__boxHeader {
   display: flex;
   padding: 1.5rem;
-  background-color: var(--color-dark-light);
+  /* width: 100%; */
+  /* background-color: var(--color-dark-light); */
 }
 
 .layout__boxTitle {
   display: flex;
   gap: 1.5rem;
+  width: 100%;
   align-items: center;
 }
 

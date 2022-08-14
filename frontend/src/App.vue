@@ -8,10 +8,10 @@ export default {
   components: {
     "nav-bar": NavBar,
   },
-  // watch: {
-  //   "$route.name": function () {
-  //     console.log(this.$route);
-  //   },
-  // },
+  watch: {
+    $route: function () {
+      console.log("router from app.vue", this.$route);
+    },
+  },
 };
 </script>
