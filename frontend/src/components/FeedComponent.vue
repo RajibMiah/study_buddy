@@ -53,8 +53,13 @@
 
       <div class="vote-section">
         <div clsss="vote-btn-section">
-          <div type="buton" class="vote-btn" @click="thumb_up_func(data)">
+          <div
+            type="buton"
+            class="vote-btn"
+            @click="thumb_up_func(data, (thumb_up = true))"
+          >
             <span
+              id="thumb_up"
               class="material-symbols-outlined"
               :class="[
                 data?.is_votted[0]?.upvote_boolean ? 'vote-style ' : null,
@@ -70,7 +75,11 @@
           </div>
         </div>
         <div class="vote-btn-section">
-          <div type="button" class="vote-btn" @click="thumb_down_func(data)">
+          <div
+            type="button"
+            class="vote-btn"
+            @click="thumb_up_func(data, (thumb_up = false))"
+          >
             <span
               class="material-symbols-outlined"
               :class="[
@@ -109,64 +118,79 @@ import moment from "moment";
 import axios from "../axios";
 export default {
   name: "FeedComponent",
-  props: ["data"],
+  props: ["data", "method"],
   data() {
     return {
       is_loading: false,
-      _upvote: 0,
-      _downvote: 0,
-      thumb_value: {
-        upvote: 0,
-        downvote: 0,
-        user: 0,
-        room: 0,
-      },
     };
   },
   methods: {
     dateHumanize(date) {
       return moment(date).fromNow();
     },
-    thumb_up_func(data, upvote) {
-      if (
-        data?.is_votted.length > 0 &&
-        (data?.is_votted[0].upvote_boolean ||
-          data?.is_votted[0].downvote_boolean)
-      ) {
+    thumb_up_func(data, thumb_up) {
+      console.log("data of state", data);
+      if (data?.is_votted.length > 0) {
         axios
-          .delete(`api/votes/${data.is_votted[0].id}`, {
+          .delete(`api/votes/${data.is_votted[0].id}/`, {
             headers: {
               "Content-Type": "application/json",
             },
           })
           .then((res) => {
-            console.log("data is delted", res);
+            console.log("deleted", res.data);
           });
-      } else {
-        console.log("pass data", data);
-        const vote_data = {
+      }
+      let post_data = [];
+      if (thumb_up) {
+        post_data = {
           upvote: 1,
           upvote_boolean: true,
           user: data.room_host.id,
           room: data.id,
         };
-        console.log("vote_data", vote_data);
-        axios
-          .post("api/votes/", JSON.stringify(vote_data), {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-          .then((res) => {
-            console.log("response", res);
-          });
+      } else {
+        post_data = {
+          downvote: 1,
+          downvote_boolean: true,
+          user: data.room_host.id,
+          room: data.id,
+        };
       }
-    },
-    thumb_down_func(id) {
-      console.log("thumb down id", id);
+      // if(!data?.is_votted[0].upvote_boolean && !data?is_votted[0].downvote_boolean)
+      // {
+      //    this.method(post_data)
+      // }
+      this.method(post_data);
     },
   },
-  async mounted() {},
+  // async mounted() {
+  //   console.log("mounted on home page");
+  //   // this.__mounted();
+  // },
+  // beforeCreate() {
+  //   console.log("beforeCreate");
+  // },
+  // created() {
+  //   console.log("created");
+  // },
+  // beforeMount() {
+  //   console.log("beforeMount");
+  // },
+
+  // beforeUpdate() {
+  //   console.log("beforeUpdate");
+  // },
+  // updated() {
+  //   console.log("updated");
+  //   // this.__update();
+  // },
+  // beforeDestroy() {
+  //   console.log("beforeDestroy");
+  // },
+  // destroyed() {
+  //   console.log("destroyed");
+  // },
 };
 </script>
 

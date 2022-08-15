@@ -53,12 +53,8 @@
 
         <!-- <pre>{{ is_loading }}</pre> -->
 
-        <div
-          v-show="!is_loading"
-          v-for="feeditem in feed_room_data"
-          :key="feeditem.id"
-        >
-          <FeedComponentVue :data="feeditem" />
+        <div v-show="!is_loading" v-for="feeditem in data" :key="feeditem.id">
+          <FeedComponentVue :data="feeditem" :method="thumbMethod" />
         </div>
       </div>
 
@@ -92,7 +88,11 @@ export default {
     return {
       is_loading: false,
       available_study_room: 0,
-      feed_room_data: [],
+      data: [],
+      event_occure: false,
+      // _upvote: 0,
+      // _downvote: 0,
+      // vote_list: [],
       router: this.$route.params,
     };
   },
@@ -102,7 +102,7 @@ export default {
       this.is_loading = true;
       axios.get("api/room/").then((res) => {
         console.log("response", res);
-        this.feed_room_data = res.data;
+        this.data = res.data;
         this.available_study_room = res.data.length;
         this.is_loading = false;
       });
@@ -112,30 +112,50 @@ export default {
       this.is_loading = true;
       axios.get("api/room/", { params: { q: query.q } }).then((res) => {
         console.log("response", res);
-        this.feed_room_data = res.data;
+        this.data = res.data;
         this.available_study_room = res.data.length;
         this.is_loading = false;
       });
+    },
+
+    thumbMethod(thumb_data) {
+      axios
+        .post("api/votes/", JSON.stringify(thumb_data), {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((res) => {
+          this.data.map((x, index) => {
+            console.log("out side x", x, "index", index);
+            if (x.id === thumb_data.room) {
+              this.data[index].is_votted = res.data;
+              console.log("data updated", this.data);
+            }
+          });
+        });
     },
   },
   watch: {
     $route: async function () {
       if (this.$route.query.q) {
-        // console.log("home router has query ", this.$route.query);
         await this.featchQueryData(this.$route.query);
       } else {
         await this.featchFeedCardData();
       }
     },
+    data: function () {
+      console.log("watching data. upate..");
+    },
   },
-  // computed: {
-  //   route() {
-  //     console.log(this.route);
-  //   },
-  // },
 
   async mounted() {
+    // console.log("mounted on feed child");
     await this.featchFeedCardData();
+    // this.__mounted();
+  },
+  updated() {
+    console.log("updated");
   },
 };
 </script>
