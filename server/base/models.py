@@ -71,6 +71,8 @@ class Vote(models.Model):
         Room, related_name='voted_room', on_delete=models.CASCADE)
     upvote = models.PositiveIntegerField(blank=True,  default=0)
     downvote = models.PositiveIntegerField(blank=True,  default=0)
+    upvote_boolean = models.BooleanField(default=False)
+    downvote_boolean = models.BooleanField(default=False)
 
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)

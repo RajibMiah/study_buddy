@@ -118,7 +118,7 @@ class VoteModelViewSet(viewsets.ModelViewSet):
 
     queryset = Vote.objects.all()
     serializer_class = VoteModelSerializer
-    http_method_names = ['get', 'patch']
+    # http_method_names = ['get', 'patch']
 
 
 class UserFollowingModelViewSet(viewsets.ModelViewSet):

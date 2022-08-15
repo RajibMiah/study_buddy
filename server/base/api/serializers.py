@@ -1,7 +1,6 @@
-from urllib import request
 
 from base.models import Message, Room, Topic, User, UserFollowing, Vote
-from django.db.models import Sum
+from django.db.models import Q, Sum
 from rest_framework import serializers
 
 # from stripe import Source
@@ -28,6 +27,14 @@ class SimpleTopicSerializer(serializers.Serializer):
     name = serializers.CharField()
 
 
+class SimpleVoteSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+    room = serializers.PrimaryKeyRelatedField(read_only=True)
+    upvote_boolean = serializers.BooleanField(read_only=True)
+    downvote_boolean = serializers.BooleanField(read_only=True)
+
+
 class VoteModelSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -50,10 +57,11 @@ class RoomSerializer(serializers.ModelSerializer):
     # total_vote = serializers.SerializerMethodField(read_only=True)
     vote = serializers.SerializerMethodField(read_only=True)
     total_messages = serializers.SerializerMethodField(read_only=True)
+    is_votted = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Room
-        fields = ['id', 'room_host', 'room_image', 'topic', 'vote', 'participants', 'total_messages',
+        fields = ['id', 'room_host', 'room_image', 'topic', 'vote', 'is_votted', 'participants', 'total_messages',
                   'name', 'description', 'updated', 'created']
 
     def create(self, validated_data):
@@ -67,10 +75,24 @@ class RoomSerializer(serializers.ModelSerializer):
         return SimpleUserSerializer(room, many=True, read_only=True).data
 
     def get_vote(self, data):
+        # requested_id = self.context['request'].user.id
         votes = Vote.objects.select_related(
-            'room', 'voted_room').filter(room__id=data.id).aggregate(Sum('upvote'), Sum('downvote'))
+            'room', 'user').filter(room__id=data.id)
+        agg_vote = votes.aggregate(Sum('upvote'), Sum('downvote'))
+        vote_list = SimpleVoteSerializer(votes, many=True).data
 
-        return votes
+        context = dict()
+        context['upvote'] = agg_vote['upvote__sum']
+        context['downvote'] = agg_vote['downvote__sum']
+        context['vote_list'] = vote_list
+
+        return context
+
+    def get_is_votted(self, data):
+        requested_id = self.context['request'].user.id
+        vote = Vote.objects.filter(
+            Q(user__id=requested_id), Q(room_id=data.id))
+        return SimpleVoteSerializer(vote, many=True).data
 
     def get_total_messages(self, data):
 

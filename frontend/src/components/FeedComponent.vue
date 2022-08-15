@@ -49,23 +49,39 @@
     </div>
     <div class="roomListRoom__meta">
       <!-- up and down vote section -->
+      <!-- {{ data?.is_votted[0].upvote_boolean }} -->
+
       <div class="vote-section">
         <div clsss="vote-btn-section">
-          <div type="buton" class="vote-btn">
-            <span class="material-symbols-outlined"> thumb_up </span>
+          <div type="buton" class="vote-btn" @click="thumb_up_func(data)">
+            <span
+              class="material-symbols-outlined"
+              :class="[
+                data?.is_votted[0]?.upvote_boolean ? 'vote-style ' : null,
+              ]"
+            >
+              thumb_up
+            </span>
             <span class="vote-span">{{
-              data.vote?.upvote__sum > 0 && data.vote?.upvote__sum !== null
-                ? data.vote?.upvote__sum
+              data.vote?.upvote > 0 && data.vote?.upvote !== null
+                ? data.vote?.upvote
                 : 0
             }}</span>
           </div>
         </div>
         <div class="vote-btn-section">
-          <div type="button" class="vote-btn">
-            <span class="material-symbols-outlined"> thumb_down_off </span>
+          <div type="button" class="vote-btn" @click="thumb_down_func(data)">
+            <span
+              class="material-symbols-outlined"
+              :class="[
+                data?.is_votted[0]?.downvote_boolean ? 'vote-style ' : null,
+              ]"
+            >
+              thumb_down_off
+            </span>
             <span class="vote-span">{{
-              data.vote?.downvote__sum > 0 && data.vote?.downvote__sum !== null
-                ? data.vote?.downvote__sum
+              data.vote?.downvote > 0 && data.vote?.downvote !== null
+                ? data.vote?.downvote
                 : 0
             }}</span>
           </div>
@@ -90,17 +106,64 @@
 </template>
 <script>
 import moment from "moment";
+import axios from "../axios";
 export default {
   name: "FeedComponent",
   props: ["data"],
   data() {
     return {
       is_loading: false,
+      _upvote: 0,
+      _downvote: 0,
+      thumb_value: {
+        upvote: 0,
+        downvote: 0,
+        user: 0,
+        room: 0,
+      },
     };
   },
   methods: {
     dateHumanize(date) {
       return moment(date).fromNow();
+    },
+    thumb_up_func(data, upvote) {
+      if (
+        data?.is_votted.length > 0 &&
+        (data?.is_votted[0].upvote_boolean ||
+          data?.is_votted[0].downvote_boolean)
+      ) {
+        axios
+          .delete(`api/votes/${data.is_votted[0].id}`, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then((res) => {
+            console.log("data is delted", res);
+          });
+      } else {
+        console.log("pass data", data);
+        const vote_data = {
+          upvote: 1,
+          upvote_boolean: true,
+          user: data.room_host.id,
+          room: data.id,
+        };
+        console.log("vote_data", vote_data);
+        axios
+          .post("api/votes/", JSON.stringify(vote_data), {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then((res) => {
+            console.log("response", res);
+          });
+      }
+    },
+    thumb_down_func(id) {
+      console.log("thumb down id", id);
     },
   },
   async mounted() {},
@@ -149,10 +212,13 @@ export default {
   margin: 0px 7px 7px 0px;
 }
 .image-card {
-  height: 23rem;
+  /* height: 23rem; */
   width: 100%;
 }
 .card-img {
   height: inherit;
+}
+.vote-style {
+  color: orange;
 }
 </style>
