@@ -1,3 +1,5 @@
+from urllib import request
+
 from base.models import Message, Room, Topic, User, UserFollowing, Vote
 from django.db.models import Sum
 from rest_framework import serializers
@@ -53,6 +55,11 @@ class RoomSerializer(serializers.ModelSerializer):
         model = Room
         fields = ['id', 'room_host', 'room_image', 'topic', 'vote', 'participants', 'total_messages',
                   'name', 'description', 'updated', 'created']
+
+    def create(self, validated_data):
+        print('validated data', validated_data)
+        print('requested user', self.user)
+        return super().create(validated_data)
 
     def get_participants(self, data):
         room = Room.objects.select_related(

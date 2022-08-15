@@ -13,147 +13,145 @@
           <div class="layout__boxHeader">
             <div class="layout__boxTitle">
               <!-- <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span class="material-symbols-outlined"> arrow_back </span>
-              </button> -->
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span class="material-symbols-outlined"> arrow_back </span>
+                </button> -->
               <div class="layout__header_content">
                 <h3 style="color: black">Create/Update Study Room</h3>
               </div>
             </div>
           </div>
         </div>
-        <div class="modal-body">
-          <div class="layout__body">
-            <form class="form" action="" method="POST">
-              <div class="form__group">
-                <label for="room_topic">Enter a Topic</label>
-                <input
-                  required
-                  type="text"
-                  value=""
-                  name="topic"
-                  list="topic-list"
-                />
-                <datalist id="topic-list">
-                  <select id="room_topic">
-                    <option value="">
-                      <!-- {{ topic.name }} -->
-                    </option>
-                  </select>
-                </datalist>
-              </div>
-
-              <div class="form__group">
-                <label for="room_name">Room Name</label>
-                <!-- {{ form.name }} -->
-                <input
-                  required
-                  type="text"
-                  value=""
-                  name="topic"
-                  list="topic-list"
-                />
-              </div>
-              <div class="form__group">
-                <label for="room_topic">Topic</label>
-                <input
-                  required
-                  type="text"
-                  name="topic"
-                  id="room_topic"
-                  list="topic-list"
-                />
-                <datalist id="topic-list">
-                  <select id="room_topic">
-                    <option value="">Select your topic</option>
-                    <option value="Python">Python</option>
-                    <option value="Django">Django</option>
-                  </select>
-                </datalist>
-              </div>
-              <div class="form__group">
-                <label for="room_description">Room Description</label>
-                <!-- {{ form.description }} -->
-                <input
-                  required
-                  type="text"
-                  value=""
-                  name="topic"
-                  list="topic-list"
-                />
-              </div>
-              <div class="avatar-upload">
-                <div class="avatar-edit">
+        <form v-on:submit.prevent="submitForm">
+          <div class="modal-body">
+            <div class="layout__body">
+              <form class="form" action="" method="POST">
+                <div class="form__group">
+                  <label for="room_topic">Enter topic tags</label>
                   <input
-                    type="file"
-                    id="imageUpload"
-                    accept=".png, .jpg, .jpeg"
+                    required
+                    type="text"
+                    name="topic"
+                    list="topic-list"
+                    v-model="form.tags"
                   />
-                  <label for="imageUpload"></label>
+                  <datalist id="topic-list">
+                    <select id="room_topic">
+                      <option value="">
+                        <!-- {{ topic.name }} -->
+                      </option>
+                    </select>
+                  </datalist>
                 </div>
-                <div class="avatar-preview">
-                  <div
-                    id="imagePreview"
-                    style="
-                      background-image: url(http://i.pravatar.cc/500?img=7);
-                    "
-                  ></div>
+
+                <div class="form__group">
+                  <label for="room_name">Room Name</label>
+                  <input
+                    required
+                    type="text"
+                    name="name"
+                    list="topic-list"
+                    v-model="form.name"
+                  />
                 </div>
-              </div>
-            </form>
+                <div class="form__group">
+                  <!-- <label for="room_topic">Topic</label>
+                  <input
+                    required
+                    type="text"
+                    name="topic"
+                    id="topic"
+                    list="topic-list"
+                    v-model="form.topic"
+                  /> -->
+                  <datalist id="topic-list">
+                    <select id="room_topic">
+                      <option value="">Select your topic</option>
+                      <option value="Python">Python</option>
+                      <option value="Django">Django</option>
+                    </select>
+                  </datalist>
+                </div>
+                <div class="form__group">
+                  <label for="room_description">Room Description</label>
+                  <!-- {{ form.description }} -->
+                  <input
+                    required
+                    type="text"
+                    name="description"
+                    list="topic-list"
+                    v-model="form.description"
+                  />
+                </div>
+                <div class="avatar-upload">
+                  <div class="avatar-edit">
+                    <input
+                      type="file"
+                      id="imageUpload"
+                      accept=".png, .jpg, .jpeg"
+                      v-on:change="handleFileUpload()"
+                    />
+                    <label for="imageUpload"></label>
+                  </div>
+                  <div class="avatar-preview">
+                    <div
+                      id="imagePreview"
+                      style="
+                        background-image: url(http://i.pravatar.cc/500?img=7);
+                      "
+                    ></div>
+                  </div>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
-        <div class="modal-footer">
-          <div class="form__action">
-            <a
-              class="btn btn--dark btn-danger"
-              data-dismiss="modal"
-              type="button"
-              >Cancel</a
-            >
-            <button
-              class="btn btn--main btn btn-secondary btn btn-primary"
-              type="submit"
-            >
-              Submit
+          <div class="modal-footer">
+            <div class="form__action">
+              <a
+                class="btn btn--dark btn-danger"
+                data-dismiss="modal"
+                type="button"
+                >Cancel</a
+              >
+              <button
+                class="btn btn--main btn btn-secondary btn btn-primary"
+                type="submit"
+              >
+                Submit
+              </button>
+            </div>
+            <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              Close
             </button>
+            <button type="button" class="btn btn-primary">Save changes</button> -->
           </div>
-          <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">
-            Close
-          </button>
-          <button type="button" class="btn btn-primary">Save changes</button> -->
-        </div>
-      </div>
-    </div>
-  </div>
-  <div
-    class="modal fade"
-    id="exampleModalCenter"
-    tabindex="-1"
-    role="dialog"
-    aria-labelledby="exampleModalCenterTitle"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div>
-        <div class="container">
-          <div class="layout__box"></div>
-        </div>
+        </form>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from "../axios";
+
 export default {
   name: "room-form-model",
   components: {},
   data() {
-    return {};
+    return {
+      form: {
+        tags: "",
+        name: "",
+        // title: "",
+        // topic: "",
+        description: "",
+        room_image: "",
+      },
+    };
   },
 
   created() {},
@@ -162,14 +160,34 @@ export default {
   // They can be bound as event listeners in templates.
   methods: {
     featchFeedCardData() {
-      this.is_loading = true;
-      console.log("router========", $router.params);
-      axios.get("api/room/").then((res) => {
-        console.log("response", res);
-        this.feed_room_data = res.data;
-        this.available_study_room = res.data.length;
-        this.is_loading = false;
-      });
+      // this.is_loading = true;
+      // axios.get("api/room/").then((res) => {
+      //   console.log("response", res);
+      //   this.feed_room_data = res.data;
+      //   this.available_study_room = res.data.length;
+      //   this.is_loading = false;
+      // });
+    },
+    submitForm() {
+      let formData = new FormData();
+      formData.append("room_image", this.form.room_image);
+      console.log("form data", this.form);
+      axios
+        .post("api/room/", this.form, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((res) => {
+          console.log("response", res);
+        })
+        .catch((err) => {
+          console.log("error", err);
+        });
+    },
+    handleFileUpload() {
+      console.log("handle file upload");
+      this.room_image = this.$refs.file.files[0];
     },
   },
 

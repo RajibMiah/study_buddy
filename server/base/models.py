@@ -1,5 +1,6 @@
 
 import uuid
+from urllib import request
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -21,7 +22,7 @@ class User(AbstractUser):
 
 
 class Topic(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True, null=True)
 
     @property
     def total_rooms(self):
@@ -29,7 +30,7 @@ class Topic(models.Model):
         return total_room
 
     def __str__(self) -> str:
-        return self.name
+        return str(self.name)
 
 
 class Room(models.Model):

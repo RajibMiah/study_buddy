@@ -1,4 +1,6 @@
 
+from functools import partial
+
 from base.models import Room, Topic, User, UserFollowing, Vote
 from django.db.models import Q
 from rest_framework import status, viewsets
@@ -8,7 +10,7 @@ from rest_framework.response import Response
 
 from .serializers import (RoomSerializer, TopicSerializer,
                           UserFollowingModelSerializer, VoteModelSerializer)
-from .UserSerializers import UserProfielSerializer
+from .UserSerializers import SimplateRoomSerializer, UserProfielSerializer
 
 
 class UserProfileModelViewSet(viewsets.ModelViewSet):
@@ -43,7 +45,7 @@ class RoomModelViewSet(viewsets.ModelViewSet):
         'host', 'topic').all()  # order_by('?')
     serializer_class = RoomSerializer
     lookup_field = 'pk'
-    http_method_names = ['get', 'patch', ]
+    # http_method_names = ['get', 'post' 'patch', ]
     # permission_classes = [permissions.IsAuthenticatedOrReadOnly,
     #                       IsOwnerOrReadOnly]
 
@@ -59,6 +61,23 @@ class RoomModelViewSet(viewsets.ModelViewSet):
             )
             return room
         return super().get_queryset()
+
+    def create(self, request, *args, **kwargs):
+        print('inside view create method')
+        topic_name = request.data.pop('tags')
+        print('pop topic name', topic_name)
+        topic, created = Topic.objects.get_or_create(name=topic_name)
+        # print('requested data', request.data, request.user)
+
+        context = request.data
+        context['host'] = request.user.id
+        context['topic'] = topic.id
+        print('context ==========>', context)
+        serializer = SimplateRoomSerializer(data=context)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            print('data is saved')
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def update(self, request, *args, **kwargs):
         pk = self.kwargs.get('pk')

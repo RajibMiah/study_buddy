@@ -38,7 +38,11 @@
       <div class="card image-card">
         <img
           class="card-img-top card-img"
-          src="https://www.lighthouselabs.ca/uploads/post/open_graph_image/414/JavaScript-Uses-Cases-Programming-Language-.jpg"
+          :src="
+            data.room_image
+              ? data.room_image
+              : 'https://www.lighthouselabs.ca/uploads/post/open_graph_image/414/JavaScript-Uses-Cases-Programming-Language-.jpg'
+          "
           alt="room_image"
         />
       </div>
