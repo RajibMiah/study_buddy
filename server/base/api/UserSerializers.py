@@ -1,5 +1,3 @@
-from asyncore import read
-
 from base.models import Room, User, UserFollowing
 from rest_framework import serializers
 

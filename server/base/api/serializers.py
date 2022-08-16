@@ -58,6 +58,7 @@ class RoomSerializer(serializers.ModelSerializer):
     vote = serializers.SerializerMethodField(read_only=True)
     total_messages = serializers.SerializerMethodField(read_only=True)
     is_votted = serializers.SerializerMethodField(read_only=True)
+    room_image = serializers.SerializerMethodField('get_room_image')
 
     class Meta:
         model = Room
@@ -89,9 +90,9 @@ class RoomSerializer(serializers.ModelSerializer):
         return context
 
     def get_is_votted(self, data):
-        requested_id = self.context['request'].user.id
-        vote = Vote.objects.filter(
-            Q(user__id=requested_id), Q(room_id=data.id))
+        # requested_id = self.context['request'].user.
+        # print('requested id', requested_id, 'data user id', data.id)
+        vote = Vote.objects.filter(Q(room_id=data.id))
         return SimpleVoteSerializer(vote, many=True).data
 
     def get_total_messages(self, data):
@@ -102,6 +103,12 @@ class RoomSerializer(serializers.ModelSerializer):
 
         return room_message
         # return MessageSerializer(room_message, many=True, read_only=True).data
+
+    def get_room_image(self, obj):
+        if obj.room_image:
+            image_url = str(AVATOR_BASE_URL) + str(obj.room_image)
+            return image_url
+        return None
 
     # def get_total_vote(self, data):
     #     self.upvote = 0
