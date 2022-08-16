@@ -52,9 +52,13 @@
         <!-- START POPUP COMPONENT -->
 
         <!-- <pre>{{ is_loading }}</pre> -->
-
+        <!-- <pre>{{ data }}</pre> -->
         <div v-show="!is_loading" v-for="feeditem in data" :key="feeditem.id">
-          <FeedComponentVue :data="feeditem" :method="thumbMethod" />
+          <FeedComponentVue
+            :data="feeditem"
+            :thumbUpMethod="thumbUpMethod"
+            :thumbDownMethod="thumbDownMethod"
+          />
         </div>
       </div>
 
@@ -89,10 +93,6 @@ export default {
       is_loading: false,
       available_study_room: 0,
       data: [],
-      event_occure: false,
-      // _upvote: 0,
-      // _downvote: 0,
-      // vote_list: [],
       router: this.$route.params,
     };
   },
@@ -117,23 +117,74 @@ export default {
         this.is_loading = false;
       });
     },
-
-    thumbMethod(thumb_data) {
-      axios
-        .post("api/votes/", JSON.stringify(thumb_data), {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((res) => {
-          this.data.map((x, index) => {
-            console.log("out side x", x, "index", index);
-            if (x.id === thumb_data.room) {
-              this.data[index].is_votted = res.data;
-              console.log("data updated", this.data);
-            }
+    async thumbUpMethod(data) {
+      console.log("thumb up length", data?.is_votted.length);
+      if (data?.is_votted.length > 0) {
+        await axios
+          .delete(`api/votes/${data.is_votted[0].id}/`, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then((res) => {
+            console.log("deleted", res.data);
+            data.is_votted = [];
+            data.vote.upvote = data.vote.upvote - 1;
           });
-        });
+      } else {
+        let thumb_data = {
+          upvote: 1,
+          upvote_boolean: true,
+          user: data.room_host.id,
+          room: data.id,
+        };
+        await axios
+          .post("api/votes/", JSON.stringify(thumb_data), {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then((res) => {
+            data.is_votted.push(res.data);
+            data.vote.upvote = data.vote.upvote + 1;
+            console.log("data crated ", data);
+          });
+      }
+
+      console.log("not called");
+    },
+    async thumbDownMethod(data) {
+      if (data?.is_votted.length > 0) {
+        await axios
+          .delete(`api/votes/${data.is_votted[0].id}/`, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then((res) => {
+            console.log("deleted", res.data);
+            data.is_votted = [];
+            data.vote.downvote = data.vote.downvote - 1;
+          });
+      } else {
+        let thumb_data = {
+          downvote: 1,
+          downvote_boolean: true,
+          user: data.room_host.id,
+          room: data.id,
+        };
+        await axios
+          .post("api/votes/", JSON.stringify(thumb_data), {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then((res) => {
+            data.is_votted.push(res.data);
+            data.vote.downvote = data.vote.downvote + 1;
+            console.log("data crated ", data);
+          });
+      }
     },
   },
   watch: {
@@ -144,9 +195,9 @@ export default {
         await this.featchFeedCardData();
       }
     },
-    data: function () {
-      console.log("watching data. upate..");
-    },
+    // data: function () {
+    //   console.log("watching data. upate..");
+    // },
   },
 
   async mounted() {

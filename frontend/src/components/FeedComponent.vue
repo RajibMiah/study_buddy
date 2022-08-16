@@ -53,11 +53,7 @@
 
       <div class="vote-section">
         <div clsss="vote-btn-section">
-          <div
-            type="buton"
-            class="vote-btn"
-            @click="thumb_up_func(data, (thumb_up = true))"
-          >
+          <div type="buton" class="vote-btn" @click="thumbUpMethod(data)">
             <span
               id="thumb_up"
               class="material-symbols-outlined"
@@ -75,11 +71,7 @@
           </div>
         </div>
         <div class="vote-btn-section">
-          <div
-            type="button"
-            class="vote-btn"
-            @click="thumb_up_func(data, (thumb_up = false))"
-          >
+          <div type="button" class="vote-btn" @click="thumbDownMethod(data)">
             <span
               class="material-symbols-outlined"
               :class="[
@@ -115,10 +107,9 @@
 </template>
 <script>
 import moment from "moment";
-import axios from "../axios";
 export default {
   name: "FeedComponent",
-  props: ["data", "method"],
+  props: ["data", "thumbUpMethod", "thumbDownMethod"],
   data() {
     return {
       is_loading: false,
@@ -128,19 +119,10 @@ export default {
     dateHumanize(date) {
       return moment(date).fromNow();
     },
+
     thumb_up_func(data, thumb_up) {
       console.log("data of state", data);
-      if (data?.is_votted.length > 0) {
-        axios
-          .delete(`api/votes/${data.is_votted[0].id}/`, {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-          .then((res) => {
-            console.log("deleted", res.data);
-          });
-      }
+
       let post_data = [];
       if (thumb_up) {
         post_data = {
@@ -161,36 +143,8 @@ export default {
       // {
       //    this.method(post_data)
       // }
-      this.method(post_data);
     },
   },
-  // async mounted() {
-  //   console.log("mounted on home page");
-  //   // this.__mounted();
-  // },
-  // beforeCreate() {
-  //   console.log("beforeCreate");
-  // },
-  // created() {
-  //   console.log("created");
-  // },
-  // beforeMount() {
-  //   console.log("beforeMount");
-  // },
-
-  // beforeUpdate() {
-  //   console.log("beforeUpdate");
-  // },
-  // updated() {
-  //   console.log("updated");
-  //   // this.__update();
-  // },
-  // beforeDestroy() {
-  //   console.log("beforeDestroy");
-  // },
-  // destroyed() {
-  //   console.log("destroyed");
-  // },
 };
 </script>
 
