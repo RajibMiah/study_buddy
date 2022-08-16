@@ -96,7 +96,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('name', 'username', 'online',
+        fields = ('id', 'name', 'username', 'online',
                   'status', 'messages', 'avator', 'uuid')
 
     def get_name(self, obj):

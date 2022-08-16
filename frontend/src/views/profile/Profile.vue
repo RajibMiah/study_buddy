@@ -1,6 +1,7 @@
 <template>
   <!-- <pre>{{ user_profile }}</pre> -->
-  <main class="profile-page layout layout--3">
+  <div v-if="is_loading">..</div>
+  <main v-else class="profile-page layout layout--3">
     <div class="container">
       <div>
         <TopicComponentVue />
@@ -32,37 +33,70 @@
                 </div>
                 <div>
                   <div class="profile-user-followers">
-                    <h4>@{{ user_profile.name }} 10 followers</h4>
+                    <h4>
+                      @{{ user_profile.name }}
+                      {{ user_profile?.follows_list?.total_followers }}
+                      followers
+                    </h4>
                   </div>
-
-                  <div
-                    v-if="$route.params.uuid !== $store.state.activeUser.uuid"
-                    class="btn btn--main btn--pill"
-                    id="followers"
-                  >
-                    <a class="follow-span">Follow</a>
-                  </div>
-                  <div v-else class="btn btn--main btn--pill" id="edit-profile">
-                    <router-link
-                      :to="{
-                        name: 'edit-profile',
-                        params: { uuid: $store.state.activeUser.uuid },
-                      }"
-                      class="follow-span"
-                      >Edit Profile</router-link
+                  <div style="display: flex; justify-content: center">
+                    <div
+                      v-if="
+                        $route.params.uuid !== $store.state.activeUser.uuid &&
+                        !user_profile?.follows_list?.is_followed
+                      "
+                      class="btn btn--main btn--pill"
+                      id="followers"
+                      @click="
+                        followingBtn(
+                          (user_id = user_profile?.id),
+                          null,
+                          user_profile?.follows_list?.is_followed
+                        )
+                      "
                     >
-                  </div>
-                </div>
-              </div>
-              <div class="profile-contact-conatiner">
-                <a href="#">
-                  <div class="header__user">
-                    <button type="button" class="icon-button">
-                      <span class="material-symbols-outlined">chat</span>
-                    </button>
-                  </div>
-                </a>
-                <a href="#" target="_blank">
+                      <a class="follow-span">Follow</a>
+                    </div>
+                    <div
+                      v-else-if="user_profile?.follows_list?.is_followed"
+                      class="btn btn--main btn--pill"
+                      id="followers"
+                      @click="
+                        followingBtn(
+                          (user_id = user_profile?.id),
+                          user_profile?.follows_list?.follows,
+                          user_profile?.follows_list?.is_followed
+                        )
+                      "
+                    >
+                      <a class="follow-span">Unfollow</a>
+                    </div>
+                    <div
+                      v-else
+                      class="btn btn--main btn--pill"
+                      id="edit-profile"
+                    >
+                      <router-link
+                        :to="{
+                          name: 'edit-profile',
+                          params: { uuid: $store.state.activeUser.uuid },
+                        }"
+                        class="follow-span"
+                        >Edit Profile</router-link
+                      >
+                    </div>
+                    <div
+                      v-if="$route.params.uuid !== $store.state.activeUser.uuid"
+                      class="profile-contact-conatiner"
+                    >
+                      <a href="#">
+                        <div class="header__user">
+                          <button type="button" class="icon-button">
+                            <span class="material-symbols-outlined">chat</span>
+                          </button>
+                        </div>
+                      </a>
+                      <!-- <a href="#" target="_blank">
                   <div class="header__user">
                     <button type="button" class="icon-button">
                       <span class="material-symbols-outlined">
@@ -70,8 +104,12 @@
                       </span>
                     </button>
                   </div>
-                </a>
+                </a> -->
+                    </div>
+                  </div>
+                </div>
               </div>
+
               <!-- <p>@{{ user.username }}</p> -->
             </div>
 
@@ -123,14 +161,57 @@ export default {
       axios.get(`/api/profile/${this.$route.params.uuid}/`).then((res) => {
         console.log("picked profile details data", res.data);
         this.user_profile = res.data;
-        // this.room_paticipants = res.data.participants;
         this.is_loading = false;
       });
+    },
+    async followingBtn(user_id, follows_data, is_followed) {
+      if (is_followed) {
+        let get_Following_pk;
+        follows_data.map((data) => {
+          if (data.following_user_id === this.$store.state.activeUser.id) {
+            get_Following_pk = data.id;
+          }
+        });
+        await axios
+          .delete(`/api/userfollowing/${get_Following_pk}/`)
+          .then((res) => {
+            console.log(" delete response", res);
+            this.user_profile.follows_list.follows =
+              this.user_profile.follows_list.follows.filter(
+                (data) =>
+                  data.following_user_id != this.$store.state.activeUser.id
+              );
+
+            this.user_profile.follows_list.is_followed = false;
+            this.user_profile.follows_list.total_followers =
+              this.user_profile.follows_list.total_followers - 1;
+          });
+      } else {
+        const data = {
+          user_id: user_id,
+          following_user_id: this.$store.state.activeUser.id,
+        };
+        await axios
+          .post("/api/userfollowing/", JSON.stringify(data), {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then((res) => {
+            console.log(" create response response", res);
+            // this.$forceUpdate();
+            this.user_profile.follows_list.follows.push(res.data);
+            this.user_profile.follows_list.is_followed = true;
+            this.user_profile.follows_list.total_followers =
+              this.user_profile.follows_list.total_followers + 1;
+          });
+      }
     },
   },
   async mounted() {
     await this.fetchProfileData();
   },
+
   computed: {},
 };
 </script>

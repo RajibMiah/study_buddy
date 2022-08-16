@@ -124,8 +124,8 @@ class VoteModelViewSet(viewsets.ModelViewSet):
 class UserFollowingModelViewSet(viewsets.ModelViewSet):
     queryset = UserFollowing.objects.all()
     serializer_class = UserFollowingModelSerializer
-    http_method_names = ['get', 'patch', 'delete']
-    lookup_field = 'user_id'
+    # http_method_names = ['get', 'patch', 'delete']
+    # lookup_field = 'user_id'
 
     # def get_queryset(self):
 

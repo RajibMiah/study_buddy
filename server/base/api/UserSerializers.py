@@ -45,9 +45,13 @@ class UserProfielSerializer(serializers.ModelSerializer):
         return RoomSerializer(user_room_details, many=True).data
 
     def get_follows_list(self, data):
-        print('data', data)
-        following_list = UserFollowing.objects.select_related('user_id', 'following_user_id').filter(
+        requested_user_id = self.context['request'].user.id
+        following_list = UserFollowing.objects.select_related('user_id').filter(
             user_id=data.id)
-        print('following list', following_list)
-
-        return UserFollowingStatusSerializer(following_list, many=True).data
+        ctx = dict()
+        ctx['total_followers'] = following_list.count()
+        ctx['is_followed'] = True if following_list.filter(
+            following_user_id=requested_user_id) else False
+        ctx['follows'] = UserFollowingStatusSerializer(
+            following_list, many=True).data
+        return ctx

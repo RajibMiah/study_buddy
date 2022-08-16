@@ -71,6 +71,7 @@ export default {
       await axios
         .post("chat/login/", this.user)
         .then((response) => {
+          console.log(response.data);
           this.$store.commit("SET_TOKEN", response.data.token);
           this.$store.commit("UPDATE_USER", response.data.user);
           this.$router.replace({
