@@ -1,3 +1,5 @@
+from urllib import request
+
 from base.models import Room, User, UserFollowing
 from rest_framework import serializers
 
@@ -40,9 +42,10 @@ class UserProfielSerializer(serializers.ModelSerializer):
         )
 
     def get_user_created_rooms(self, obj):
+
         user = User.objects.select_related('profile').get(pk=obj.pk)
         user_room_details = user.room_set.all()
-        return RoomSerializer(user_room_details, many=True).data
+        return RoomSerializer(user_room_details, many=True,  context=self.context).data
 
     def get_follows_list(self, data):
         requested_user_id = self.context['request'].user.id

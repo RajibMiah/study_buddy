@@ -65,11 +65,6 @@ class RoomSerializer(serializers.ModelSerializer):
         fields = ['id', 'room_host', 'room_image', 'topic', 'vote', 'is_votted', 'participants', 'total_messages',
                   'name', 'description', 'updated', 'created']
 
-    def create(self, validated_data):
-        print('validated data', validated_data)
-        print('requested user', self.user)
-        return super().create(validated_data)
-
     def get_participants(self, data):
         room = Room.objects.select_related(
             'host', 'topic').get(pk=data.pk).participants.all()
@@ -92,7 +87,8 @@ class RoomSerializer(serializers.ModelSerializer):
     def get_is_votted(self, data):
         # requested_id = self.context['request'].user.
         # print('requested id', requested_id, 'data user id', data.id)
-        vote = Vote.objects.filter(Q(room_id=data.id))
+        vote = Vote.objects.filter(
+            Q(room_id=data.id), Q(user=self.context['request'].user.id))
         return SimpleVoteSerializer(vote, many=True).data
 
     def get_total_messages(self, data):

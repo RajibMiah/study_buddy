@@ -1,8 +1,10 @@
 
-from functools import partial
+
+from multiprocessing import context
+from urllib import request
 
 from base.models import Room, Topic, User, UserFollowing, Vote
-from django.db.models import Q
+from django.db.models import Max, Min, Q
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
@@ -31,7 +33,8 @@ class UserProfileModelViewSet(viewsets.ModelViewSet):
     def avator(self, reqeust, pk=None):
         print('user pk', pk)
         user = self.get_object()
-        serializer = UserProfielSerializer(user, reqeust.data)
+        serializer = UserProfielSerializer(
+            user, reqeust.data, context={'request': self.request})
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -42,7 +45,7 @@ class UserProfileModelViewSet(viewsets.ModelViewSet):
 class RoomModelViewSet(viewsets.ModelViewSet):
 
     queryset = Room.objects.select_related(
-        'host', 'topic').all()  # order_by('?')
+        'host', 'topic').annotate(voting_rank=Max('voted_room__upvote'), downvote=Min('voted_room__downvote')).order_by('-voting_rank', '-downvote', '-created', '-updated')
     serializer_class = RoomSerializer
     lookup_field = 'pk'
     # http_method_names = ['get', 'post' 'patch', ]
@@ -67,7 +70,6 @@ class RoomModelViewSet(viewsets.ModelViewSet):
         topic_name = request.data.pop('tags')
         print('pop topic name', topic_name)
         topic, created = Topic.objects.get_or_create(name=topic_name)
-        # print('requested data', request.data, request.user)
 
         context = request.data
         context['host'] = request.user.id
