@@ -1,9 +1,12 @@
-from urllib import request
+
 
 from base.models import Room, User, UserFollowing
+from django.db.models import Count, Max
 from rest_framework import serializers
 
 from .serializers import RoomSerializer
+
+AVATOR_BASE_URL = 'http://127.0.0.1:8000/images/'
 
 
 class SimplateRoomSerializer(serializers.ModelSerializer):
@@ -58,3 +61,5 @@ class UserProfielSerializer(serializers.ModelSerializer):
         ctx['follows'] = UserFollowingStatusSerializer(
             following_list, many=True).data
         return ctx
+
+

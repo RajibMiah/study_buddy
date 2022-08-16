@@ -5,78 +5,20 @@
       <span class="material-symbols-outlined"> more_vert </span>
     </div>
     <div class="suggestions-list snip-div">
-      <div class="suggestion-usd snip-div">
-        <img
-          src="https://gambolthemes.net/workwise-new/images/resources/s1.png"
-          alt=""
-          class="snip-img"
-        />
+      <div v-for="user in user_profile" class="suggestion-usd snip-div">
+        <img :src="user.avator" alt="" class="snip-img" />
         <div class="sgt-text snip-div">
-          <h4 class="snip-h4">Jessica William</h4>
+          <h4 class="snip-h4">{{ user.name }}</h4>
           <span class="snip-span"> Graphic Designer </span>
         </div>
-        <span class="material-symbols-outlined"> add </span>
+        <span
+          class="material-symbols-outlined follow-btn"
+          @click="followBtn(user.id)"
+        >
+          Follow
+        </span>
       </div>
-      <div class="suggestion-usd snip-div">
-        <img
-          src="https://gambolthemes.net/workwise-new/images/resources/s2.png"
-          alt=""
-          class="snip-img"
-        />
-        <div class="sgt-text snip-div">
-          <h4 class="snip-h4">John Doe</h4>
-          <span class="snip-span"> PHP Developer </span>
-        </div>
-        <span class="material-symbols-outlined"> add </span>
-      </div>
-      <div class="suggestion-usd snip-div">
-        <img
-          src="https://gambolthemes.net/workwise-new/images/resources/s3.png"
-          alt=""
-          class="snip-img"
-        />
-        <div class="sgt-text snip-div">
-          <h4 class="snip-h4">Poonam</h4>
-          <span class="snip-span"> Wordpress Developer </span>
-        </div>
-        <span class="material-symbols-outlined"> add </span>
-      </div>
-      <div class="suggestion-usd snip-div">
-        <img
-          src="https://gambolthemes.net/workwise-new/images/resources/s4.png"
-          alt=""
-          class="snip-img"
-        />
-        <div class="sgt-text snip-div">
-          <h4 class="snip-h4">Bill Gates</h4>
-          <span class="snip-span"> C &amp; C++ Developer </span>
-        </div>
-        <span class="material-symbols-outlined"> add </span>
-      </div>
-      <div class="suggestion-usd snip-div">
-        <img
-          src="https://gambolthemes.net/workwise-new/images/resources/s5.png"
-          alt=""
-          class="snip-img"
-        />
-        <div class="sgt-text snip-div">
-          <h4 class="snip-h4">Jessica William</h4>
-          <span class="snip-span"> Graphic Designer </span>
-        </div>
-        <span class="material-symbols-outlined"> add </span>
-      </div>
-      <div class="suggestion-usd snip-div">
-        <img
-          src="https://gambolthemes.net/workwise-new/images/resources/s6.png"
-          alt=""
-          class="snip-img"
-        />
-        <div class="sgt-text snip-div">
-          <h4 class="snip-h4">John Doe</h4>
-          <span class="snip-span"> PHP Developer </span>
-        </div>
-        <span class="material-symbols-outlined"> add </span>
-      </div>
+
       <div class="view-more snip-div">
         <router-link
           :to="{
@@ -92,8 +34,33 @@
   </div>
 </template>
 <script>
+import axios from "../axios";
 export default {
+  name: "all-profile-side-menu",
   components: {},
+  data: function () {
+    return {
+      is_loading: false,
+      user_profile: [],
+    };
+  },
+  methods: {
+    fetchAllTopfollowerPersons() {
+      this.is_loading = true;
+      axios.get("api/most-followed-peoples/").then((res) => {
+        console.log("picked profile details data", res.data);
+        this.user_profile = res.data;
+        this.is_loading = false;
+      });
+    },
+    followBtn(user_id) {
+      console.log("user id", user_id);
+    },
+  },
+  async mounted() {
+    await this.fetchAllTopfollowerPersons();
+  },
+  computed: {},
 };
 </script>
 
@@ -114,6 +81,11 @@ div {
   vertical-align: baseline;
 }
 
+.follow-btn {
+  cursor: pointer;
+  color: #e44d3a;
+  font-weight: 700;
+}
 .right-sidebar {
   float: left;
   width: 100%;
@@ -362,6 +334,7 @@ img {
   -ms-border-radius: 100px;
   -o-border-radius: 100px;
   border-radius: 100px;
+  width: 19%;
 }
 
 .sgt-text {

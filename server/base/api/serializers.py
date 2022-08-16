@@ -136,3 +136,23 @@ class UserFollowingModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserFollowing
         fields = '__all__'
+
+
+class MostFollowedUserModelSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(read_only=True)
+    total_follower = serializers.SerializerMethodField(read_only=True)
+    uuid = serializers.UUIDField(read_only=True)
+    # designation
+
+    avator = serializers.SerializerMethodField(read_only=True)
+
+    def get_avator(self, user):
+        if user.avator:
+            avator_url = str(AVATOR_BASE_URL) + str(user.avator)
+            return avator_url
+        return None
+
+    def get_total_follower(self, user):
+        followers = UserFollowing.objects.filter(user_id=user.id).count()
+        return followers

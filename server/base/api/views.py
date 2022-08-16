@@ -4,14 +4,15 @@ from multiprocessing import context
 from urllib import request
 
 from base.models import Room, Topic, User, UserFollowing, Vote
-from django.db.models import Max, Min, Q
+from django.db.models import Count, Max, Min, Q
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
 
-from .serializers import (RoomSerializer, TopicSerializer,
-                          UserFollowingModelSerializer, VoteModelSerializer)
+from .serializers import (MostFollowedUserModelSerializer, RoomSerializer,
+                          TopicSerializer, UserFollowingModelSerializer,
+                          VoteModelSerializer)
 from .UserSerializers import SimplateRoomSerializer, UserProfielSerializer
 
 
@@ -48,9 +49,6 @@ class RoomModelViewSet(viewsets.ModelViewSet):
         'host', 'topic').annotate(voting_rank=Max('voted_room__upvote'), downvote=Min('voted_room__downvote')).order_by('-voting_rank', '-downvote', '-created', '-updated')
     serializer_class = RoomSerializer
     lookup_field = 'pk'
-    # http_method_names = ['get', 'post' 'patch', ]
-    # permission_classes = [permissions.IsAuthenticatedOrReadOnly,
-    #                       IsOwnerOrReadOnly]
 
     def get_queryset(self):
 
@@ -78,7 +76,6 @@ class RoomModelViewSet(viewsets.ModelViewSet):
         serializer = SimplateRoomSerializer(data=context)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            print('data is saved')
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def update(self, request, *args, **kwargs):
@@ -120,24 +117,14 @@ class VoteModelViewSet(viewsets.ModelViewSet):
 
     queryset = Vote.objects.all()
     serializer_class = VoteModelSerializer
-    # http_method_names = ['get', 'patch']
 
 
 class UserFollowingModelViewSet(viewsets.ModelViewSet):
     queryset = UserFollowing.objects.all()
     serializer_class = UserFollowingModelSerializer
-    # http_method_names = ['get', 'patch', 'delete']
-    # lookup_field = 'user_id'
 
-    # def get_queryset(self):
 
-    #         q = self.request.GET.get('user-id')
-    #         if q is not None:
-    #             room = super().get_queryset().filter(
-    #                 Q(topic__name__icontains=q) |
-    #                 Q(name__icontains=q) |
-    #                 Q(host__username__icontains=q) |
-    #                 Q(description__icontains=q)
-    #             )
-    #             return room
-    #         return super().get_queryset()
+class MostFollowedPeopleModelViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = MostFollowedUserModelSerializer
+    http_method_names = ['get']

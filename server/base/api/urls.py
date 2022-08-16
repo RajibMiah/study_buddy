@@ -12,6 +12,9 @@ router.register(r'votes', views.VoteModelViewSet, basename='votes')
 router.register(r'userfollowing', views.UserFollowingModelViewSet,
                 basename='userfollowing')
 
+router.register(r'most-followed-peoples',
+                views.MostFollowedPeopleModelViewSet, basename='most-followed-people')
+
 urlpatterns = [
     # path('',  views.getRoutes),
 

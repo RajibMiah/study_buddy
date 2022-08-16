@@ -3,19 +3,19 @@
   <section class="companies-info snipcss-pWLv8 snip-section">
     <div class="container snip-div">
       <div class="company-title snip-div">
-        <h3 class="snip-h3">All Companies</h3>
+        <h3 class="snip-h3">All Top Profiles</h3>
       </div>
       <div class="companies-list snip-div">
         <div class="row snip-div">
-          <div class="col-lg-3 col-md-4 col-sm-6 col-12 snip-div">
+          <div
+            class="col-lg-3 col-md-4 col-sm-6 col-12 snip-div"
+            v-for="user in user_profile"
+            :key="user.id"
+          >
             <div class="company_profile_info snip-div">
               <div class="company-up-info snip-div">
-                <img
-                  src="https://gambolthemes.net/workwise-new/images/resources/pf-icon1.png"
-                  alt=""
-                  class="snip-img"
-                />
-                <h3 class="snip-h3">John Doe</h3>
+                <img :src="user.avator" alt="" class="snip-img" />
+                <h3 class="snip-h3">{{ user.name }}</h3>
                 <h4 class="snip-h4">Graphic Designer</h4>
                 <ul class="snip-ul">
                   <li class="snip-li">
@@ -31,328 +31,17 @@
                   </li>
                 </ul>
               </div>
-              <a href="user-profile.html" title="" class="view-more-pro snip-a">
+              <router-link
+                href="user-profile.html"
+                title=""
+                class="view-more-pro snip-a"
+                :to="{
+                  name: 'profile',
+                  params: { uuid: user.uuid },
+                }"
+              >
                 View Profile
-              </a>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-4 col-sm-6 col-12 snip-div">
-            <div class="company_profile_info snip-div">
-              <div class="company-up-info snip-div">
-                <img
-                  src="https://gambolthemes.net/workwise-new/images/resources/pf-icon2.png"
-                  alt=""
-                  class="snip-img"
-                />
-                <h3 class="snip-h3">John Doe</h3>
-                <h4 class="snip-h4">Graphic Designer</h4>
-                <ul class="snip-ul">
-                  <li class="snip-li">
-                    <a href="#" title="" class="follow snip-a"> Follow </a>
-                  </li>
-                  <li class="snip-li">
-                    <a href="#" title="" class="message-us snip-a">
-                      <i class="fa fa-envelope"> </i>
-                    </a>
-                  </li>
-                  <li class="snip-li">
-                    <a href="#" title="" class="hire-us snip-a"> Hire </a>
-                  </li>
-                </ul>
-              </div>
-              <a href="user-profile.html" title="" class="view-more-pro snip-a">
-                View Profile
-              </a>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-4 col-sm-6 col-12 snip-div">
-            <div class="company_profile_info snip-div">
-              <div class="company-up-info snip-div">
-                <img
-                  src="https://gambolthemes.net/workwise-new/images/resources/pf-icon3.png"
-                  alt=""
-                  class="snip-img"
-                />
-                <h3 class="snip-h3">John Doe</h3>
-                <h4 class="snip-h4">Graphic Designer</h4>
-                <ul class="snip-ul">
-                  <li class="snip-li">
-                    <a href="#" title="" class="follow snip-a"> Follow </a>
-                  </li>
-                  <li class="snip-li">
-                    <a href="#" title="" class="message-us snip-a">
-                      <i class="fa fa-envelope"> </i>
-                    </a>
-                  </li>
-                  <li class="snip-li">
-                    <a href="#" title="" class="hire-us snip-a"> Hire </a>
-                  </li>
-                </ul>
-              </div>
-              <a href="user-profile.html" title="" class="view-more-pro snip-a">
-                View Profile
-              </a>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-4 col-sm-6 col-12 snip-div">
-            <div class="company_profile_info snip-div">
-              <div class="company-up-info snip-div">
-                <img
-                  src="https://gambolthemes.net/workwise-new/images/resources/pf-icon4.png"
-                  alt=""
-                  class="snip-img"
-                />
-                <h3 class="snip-h3">John Doe</h3>
-                <h4 class="snip-h4">Graphic Designer</h4>
-                <ul class="snip-ul">
-                  <li class="snip-li">
-                    <a href="#" title="" class="follow snip-a"> Follow </a>
-                  </li>
-                  <li class="snip-li">
-                    <a href="#" title="" class="message-us snip-a">
-                      <i class="fa fa-envelope"> </i>
-                    </a>
-                  </li>
-                  <li class="snip-li">
-                    <a href="#" title="" class="hire-us snip-a"> Hire </a>
-                  </li>
-                </ul>
-              </div>
-              <a href="user-profile.html" title="" class="view-more-pro snip-a">
-                View Profile
-              </a>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-4 col-sm-6 col-12 snip-div">
-            <div class="company_profile_info snip-div">
-              <div class="company-up-info snip-div">
-                <img
-                  src="https://gambolthemes.net/workwise-new/images/resources/pf-icon5.png"
-                  alt=""
-                  class="snip-img"
-                />
-                <h3 class="snip-h3">John Doe</h3>
-                <h4 class="snip-h4">Graphic Designer</h4>
-                <ul class="snip-ul">
-                  <li class="snip-li">
-                    <a href="#" title="" class="follow snip-a"> Follow </a>
-                  </li>
-                  <li class="snip-li">
-                    <a href="#" title="" class="message-us snip-a">
-                      <i class="fa fa-envelope"> </i>
-                    </a>
-                  </li>
-                  <li class="snip-li">
-                    <a href="#" title="" class="hire-us snip-a"> Hire </a>
-                  </li>
-                </ul>
-              </div>
-              <a href="user-profile.html" title="" class="view-more-pro snip-a">
-                View Profile
-              </a>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-4 col-sm-6 col-12 snip-div">
-            <div class="company_profile_info snip-div">
-              <div class="company-up-info snip-div">
-                <img
-                  src="https://gambolthemes.net/workwise-new/images/resources/pf-icon6.png"
-                  alt=""
-                  class="snip-img"
-                />
-                <h3 class="snip-h3">John Doe</h3>
-                <h4 class="snip-h4">Graphic Designer</h4>
-                <ul class="snip-ul">
-                  <li class="snip-li">
-                    <a href="#" title="" class="follow snip-a"> Follow </a>
-                  </li>
-                  <li class="snip-li">
-                    <a href="#" title="" class="message-us snip-a">
-                      <i class="fa fa-envelope"> </i>
-                    </a>
-                  </li>
-                  <li class="snip-li">
-                    <a href="#" title="" class="hire-us snip-a"> Hire </a>
-                  </li>
-                </ul>
-              </div>
-              <a href="user-profile.html" title="" class="view-more-pro snip-a">
-                View Profile
-              </a>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-4 col-sm-6 col-12 snip-div">
-            <div class="company_profile_info snip-div">
-              <div class="company-up-info snip-div">
-                <img
-                  src="https://gambolthemes.net/workwise-new/images/resources/pf-icon7.png"
-                  alt=""
-                  class="snip-img"
-                />
-                <h3 class="snip-h3">John Doe</h3>
-                <h4 class="snip-h4">Graphic Designer</h4>
-                <ul class="snip-ul">
-                  <li class="snip-li">
-                    <a href="#" title="" class="follow snip-a"> Follow </a>
-                  </li>
-                  <li class="snip-li">
-                    <a href="#" title="" class="message-us snip-a">
-                      <i class="fa fa-envelope"> </i>
-                    </a>
-                  </li>
-                  <li class="snip-li">
-                    <a href="#" title="" class="hire-us snip-a"> Hire </a>
-                  </li>
-                </ul>
-              </div>
-              <a href="user-profile.html" title="" class="view-more-pro snip-a">
-                View Profile
-              </a>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-4 col-sm-6 col-12 snip-div">
-            <div class="company_profile_info snip-div">
-              <div class="company-up-info snip-div">
-                <img
-                  src="https://gambolthemes.net/workwise-new/images/resources/pf-icon8.png"
-                  alt=""
-                  class="snip-img"
-                />
-                <h3 class="snip-h3">John Doe</h3>
-                <h4 class="snip-h4">Graphic Designer</h4>
-                <ul class="snip-ul">
-                  <li class="snip-li">
-                    <a href="#" title="" class="follow snip-a"> Follow </a>
-                  </li>
-                  <li class="snip-li">
-                    <a href="#" title="" class="message-us snip-a">
-                      <i class="fa fa-envelope"> </i>
-                    </a>
-                  </li>
-                  <li class="snip-li">
-                    <a href="#" title="" class="hire-us snip-a"> Hire </a>
-                  </li>
-                </ul>
-              </div>
-              <a href="user-profile.html" title="" class="view-more-pro snip-a">
-                View Profile
-              </a>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-4 col-sm-6 col-12 snip-div">
-            <div class="company_profile_info snip-div">
-              <div class="company-up-info snip-div">
-                <img
-                  src="https://gambolthemes.net/workwise-new/images/resources/pf-icon9.png"
-                  alt=""
-                  class="snip-img"
-                />
-                <h3 class="snip-h3">John Doe</h3>
-                <h4 class="snip-h4">Graphic Designer</h4>
-                <ul class="snip-ul">
-                  <li class="snip-li">
-                    <a href="#" title="" class="follow snip-a"> Follow </a>
-                  </li>
-                  <li class="snip-li">
-                    <a href="#" title="" class="message-us snip-a">
-                      <i class="fa fa-envelope"> </i>
-                    </a>
-                  </li>
-                  <li class="snip-li">
-                    <a href="#" title="" class="hire-us snip-a"> Hire </a>
-                  </li>
-                </ul>
-              </div>
-              <a href="user-profile.html" title="" class="view-more-pro snip-a">
-                View Profile
-              </a>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-4 col-sm-6 col-12 snip-div">
-            <div class="company_profile_info snip-div">
-              <div class="company-up-info snip-div">
-                <img
-                  src="https://gambolthemes.net/workwise-new/images/resources/pf-icon10.png"
-                  alt=""
-                  class="snip-img"
-                />
-                <h3 class="snip-h3">John Doe</h3>
-                <h4 class="snip-h4">Graphic Designer</h4>
-                <ul class="snip-ul">
-                  <li class="snip-li">
-                    <a href="#" title="" class="follow snip-a"> Follow </a>
-                  </li>
-                  <li class="snip-li">
-                    <a href="#" title="" class="message-us snip-a">
-                      <i class="fa fa-envelope"> </i>
-                    </a>
-                  </li>
-                  <li class="snip-li">
-                    <a href="#" title="" class="hire-us snip-a"> Hire </a>
-                  </li>
-                </ul>
-              </div>
-              <a href="user-profile.html" title="" class="view-more-pro snip-a">
-                View Profile
-              </a>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-4 col-sm-6 col-12 snip-div">
-            <div class="company_profile_info snip-div">
-              <div class="company-up-info snip-div">
-                <img
-                  src="https://gambolthemes.net/workwise-new/images/resources/pf-icon11.png"
-                  alt=""
-                  class="snip-img"
-                />
-                <h3 class="snip-h3">John Doe</h3>
-                <h4 class="snip-h4">Graphic Designer</h4>
-                <ul class="snip-ul">
-                  <li class="snip-li">
-                    <a href="#" title="" class="follow snip-a"> Follow </a>
-                  </li>
-                  <li class="snip-li">
-                    <a href="#" title="" class="message-us snip-a">
-                      <i class="fa fa-envelope"> </i>
-                    </a>
-                  </li>
-                  <li class="snip-li">
-                    <a href="#" title="" class="hire-us snip-a"> Hire </a>
-                  </li>
-                </ul>
-              </div>
-              <a href="user-profile.html" title="" class="view-more-pro snip-a">
-                View Profile
-              </a>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-4 col-sm-6 col-12 snip-div">
-            <div class="company_profile_info snip-div">
-              <div class="company-up-info snip-div">
-                <img
-                  src="https://gambolthemes.net/workwise-new/images/resources/pf-icon12.png"
-                  alt=""
-                  class="snip-img"
-                />
-                <h3 class="snip-h3">John Doe</h3>
-                <h4 class="snip-h4">Graphic Designer</h4>
-                <ul class="snip-ul">
-                  <li class="snip-li">
-                    <a href="#" title="" class="follow snip-a"> Follow </a>
-                  </li>
-                  <li class="snip-li">
-                    <a href="#" title="" class="message-us snip-a">
-                      <i class="fa fa-envelope"> </i>
-                    </a>
-                  </li>
-                  <li class="snip-li">
-                    <a href="#" title="" class="hire-us snip-a"> Hire </a>
-                  </li>
-                </ul>
-              </div>
-              <a href="user-profile.html" title="" class="view-more-pro snip-a">
-                View Profile
-              </a>
+              </router-link>
             </div>
           </div>
         </div>
@@ -369,14 +58,30 @@
 </template>
 
 <script>
+import axios from "../../axios";
 export default {
   name: "all-top-rank-profiles",
   components: {},
   data: function () {
-    return {};
+    return {
+      is_loading: false,
+      user_profile: [],
+      room_paticipants: [],
+    };
   },
-  methods: {},
-  async mounted() {},
+  methods: {
+    fetchAllTopfollowerPersons() {
+      this.is_loading = true;
+      axios.get("api/most-followed-peoples/").then((res) => {
+        console.log("picked profile details data", res.data);
+        this.user_profile = res.data;
+        this.is_loading = false;
+      });
+    },
+  },
+  async mounted() {
+    await this.fetchAllTopfollowerPersons();
+  },
   computed: {},
 };
 </script>
