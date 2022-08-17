@@ -42,10 +42,11 @@ class VoteModelSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class MessageSerializer(serializers.ModelSerializer):
+class MessageModelSerializer(serializers.ModelSerializer):
+    user = SimpleUserSerializer()
 
     class Meta:
-        model: Message
+        model = Message
         fields = '__all__'
 
 
@@ -56,13 +57,14 @@ class RoomSerializer(serializers.ModelSerializer):
     topic = SimpleTopicSerializer(read_only=True)
     # total_vote = serializers.SerializerMethodField(read_only=True)
     vote = serializers.SerializerMethodField(read_only=True)
-    total_messages = serializers.SerializerMethodField(read_only=True)
+    messages = serializers.SerializerMethodField(read_only=True)
     is_votted = serializers.SerializerMethodField(read_only=True)
     room_image = serializers.SerializerMethodField('get_room_image')
+    # message = MessageModelSerializer(read_only=True)
 
     class Meta:
         model = Room
-        fields = ['id', 'room_host', 'room_image', 'topic', 'vote', 'is_votted', 'participants', 'total_messages',
+        fields = ['id', 'room_host', 'room_image', 'topic', 'vote', 'is_votted', 'participants', 'messages',
                   'name', 'description', 'updated', 'created']
 
     def get_participants(self, data):
@@ -85,39 +87,24 @@ class RoomSerializer(serializers.ModelSerializer):
         return context
 
     def get_is_votted(self, data):
-        # requested_id = self.context['request'].user.
-        # print('requested id', requested_id, 'data user id', data.id)
         vote = Vote.objects.filter(
             Q(room_id=data.id), Q(user=self.context['request'].user.id))
         return SimpleVoteSerializer(vote, many=True).data
 
-    def get_total_messages(self, data):
-
-        room_message = Message.objects.select_related('user', 'room').filter(
-            room__id=data.pk).count()
-        # print(room_message)
-
-        return room_message
-        # return MessageSerializer(room_message, many=True, read_only=True).data
+    def get_messages(self, data):
+        room_message_set = Message.objects.select_related('user', 'room').filter(
+            room__id=data.pk)
+        ctx = dict()
+        ctx['total_messages'] = room_message_set.count()
+        ctx['message_set'] = MessageModelSerializer(
+            room_message_set, many=True).data
+        return ctx
 
     def get_room_image(self, obj):
         if obj.room_image:
             image_url = str(AVATOR_BASE_URL) + str(obj.room_image)
             return image_url
         return None
-
-    # def get_total_vote(self, data):
-    #     self.upvote = 0
-    #     self.downvote = 0
-    #     votes = Vote.objects.select_related(
-    #         'room', 'user').filter(room__id=data.id)
-    #     for vote in votes:
-    #         if (vote.upvote > 0):
-    #             self.upvote += 1
-    #         else:
-    #             self.downvote += 1
-    #     cumulative_vote = self.upvote - self.downvote
-    #     return str(cumulative_vote)
 
 
 class TopicSerializer(serializers.ModelSerializer):
@@ -144,7 +131,7 @@ class MostFollowedUserModelSerializer(serializers.Serializer):
     name = serializers.CharField(read_only=True)
     total_follower = serializers.SerializerMethodField(read_only=True)
     uuid = serializers.UUIDField(read_only=True)
-    # designation
+    designation = serializers.CharField(read_only=True)
 
     avator = serializers.SerializerMethodField(read_only=True)
 

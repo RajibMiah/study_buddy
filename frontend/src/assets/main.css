@@ -971,6 +971,7 @@ a {
 .participants {
   background: var(--color-light);
   max-height: 87.5vh;
+  /* height: 80vh; */
   border-radius: 0.7rem;
   overflow: hidden;
   position: relative;
@@ -1225,7 +1226,7 @@ a {
 
 .participants__list {
   padding: 2rem;
-  height: 82.5vh;
+  /* height: 20.5vh; */
   overflow-y: scroll;
   padding-bottom: 0;
 }

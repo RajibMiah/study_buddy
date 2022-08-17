@@ -25,7 +25,10 @@
             <h3>Study Room</h3>
           </div>
 
-          <div class="room__topRight">
+          <div
+            class="room__topRight"
+            v-if="room_details?.room_host?.id == $store.state.activeUser.id"
+          >
             <a data-toggle="modal" data-target="#exampleModalCenter">
               <svg
                 enable-background="new 0 0 24 24"
@@ -74,7 +77,7 @@
           <div class="room__header scroll">
             <div class="room__info">
               <h3>{{ room_details.name }}</h3>
-              <span> {{ room_details.created }} ago</span>
+              <span> {{ dateHumanize(room_details.created) }} ago</span>
             </div>
             <div class="room__hosted">
               <p>Hosted By</p>
@@ -105,19 +108,35 @@
 
           <div class="room__conversation">
             <div class="threads scroll" id="room-chat-list">
-              <div class="thread" id="chatLog">
+              <div
+                v-for="message in message_set"
+                :key="message.id"
+                class="thread"
+                id="chatLog"
+              >
                 <div class="thread__top">
                   <div class="thread__author">
-                    <a href="#" class="thread__authorInfo">
+                    <router-link
+                      :to="{
+                        name: 'profile',
+                        params: { uuid: $store.state.activeUser.uuid },
+                      }"
+                      class="thread__authorInfo"
+                    >
                       <div class="avatar avatar--small">
-                        <img src="../assets/images/user.png" />
+                        <img :src="message.user.avator" alt="user_profile" />
                       </div>
-                      <span>@Rajib</span>
-                    </a>
-                    <span class="thread__date">20 minite ago</span>
+                      <span>@{{ message?.user.username }}</span>
+                    </router-link>
+                    <span class="thread__date">{{
+                      dateHumanize(message.created)
+                    }}</span>
                   </div>
 
-                  <a href="#">
+                  <a
+                    v-if="message.user.id == $store.state.activeUser.id"
+                    href="#"
+                  >
                     <div class="thread__delete">
                       <svg
                         version="1.1"
@@ -134,7 +153,7 @@
                     </div>
                   </a>
                 </div>
-                <div class="thread__details">message</div>
+                <div class="thread__details">{{ message.body }}</div>
               </div>
             </div>
           </div>
@@ -163,36 +182,38 @@
           Participants
           <span>({{ room_participants.length }} Joined)</span>
         </h3>
-        <!-- <pre>{{ room_paticipants }}</pre> -->
+        <!-- <pre>{{ room_details.participants }}</pre> -->
         <div
-          v-if="room_participants.length > 1"
           v-for="participant in room_participants"
           :key="participant.id"
-          class="participants__list scroll"
           id="participants_list"
         >
-          <router-link
-            :to="{
-              name: 'profile',
-              params: { uuid: participant.uuid },
-            }"
-            class="participant"
-          >
-            <div class="avatar avatar--medium">
-              <img
-                :src="
-                  participant.avator
-                    ? participant?.avator
-                    : 'https://www.pngkey.com/png/detail/230-2301779_best-classified-apps-default-user-profile.png'
-                "
-              />
-            </div>
-            <p>
-              {{ participant.name }}
-              <span>@{{ participant.name }}</span>
-            </p>
-          </router-link>
+          <!-- <pre>{{ participant }}</pre> -->
+          <div class="participants__list scroll" id="participants_list">
+            <router-link
+              :to="{
+                name: 'profile',
+                params: { uuid: participant.uuid },
+              }"
+              class="participant"
+            >
+              <div class="avatar avatar--medium">
+                <img
+                  :src="
+                    participant.avator
+                      ? participant?.avator
+                      : 'https://www.pngkey.com/png/detail/230-2301779_best-classified-apps-default-user-profile.png'
+                  "
+                />
+              </div>
+              <p>
+                {{ participant.name }}
+                <span>@{{ participant.name }}</span>
+              </p>
+            </router-link>
+          </div>
         </div>
+
         <!-- <div class="col-12 col-md-4">
           <label for="onlineUsers">Online users</label>
           <select
@@ -208,6 +229,7 @@
   </main>
 </template>
 <script>
+import moment from "moment";
 import axios from "../../axios";
 import RoomFormVue from "../../components/RoomForm.vue";
 export default {
@@ -221,12 +243,14 @@ export default {
       room_details: [],
       room_participants: [],
       host: [],
+      message_set: [],
     };
   },
 
-  // Methods are functions that mutate state and trigger updates.
-  // They can be bound as event listeners in templates.
   methods: {
+    dateHumanize(date) {
+      return moment(date).fromNow();
+    },
     fetchRoomDetails() {
       this.is_loading = true;
       axios.get(`/api/room/${this.$route.params.roomid}/`).then((res) => {
@@ -234,14 +258,11 @@ export default {
         this.room_details = res.data;
         this.room_participants = res.data.participants;
         this.host = res.data.room_host;
+        this.message_set = res.data.messages.message_set;
         this.is_loading = false;
       });
     },
   },
-
-  // Lifecycle hooks are called at different stages
-  // of a component's lifecycle.
-  // This function will be called when the component is mounted.
   async mounted() {
     await this.fetchRoomDetails();
   },

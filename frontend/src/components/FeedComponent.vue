@@ -33,20 +33,21 @@
           <a href="#">{{ data.name }}</a>
         </div>
       </div>
-    </router-link>
-    <div class="image-card-container">
-      <div class="card image-card">
-        <img
-          class="card-img-top card-img"
-          :src="
-            data.room_image
-              ? data.room_image
-              : 'https://www.lighthouselabs.ca/uploads/post/open_graph_image/414/JavaScript-Uses-Cases-Programming-Language-.jpg'
-          "
-          alt="room_image"
-        />
+
+      <div class="image-card-container">
+        <div class="card image-card">
+          <img
+            class="card-img-top card-img"
+            :src="
+              data.room_image
+                ? data.room_image
+                : 'https://www.lighthouselabs.ca/uploads/post/open_graph_image/414/JavaScript-Uses-Cases-Programming-Language-.jpg'
+            "
+            alt="room_image"
+          />
+        </div>
       </div>
-    </div>
+    </router-link>
     <div class="roomListRoom__meta">
       <!-- up and down vote section -->
       <!-- {{ data?.is_votted[0].upvote_boolean }} -->
@@ -91,7 +92,7 @@
       <div class="room_participation_container">
         <div class="room_commects_container">
           <span class="material-symbols-outlined"> comment </span>
-          <span>{{ data.total_messages }} comments</span>
+          <span>{{ data.messages.message_set.length }} comments</span>
         </div>
       </div>
 

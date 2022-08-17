@@ -35,6 +35,7 @@ class UserProfielSerializer(serializers.ModelSerializer):
             'uuid',
             'username',
             'name',
+            'designation',
             'first_name',
             'last_name',
             'email',
@@ -66,6 +67,6 @@ class UserProfielSerializer(serializers.ModelSerializer):
 class ProfileEditSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'name', 'uuid', 'avator', 'gender', 'location', 'github',
+        fields = ['id', 'username', 'name', 'uuid', 'avator', 'designation', 'gender', 'location', 'github',
                   'linkedin', 'summary', 'birthday', 'date_joined', ]
         depth = 2

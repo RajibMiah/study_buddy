@@ -18,6 +18,5 @@ router.register(r'most-followed-peoples',
                 views.MostFollowedPeopleModelViewSet, basename='most-followed-people')
 
 urlpatterns = [
-    # path('',  views.getRoutes),
 
 ] + router.urls

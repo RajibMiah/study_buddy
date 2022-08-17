@@ -1,15 +1,14 @@
 
 
-from itertools import chain
-
-from base.models import Room, Topic, User, UserFollowing, Vote
+from base.models import Message, Room, Topic, User, UserFollowing, Vote
 from django.db.models import Count, Max, Min, Q
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
 
-from .serializers import (MostFollowedUserModelSerializer, RoomSerializer,
+from .serializers import (MessageModelSerializer,
+                          MostFollowedUserModelSerializer, RoomSerializer,
                           TopicSerializer, UserFollowingModelSerializer,
                           VoteModelSerializer)
 from .UserSerializers import (ProfileEditSerializer, SimplateRoomSerializer,
@@ -85,7 +84,7 @@ class RoomModelViewSet(viewsets.ModelViewSet):
         context = request.data
         context['host'] = request.user.id
         context['topic'] = topic.id
-        print('context ==========>', context)
+        # print('context ==========>', context)
         serializer = SimplateRoomSerializer(data=context)
         if serializer.is_valid(raise_exception=True):
             serializer.save()

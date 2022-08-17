@@ -5,14 +5,15 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 # from django.contrib.auth.models import User
+GENDER = (
+    ('Male', 'MALE'),
+    ('Female', 'FEMALE'),
+    ('Other', 'OTHER'),
+)
 
 
 class User(AbstractUser):
-    GENGER_CHOICE_FIELDS = [
-        ('M', 'MALE'),
-        ('F', 'FEMALE'),
-        ('O', 'OTHER'),
-    ]
+
     name = models.CharField(max_length=255, null=True)
     email = models.EmailField(unique=True, null=True)
     bio = models.CharField(max_length=255, null=True, blank=True)
@@ -21,8 +22,9 @@ class User(AbstractUser):
 
     avator = models.ImageField(
         null=True, blank=True, default='/user.png')
-    gender = models.CharField(max_length=20,
-                              choices=GENGER_CHOICE_FIELDS, null=True, blank=True)
+    # designation = models.CharField(max_length=255, null=True)
+    gender = gender = models.CharField(
+        choices=GENDER, max_length=55, null=True, blank=True)
     location = models.URLField(max_length=200, null=True, blank=True)
     github = models.URLField(max_length=200, null=True, blank=True)
     linkedin = models.URLField(max_length=200, null=True, blank=True)
