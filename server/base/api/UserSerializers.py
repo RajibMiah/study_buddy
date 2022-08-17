@@ -66,6 +66,6 @@ class UserProfielSerializer(serializers.ModelSerializer):
 class ProfileEditSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'name', 'uuid', 'avator', 'Gender', 'location', 'github',
+        fields = ['id', 'username', 'name', 'uuid', 'avator', 'gender', 'location', 'github',
                   'linkedin', 'summary', 'birthday', 'date_joined', ]
         depth = 2

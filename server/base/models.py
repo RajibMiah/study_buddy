@@ -21,7 +21,7 @@ class User(AbstractUser):
 
     avator = models.ImageField(
         null=True, blank=True, default='/user.png')
-    Gender = models.CharField(max_length=20,
+    gender = models.CharField(max_length=20,
                               choices=GENGER_CHOICE_FIELDS, null=True, blank=True)
     location = models.URLField(max_length=200, null=True, blank=True)
     github = models.URLField(max_length=200, null=True, blank=True)

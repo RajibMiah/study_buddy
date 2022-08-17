@@ -16,26 +16,28 @@
                 />
                 <label for="imageUpload"></label>
               </div>
-              <div class="avatar-preview">
+              <!-- <div class="avatar-preview">
                 <div
                   id="imagePreview"
                   style="background-image: url(http://i.pravatar.cc/500?img=7)"
                 ></div>
-              </div>
+              </div> -->
             </div>
-            <!-- <a class="snipcss0-3-5-6 snip-a">
+            <a class="snipcss0-3-5-6 snip-a">
               <img
                 class="avatar__2sMj snipcss0-4-6-7 snip-img"
-                src="../../assets/images/user.png"
+                :src="user_profile.avator"
                 alt="md_rajib's avatar"
-            /></a> -->
+            /></a>
           </div>
           <div class="user-info__2aLr snipcss0-2-4-8">
             <div class="name__3EWH snipcss0-3-8-9">
               <div class="left-side__1lmO snipcss0-4-9-10"></div>
               <div class="container__1Mii snipcss0-4-9-11">
                 <a>
-                  <span class="name-text__1-NA snipcss0-5-11-12">root</span>
+                  <span class="name-text__1-NA snipcss0-5-11-12">{{
+                    user_profile.username
+                  }}</span>
                 </a>
               </div>
               <div class="right-side__3zuc snipcss0-4-9-13">
@@ -45,7 +47,7 @@
               </div>
             </div>
             <div class="leetcodeId__13b9 snipcss0-3-8-16">
-              Profile UUID : root
+              Profile UUID : {{ user_profile.uuid }}
             </div>
           </div>
         </div>
@@ -133,7 +135,7 @@
                   <div class="row__3ftQ">
                     <div class="content__9cJ2">
                       <div class="title__14re">Name</div>
-                      <div class="desc__2m9Y">root</div>
+                      <div class="desc__2m9Y">{{ user_profile.name }}</div>
                       <div class="right-wrapper__3rVj">
                         <span class="text-disabled">
                           <span title="+2 LeetCode">
@@ -150,7 +152,7 @@
                   <div class="row__3ftQ">
                     <div class="content__9cJ2">
                       <div class="title__14re">Gender</div>
-                      <div class="desc__2m9Y">Male</div>
+                      <div class="desc__2m9Y">{{ user_profile.gender }}</div>
                       <div class="right-wrapper__3rVj">
                         <span class="edit__J5pK"> Edit </span>
                       </div>
@@ -161,7 +163,7 @@
                   <div class="row__3ftQ">
                     <div class="placeholder__18ft content__9cJ2">
                       <div class="title__14re">Location</div>
-                      <div class="desc__2m9Y">Your location</div>
+                      <div class="desc__2m9Y">{{ user_profile.location }}</div>
                       <div class="right-wrapper__3rVj">
                         <span class="text-disabled">
                           <span title="+2 LeetCode">
@@ -179,7 +181,7 @@
                     <div class="content__9cJ2">
                       <div class="title__14re">Birthday</div>
                       <div class="desc__2m9Y">
-                        <div>January 2, 1998</div>
+                        <div>{{ user_profile.birthday }}</div>
                       </div>
                       <div class="right-wrapper__3rVj">
                         <span class="edit__J5pK"> Edit </span>
@@ -192,7 +194,7 @@
                     <div class="placeholder__18ft content__9cJ2">
                       <div class="title__14re">Summary</div>
                       <div class="desc__2m9Y">
-                        Tell us about yourself (interests, experience, etc.)
+                        {{ user_profile.summary }}
                       </div>
                       <div class="right-wrapper__3rVj">
                         <span class="text-disabled">
@@ -234,7 +236,7 @@
                   <div class="row__3ftQ">
                     <div class="content__9cJ2">
                       <div class="title__14re">Github</div>
-                      <div class="desc__2m9Y">https://github.com/RajibMiah</div>
+                      <div class="desc__2m9Y">{{ user_profile.github }}</div>
                       <div class="right-wrapper__3rVj">
                         <span class="edit__J5pK"> Edit </span>
                       </div>
@@ -246,7 +248,7 @@
                     <div class="content__9cJ2">
                       <div class="title__14re">LinkedIn</div>
                       <div class="desc__2m9Y">
-                        https://linkedin.com/in/rajib-miah-680021149
+                        {{ user_profile.linkedin }}
                       </div>
                       <div class="right-wrapper__3rVj">
                         <span class="edit__J5pK"> Edit </span>
@@ -358,23 +360,41 @@
 </template>
 
 <script>
+import axios from "../../axios";
 export default {
-  // methods: {
-  //   readURL :function (input) {
-  //   if (input.files && input.files[0]) {
-  //       var reader = new FileReader();
-  //       reader.onload = function(e) {
-  //           $('#imagePreview').css('background-image', 'url('+e.target.result +')');
-  //           $('#imagePreview').hide();
-  //           $('#imagePreview').fadeIn(650);
-  //       }
-  //       reader.readAsDataURL(input.files[0]);
-  //     }
-  //   }
-  //   $("#imageUpload").change(function() {
-  //   readURL(this);
-  //    });
-  // },
+  data: function () {
+    return {
+      is_loading: false,
+      user_profile: [],
+    };
+  },
+  methods: {
+    fetchProfileData() {
+      this.is_loading = true;
+      axios.get(`/api/edit-profile/${this.$route.params.uuid}/`).then((res) => {
+        console.log("picked profile details data", res.data);
+        this.user_profile = res.data;
+        this.is_loading = false;
+      });
+    },
+    // readURL :function (input) {
+    // if (input.files && input.files[0]) {
+    //     var reader = new FileReader();
+    //     reader.onload = function(e) {
+    //         $('#imagePreview').css('background-image', 'url('+e.target.result +')');
+    //         $('#imagePreview').hide();
+    //         $('#imagePreview').fadeIn(650);
+    //     }
+    //     reader.readAsDataURL(input.files[0]);
+    //   }
+    // }
+    // $("#imageUpload").change(function() {
+    // readURL(this);
+    //  });
+  },
+  async mounted() {
+    await this.fetchProfileData();
+  },
 };
 </script>
 
