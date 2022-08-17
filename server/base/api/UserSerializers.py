@@ -63,3 +63,9 @@ class UserProfielSerializer(serializers.ModelSerializer):
         return ctx
 
 
+class ProfileEditSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'name', 'uuid', 'avator', 'Gender', 'location', 'github',
+                  'linkedin', 'summary', 'birthday', 'date_joined', ]
+        depth = 2

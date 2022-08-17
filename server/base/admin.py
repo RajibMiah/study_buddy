@@ -1,7 +1,8 @@
 
 from django.contrib import admin
 
-from .models import Message, Room, Topic, User, UserFollowing, Vote
+from .models import (Message, Room, Skill, Topic, User, UserFollowing, Vote,
+                     WorkExperiance)
 
 # Register your models here.
 
@@ -32,3 +33,5 @@ class UserFollowing(admin.ModelAdmin):
 
 
 admin.site.register(Vote)
+admin.site.register(Skill)
+admin.site.register(WorkExperiance)

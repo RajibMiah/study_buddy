@@ -1,7 +1,5 @@
 
 import uuid
-from secrets import choice
-from urllib import request
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -26,11 +24,28 @@ class User(AbstractUser):
     Gender = models.CharField(max_length=20,
                               choices=GENGER_CHOICE_FIELDS, null=True, blank=True)
     location = models.URLField(max_length=200, null=True, blank=True)
+    github = models.URLField(max_length=200, null=True, blank=True)
+    linkedin = models.URLField(max_length=200, null=True, blank=True)
     birthday = models.DateField(null=True, blank=True)
-    Summary = models.TextField(null=True, blank=True)
+    summary = models.TextField(null=True, blank=True)
 
     # USERNAME_FIELD ='email'
     # REQUIRED_FIELDS = ['username' , 'email' , 'password']
+
+
+class Skill(models.Model):
+    user = models.ForeignKey(
+        User, related_name='user_skills', on_delete=models.CASCADE)
+    name = models.CharField(max_length=255, blank=True, null=True)
+
+
+class WorkExperiance(models.Model):
+    user = models.ForeignKey(
+        User, related_name='experiances', on_delete=models.CASCADE)
+    company_name = models.CharField(max_length=255, blank=True, null=True)
+    desgination = models.CharField(max_length=255, blank=True, null=True)
+    joining_date = models.DateField(null=True)
+    ending_date = models.DateField(null=True)
 
 
 class Topic(models.Model):

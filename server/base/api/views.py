@@ -12,7 +12,8 @@ from rest_framework.response import Response
 from .serializers import (MostFollowedUserModelSerializer, RoomSerializer,
                           TopicSerializer, UserFollowingModelSerializer,
                           VoteModelSerializer)
-from .UserSerializers import SimplateRoomSerializer, UserProfielSerializer
+from .UserSerializers import (ProfileEditSerializer, SimplateRoomSerializer,
+                              UserProfielSerializer)
 
 
 class UserProfileModelViewSet(viewsets.ModelViewSet):
@@ -26,7 +27,7 @@ class UserProfileModelViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         pk = self.kwargs.get("uuid")
         if pk is not None:
-            return super().get_queryset()
+            return super().get_queryset().filter(uuid=pk)
         return User.objects.none()
 
     @action(detail=True, methods=['patch', 'put'])
@@ -40,6 +41,19 @@ class UserProfileModelViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserEditProfileModelViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = ProfileEditSerializer
+    lookup_field = "uuid"
+    http_method_names = ['get', 'patch', ]  # put
+    # def get_queryset(self):
+    #     pk = self.kwargs.get("uuid")
+    #     if pk is not None:
+    #         print('user pk is', pk)
+    #         return super().get_queryset().get(uuid=pk)
+    #     return User.objects.none()
 
 
 class RoomModelViewSet(viewsets.ModelViewSet):
