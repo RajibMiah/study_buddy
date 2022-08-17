@@ -140,6 +140,7 @@ class UserFollowingModelSerializer(serializers.ModelSerializer):
 
 class MostFollowedUserModelSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
+    username = serializers.CharField(read_only=True)
     name = serializers.CharField(read_only=True)
     total_follower = serializers.SerializerMethodField(read_only=True)
     uuid = serializers.UUIDField(read_only=True)

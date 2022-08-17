@@ -2,13 +2,13 @@
   <div class="widget suggestions full-width snipcss-YIPho snip-div">
     <div class="sd-title snip-div">
       <h3 class="snip-h3">Most Viewed People</h3>
-      <span class="material-symbols-outlined"> more_vert </span>
+      <!-- <span class="material-symbols-outlined"> more_vert </span> -->
     </div>
     <div class="suggestions-list snip-div">
       <div v-for="user in user_profile" class="suggestion-usd snip-div">
         <img :src="user.avator" alt="" class="snip-img" />
         <div class="sgt-text snip-div">
-          <h4 class="snip-h4">{{ user.name }}</h4>
+          <h4 class="snip-h4">{{ user.username }}</h4>
           <span class="snip-span"> Graphic Designer </span>
         </div>
         <span

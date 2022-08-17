@@ -1,7 +1,6 @@
 
 
-from multiprocessing import context
-from urllib import request
+from itertools import chain
 
 from base.models import Room, Topic, User, UserFollowing, Vote
 from django.db.models import Count, Max, Min, Q
@@ -125,6 +124,16 @@ class UserFollowingModelViewSet(viewsets.ModelViewSet):
 
 
 class MostFollowedPeopleModelViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
+    queryset = User.objects.all().order_by('?')
     serializer_class = MostFollowedUserModelSerializer
     http_method_names = ['get']
+
+    def get_queryset(self):
+        # print('requested id', self.request.user.id)
+        # users = UserFollowing.objects.filter(
+        #     following_user_id=self.request.user.id)
+        # print("users", users)
+        not_followed_by_user = super().get_queryset().exclude(
+            followers=self.request.user.id)
+        # print(not_followed_by_user)
+        return not_followed_by_user

@@ -15,7 +15,7 @@
             <div class="company_profile_info snip-div">
               <div class="company-up-info snip-div">
                 <img :src="user.avator" alt="" class="snip-img" />
-                <h3 class="snip-h3">{{ user.name }}</h3>
+                <h3 class="snip-h3">{{ user.username }}</h3>
                 <h4 class="snip-h4">Graphic Designer</h4>
                 <ul class="snip-ul">
                   <li class="snip-li">

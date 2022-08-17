@@ -1,5 +1,6 @@
 
 import uuid
+from secrets import choice
 from urllib import request
 
 from django.contrib.auth.models import AbstractUser
@@ -9,6 +10,11 @@ from django.db import models
 
 
 class User(AbstractUser):
+    GENGER_CHOICE_FIELDS = [
+        ('M', 'MALE'),
+        ('F', 'FEMALE'),
+        ('O', 'OTHER'),
+    ]
     name = models.CharField(max_length=255, null=True)
     email = models.EmailField(unique=True, null=True)
     bio = models.CharField(max_length=255, null=True, blank=True)
@@ -17,6 +23,12 @@ class User(AbstractUser):
 
     avator = models.ImageField(
         null=True, blank=True, default='/user.png')
+    Gender = models.CharField(max_length=20,
+                              choices=GENGER_CHOICE_FIELDS, null=True, blank=True)
+    location = models.URLField(max_length=200, null=True, blank=True)
+    birthday = models.DateField(null=True, blank=True)
+    Summary = models.TextField(null=True, blank=True)
+
     # USERNAME_FIELD ='email'
     # REQUIRED_FIELDS = ['username' , 'email' , 'password']
 
