@@ -78,10 +78,10 @@
                     </span>
                     Profile
                   </router-link>
-                  <router-link to="logout" class="dropdown-item">
+                  <a class="dropdown-item" @click="logout()">
                     <span class="material-symbols-outlined"> logout </span>
-                    Logout
-                  </router-link>
+                    <span style="cursor: pointer"> Logout</span>
+                  </a>
                 </div>
               </div>
             </div>
@@ -138,6 +138,7 @@
 </template>
 
 <script>
+import axios from "../axios";
 export default {
   name: "NavBar",
 
@@ -162,10 +163,21 @@ export default {
         this.search = this.$route.query.q;
       }
     },
+    async logout() {
+      await axios
+        .post("chat/logout/")
+
+        .then((response) => {
+          this.$store.dispatch("clearState");
+          this.$router.push("/login");
+          console.log("response", response);
+          window.location.reload();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
   },
-  // computed: {
-  //   filterFun() {},
-  // },
   created() {
     this.pushDefaultSearch();
   },

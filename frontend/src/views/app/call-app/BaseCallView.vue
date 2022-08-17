@@ -4,10 +4,8 @@
 
 <script>
 export default {
-  name: "BaseCallView"
-}
+  name: "BaseCallView",
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

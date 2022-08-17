@@ -55,12 +55,10 @@ class RoomSerializer(serializers.ModelSerializer):
     room_host = SimpleUserSerializer(
         source='host', read_only=True)
     topic = SimpleTopicSerializer(read_only=True)
-    # total_vote = serializers.SerializerMethodField(read_only=True)
     vote = serializers.SerializerMethodField(read_only=True)
     messages = serializers.SerializerMethodField(read_only=True)
     is_votted = serializers.SerializerMethodField(read_only=True)
     room_image = serializers.SerializerMethodField('get_room_image')
-    # message = MessageModelSerializer(read_only=True)
 
     class Meta:
         model = Room
@@ -73,7 +71,6 @@ class RoomSerializer(serializers.ModelSerializer):
         return SimpleUserSerializer(room, many=True, read_only=True).data
 
     def get_vote(self, data):
-        # requested_id = self.context['request'].user.id
         votes = Vote.objects.select_related(
             'room', 'user').filter(room__id=data.id)
         agg_vote = votes.aggregate(Sum('upvote'), Sum('downvote'))

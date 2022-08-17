@@ -1,13 +1,9 @@
-<template>
-
-</template>
+<template></template>
 
 <script>
 export default {
-  name: "ResetPassword"
-}
+  name: "ResetPassword",
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

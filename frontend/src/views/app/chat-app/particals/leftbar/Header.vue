@@ -22,8 +22,9 @@
               />
               <div class="media-body chat-user-name-container">
                 <h5 class="mb-0 mt-2 chat-user-text">
-                  @{{ $store.state.activeUser.name }}
+                  @{{ $store.state.activeUser.username }}
                 </h5>
+                <!-- <h4>{{ $store.state.activeUser.name }}</h4> -->
               </div>
             </router-link>
           </li>
@@ -54,9 +55,13 @@ export default {
     async logout() {
       await axios
         .post("chat/logout/")
+
         .then((response) => {
           this.$store.dispatch("clearState");
-          this.$router.push("/");
+          this.$router.push("/login");
+          console.log("response", response);
+          // $router.go();
+          window.location.reload();
         })
         .catch((error) => {
           console.log(error);
@@ -81,4 +86,6 @@ export default {
 .chat-user-text {
   font-size: small;
 }
+
+/* ================header============= */
 </style>

@@ -22,7 +22,7 @@ class User(AbstractUser):
 
     avator = models.ImageField(
         null=True, blank=True, default='/user.png')
-    # designation = models.CharField(max_length=255, null=True)
+    designation = models.CharField(max_length=255, null=True)
     gender = gender = models.CharField(
         choices=GENDER, max_length=55, null=True, blank=True)
     location = models.URLField(max_length=200, null=True, blank=True)

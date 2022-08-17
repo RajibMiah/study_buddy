@@ -1,14 +1,11 @@
 <template>
   <form @submit.prevent="login">
     <div class="form-head">
-      <a href="index.html" class="logo"
-        ><img
-          src="http://themesbox.in/admin-templates/gappa/html/light/assets/images/logo.svg"
-          class="img-fluid"
-          alt="logo"
-      /></a>
+      <a href="index.html" class="logo">
+        <img src="../../assets/study-mate.png" class="img-fluid" alt="logo" />
+      </a>
+      <h4 class="text-primary my-4">Log in !</h4>
     </div>
-    <h4 class="text-primary my-4">Log in !</h4>
 
     <div class="form-floating mb-3">
       <input
@@ -74,9 +71,8 @@ export default {
           console.log(response.data);
           this.$store.commit("SET_TOKEN", response.data.token);
           this.$store.commit("UPDATE_USER", response.data.user);
-          this.$router.replace({
-            path: "/profile",
-            params: { uuid: $store.state.activeUser.uuid },
+          this.$router.push({
+            path: `/profile/${response.data.user.uuid}/`,
           });
         })
         .catch((error) => {
@@ -87,4 +83,15 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.form-head {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+.logo {
+  width: 50px;
+}
+</style>

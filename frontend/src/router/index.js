@@ -21,31 +21,7 @@ const routes = [
         }
     },
     {
-        path:'/profile/:uuid',
-        name:"profile",
-        component:()=> import('../views/profile/Profile.vue')
-    },
-    {
-        path:'/edit-profile/:uuid',
-        name:'edit-profile',
-        component:()=> import('../views/profile/EditProfile.vue'),
-    },
-    {
-        path:'/top-profiles',
-        name:'top-profiles',
-        component:()=> import('../views/profile/AllTopRankProfile.vue'),
-    },
-    {
-        path:'/room/:roomid',
-        name:'room',
-        component:()=> import('../views/room/RoomView.vue'),
-    },
-    {
-        path:'/create-room',
-        name:'create-room',
-        component:()=> import('../components/CreateRoom.vue'),
-    },
-    {
+        
         path: '/chat', component: () => import('../views/app/Layout.vue'),
         children: [
             {path: '', component: () => import('../views/app/chat-app/ChatApp.vue')},
@@ -64,7 +40,47 @@ const routes = [
                     },
                 ]
             },
+            
         ],
+        
+        meta: {
+            auth: true
+        }
+    },
+    {
+        path:'/profile/:uuid',
+        name:"profile",
+        component:()=> import('../views/profile/Profile.vue'),
+        meta: {
+            auth: true
+        }
+    },
+    {
+        path:'/edit-profile/:uuid',
+        name:'edit-profile',
+        component:()=> import('../views/profile/EditProfile.vue'),
+        meta: {
+            auth: true
+        }
+    },
+    {
+        path:'/top-profiles',
+        name:'top-profiles',
+        component:()=> import('../views/profile/AllTopRankProfile.vue'),
+      
+    },
+    {
+        path:'/room/:roomid',
+        name:'room',
+        component:()=> import('../views/room/RoomView.vue'),
+        meta: {
+            auth: true
+        }
+    },
+    {
+        path:'/create-room',
+        name:'create-room',
+        component:()=> import('../components/CreateRoom.vue'),
         meta: {
             auth: true
         }
@@ -73,6 +89,7 @@ const routes = [
         path: '/:pathMatch(.*)*',
         name:"PageNotFound",
         component:()=> import('../views/PageNotFound.vue')
+        
     },
 ]
 
@@ -87,7 +104,7 @@ router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.auth)) {
         if (store.state.token == null) {
             next({
-                path: '/',
+                path: '/login',
                 params: {nextUrl: to.fullPath}
             })
         } else { 
