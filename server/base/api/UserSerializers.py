@@ -1,6 +1,6 @@
 
 
-from base.models import Room, User, UserFollowing
+from base.models import Room, Skill, User, UserFollowing
 from django.db.models import Count, Max
 from rest_framework import serializers
 
@@ -64,9 +64,24 @@ class UserProfielSerializer(serializers.ModelSerializer):
         return ctx
 
 
+class SkillModelSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Skill
+        fields = '__all__'
+
+
 class ProfileEditSerializer(serializers.ModelSerializer):
+
+    skills = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = User
         fields = ['id', 'username', 'name', 'uuid', 'avator', 'designation', 'gender', 'location', 'github',
-                  'linkedin', 'summary', 'birthday', 'date_joined', ]
+                  'linkedin', 'summary', 'birthday', 'date_joined', 'skills']
         depth = 2
+
+    def get_skills(self, user):
+        skills = Skill.objects.filter(user__id=user.id)
+
+        return SkillModelSerializer(skills, many=True).data

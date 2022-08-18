@@ -40,6 +40,9 @@ class Skill(models.Model):
         User, related_name='user_skills', on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=True, null=True)
 
+    def __str__(self) -> str:
+        return str(f'{self.user.name} has skill on {self.name}')
+
 
 class WorkExperiance(models.Model):
     user = models.ForeignKey(
@@ -48,6 +51,9 @@ class WorkExperiance(models.Model):
     desgination = models.CharField(max_length=255, blank=True, null=True)
     joining_date = models.DateField(null=True)
     ending_date = models.DateField(null=True)
+
+    def __str__(self) -> str:
+        return str(f'{self.user.name} has work  expriance')
 
 
 class Topic(models.Model):

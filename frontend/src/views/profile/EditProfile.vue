@@ -11,10 +11,12 @@
               <div class="avatar-edit">
                 <input
                   type="file"
-                  id="imageUpload"
+                  id="file"
+                  ref="file"
+                  v-on:change="handleFileUpload()"
                   accept=".png, .jpg, .jpeg"
                 />
-                <label for="imageUpload"></label>
+                <label for="file"></label>
               </div>
               <!-- <div class="avatar-preview">
                 <div
@@ -26,7 +28,7 @@
             <a class="snipcss0-3-5-6 snip-a">
               <img
                 class="avatar__2sMj snipcss0-4-6-7 snip-img"
-                :src="user_profile.avator"
+                :src="profile_url"
                 alt="md_rajib's avatar"
             /></a>
           </div>
@@ -152,8 +154,32 @@
                   <div class="row__3ftQ">
                     <div class="content__9cJ2">
                       <div class="title__14re">Gender</div>
-                      <div class="desc__2m9Y">{{ user_profile.gender }}</div>
+                      <input
+                        class="desc__2m9Y"
+                        v-model="user_profile.gender"
+                        :disabled="input_boolean.is_gender"
+                      />
+
+                      <div class="right-wrapper__3rVj" @click="">
+                        <span class="edit__J5pK"> Edit </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row-wrapper__1dH2">
+                  <div class="row__3ftQ">
+                    <div class="placeholder__18ft content__9cJ2">
+                      <div class="title__14re">Designation</div>
+                      <div class="desc__2m9Y">
+                        {{ user_profile.designation }}
+                      </div>
                       <div class="right-wrapper__3rVj">
+                        <span class="text-disabled">
+                          <span title="+2 LeetCode">
+                            <i class="fa fa-database"></i>
+                            +2
+                          </span>
+                        </span>
                         <span class="edit__J5pK"> Edit </span>
                       </div>
                     </div>
@@ -330,17 +356,13 @@
                   <div class="row__3ftQ">
                     <div class="content__9cJ2">
                       <div class="title__14re">Technical Skills</div>
-                      <div class="desc__2m9Y">
-                        <div class="tags-block">
-                          <span class="tags__3AYs"> django </span>
-                          <span class="tags__3AYs"> reactjs </span>
-                          <span class="tags__3AYs"> nextjs </span>
-                          <span class="tags__3AYs"> sql </span>
-                          <span class="tags__3AYs"> git </span>
-                          <span class="tags__3AYs"> html </span>
-                          <span class="tags__3AYs"> css </span>
-                          <span class="tags__3AYs"> typescript </span>
-                          <span class="tags__3AYs"> unity </span>
+                      <div class="desc__2m9Y" style="display: flex">
+                        <div
+                          v-for="skill in user_profile.skills"
+                          :key="skill.id"
+                          class="tags-block"
+                        >
+                          <span class="tags__3AYs"> {{ skill.name }}</span>
                         </div>
                       </div>
                       <div class="right-wrapper__3rVj">
@@ -353,7 +375,6 @@
             </div>
           </div>
         </div>
-        <div></div>
       </div>
     </div>
   </div>
@@ -366,31 +387,41 @@ export default {
     return {
       is_loading: false,
       user_profile: [],
+      profile_url: "",
+      file: "",
+      input_boolean: {
+        is_gender: true,
+      },
     };
   },
   methods: {
     fetchProfileData() {
       this.is_loading = true;
       axios.get(`/api/edit-profile/${this.$route.params.uuid}/`).then((res) => {
-        console.log("picked profile details data", res.data);
         this.user_profile = res.data;
+        this.profile_url = res.data.avator;
         this.is_loading = false;
       });
     },
-    // readURL :function (input) {
-    // if (input.files && input.files[0]) {
-    //     var reader = new FileReader();
-    //     reader.onload = function(e) {
-    //         $('#imagePreview').css('background-image', 'url('+e.target.result +')');
-    //         $('#imagePreview').hide();
-    //         $('#imagePreview').fadeIn(650);
-    //     }
-    //     reader.readAsDataURL(input.files[0]);
-    //   }
-    // }
-    // $("#imageUpload").change(function() {
-    // readURL(this);
-    //  });
+
+    async handleFileUpload() {
+      this.file = this.$refs.file.files[0];
+      this.profile_url = URL.createObjectURL(this.file);
+      let formData = new FormData();
+      formData.append("avator", this.file);
+      await axios
+        .patch(`api/profile/${this.$store.state.activeUser.uuid}/`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((res) => {
+          window.alert("Profile uploaded successfully!.");
+        })
+        .catch((err) => {
+          console.log("error", err);
+        });
+    },
   },
   async mounted() {
     await this.fetchProfileData();
