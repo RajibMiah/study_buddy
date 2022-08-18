@@ -7,10 +7,9 @@ from rest_framework.decorators import action
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
 
-from .serializers import (MessageModelSerializer,
-                          MostFollowedUserModelSerializer, RoomSerializer,
-                          TopicSerializer, UserFollowingModelSerializer,
-                          VoteModelSerializer)
+from .serializers import (RoomSerializer, TopicSerializer,
+                          TopProfileModelSerializer,
+                          UserFollowingModelSerializer, VoteModelSerializer)
 from .UserSerializers import (ProfileEditSerializer, SimplateRoomSerializer,
                               UserProfielSerializer)
 
@@ -133,17 +132,17 @@ class UserFollowingModelViewSet(viewsets.ModelViewSet):
     serializer_class = UserFollowingModelSerializer
 
 
-class MostFollowedPeopleModelViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all().order_by('?')
-    serializer_class = MostFollowedUserModelSerializer
-    http_method_names = ['get']
+class TopProfileModelViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = TopProfileModelSerializer
+
+    # TODO: : GET all non followed object
 
     def get_queryset(self):
-        # print('requested id', self.request.user.id)
-        # users = UserFollowing.objects.filter(
-        #     following_user_id=self.request.user.id)
-        # print("users", users)
+        follower_object = UserFollowing.objects.all()
+        print(follower_object)
+
         not_followed_by_user = super().get_queryset().exclude(
             followers=self.request.user.id)
-        # print(not_followed_by_user)
+
         return not_followed_by_user

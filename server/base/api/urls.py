@@ -13,9 +13,11 @@ router.register(r'edit-profile', views.UserEditProfileModelViewSet,
 router.register(r'votes', views.VoteModelViewSet, basename='votes')
 router.register(r'userfollowing', views.UserFollowingModelViewSet,
                 basename='userfollowing')
+router.register(r'top-profiles', views.TopProfileModelViewSet,
+                basename='top-profiles')
 
-router.register(r'most-followed-peoples',
-                views.MostFollowedPeopleModelViewSet, basename='most-followed-people')
+# router.register(r'most-followed-peoples',
+#                 views.MostFollowedPeopleModelViewSet, basename='most-followed-people')
 
 urlpatterns = [
 

@@ -1,4 +1,7 @@
 
+from asyncore import read
+from dataclasses import field
+
 from base.models import Message, Room, Topic, User, UserFollowing, Vote
 from django.db.models import Q, Sum
 from rest_framework import serializers
@@ -116,28 +119,41 @@ class TopicSerializer(serializers.ModelSerializer):
 
 
 class UserFollowingModelSerializer(serializers.ModelSerializer):
+    # user = SimpleUserSerializer(source='user_id')
+    total_follower = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = UserFollowing
-        fields = '__all__'
+        fields = "__all__"
+
+    # def get_total_follower(self, user):
+    #     followers = UserFollowing.objects.filter(user_id=user.id).count()
+    #     return followers
 
 
-class MostFollowedUserModelSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    username = serializers.CharField(read_only=True)
-    name = serializers.CharField(read_only=True)
-    total_follower = serializers.SerializerMethodField(read_only=True)
-    uuid = serializers.UUIDField(read_only=True)
-    designation = serializers.CharField(read_only=True)
+class TopProfileModelSerializer(serializers.ModelSerializer):
 
-    avator = serializers.SerializerMethodField(read_only=True)
+    class Meta:
+        model = User
+        fields = ('id', 'name', 'username', 'avator', 'designation')
 
-    def get_avator(self, user):
-        if user.avator:
-            avator_url = str(AVATOR_BASE_URL) + str(user.avator)
-            return avator_url
-        return None
+    # class MostFollowedUserModelSerializer(serializers.ModelSerializer):
 
-    def get_total_follower(self, user):
-        followers = UserFollowing.objects.filter(user_id=user.id).count()
-        return followers
+    #     class Meta:
+    #         model = UserFollowing
+    #         fields = ('id', 'user', 'following_user_id')
+    # depth = 1
+    # id = serializers.IntegerField(read_only=True)
+    # username = serializers.CharField(read_only=True)
+    # name = serializers.CharField(read_only=True)
+    # total_follower = serializers.SerializerMethodField(read_only=True)
+    # uuid = serializers.UUIDField(read_only=True)
+    # designation = serializers.CharField(read_only=True)
+
+    # avator = serializers.SerializerMethodField(read_only=True)
+
+    # def get_avator(self, user):
+    #     if user.avator:
+    #         avator_url = str(AVATOR_BASE_URL) + str(user.avator)
+    #         return avator_url
+    #     return None
