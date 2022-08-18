@@ -79,13 +79,20 @@
                 <div class="form__group">
                   <label for="room_description">Room Description</label>
                   <!-- {{ form.description }} -->
-                  <input
+                  <QuillEditor
+                    theme="snow"
+                    name="description"
+                    list="topic-list"
+                    v-model="form.description"
+                    :value="form.description"
+                  />
+                  <!-- <input
                     required
                     type="text"
                     name="description"
                     list="topic-list"
                     v-model="form.description"
-                  />
+                  /> -->
                 </div>
                 <div class="avatar-upload">
                   <div class="avatar-edit">
@@ -136,11 +143,18 @@
 </template>
 
 <script>
+import { QuillEditor } from "@vueup/vue-quill";
+import "@vueup/vue-quill/dist/vue-quill.snow.css";
+
+// OR | AND
+import "@vueup/vue-quill/dist/vue-quill.bubble.css";
 import axios from "../axios";
 
 export default {
   name: "room-form-model",
-  components: {},
+  components: {
+    QuillEditor,
+  },
   data() {
     return {
       form: {
@@ -148,7 +162,7 @@ export default {
         name: "",
         // title: "",
         // topic: "",
-        description: "",
+        description: "this is description",
         room_image: "",
       },
     };
@@ -156,8 +170,6 @@ export default {
 
   created() {},
 
-  // Methods are functions that mutate state and trigger updates.
-  // They can be bound as event listeners in templates.
   methods: {
     featchFeedCardData() {
       // this.is_loading = true;
@@ -190,14 +202,8 @@ export default {
       this.room_image = this.$refs.file.files[0];
     },
   },
-
-  // Lifecycle hooks are called at different stages
-  // of a component's lifecycle.
-  // This function will be called when the component is mounted.
   async mounted() {
     await this.featchFeedCardData();
-
-    // console.log("router q value is", this.$route.params.q);
   },
 };
 </script>
