@@ -92,8 +92,7 @@ export default {
       displayUser: {
         username: "",
         name: "",
-        photo:
-          "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png",
+        photo: this.$store.state.activeUser.avator,
       },
       callingStatus: "calling", // there will three status : 101 calling, 400 => rejected, 200 => connected
       getUserMedia:

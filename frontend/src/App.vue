@@ -1,5 +1,11 @@
 <template>
-  <nav-bar v-if="this.$route.path !== '/chat'" />
+  <nav-bar
+    v-if="
+      this.$route.path !== '/chat' &&
+      this.$route.name !== 'callerView' &&
+      this.$route.name !== 'receiverView'
+    "
+  />
   <router-view></router-view>
 </template>
 <script>
