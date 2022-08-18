@@ -439,8 +439,6 @@ export default {
       form: {
         tags: "",
         name: "",
-        // title: "",
-        // topic: "",
         description: "this is description",
         room_image: "",
       },

@@ -12,14 +12,6 @@
         <div class="modal-header">
           <div class="layout__boxHeader">
             <div class="layout__boxTitle">
-              <!-- <button
-                  type="button"
-                  class="close"
-                  data-dismiss="modal"
-                  aria-label="Close"
-                >
-                  <span class="material-symbols-outlined"> arrow_back </span>
-                </button> -->
               <div class="layout__header_content">
                 <h3 style="color: black">Create/Update Study Room</h3>
               </div>
@@ -98,19 +90,19 @@
                   <div class="avatar-edit">
                     <input
                       type="file"
-                      id="imageUpload"
+                      id="file"
+                      ref="file"
                       accept=".png, .jpg, .jpeg"
                       v-on:change="handleFileUpload()"
                     />
                     <label for="imageUpload"></label>
                   </div>
                   <div class="avatar-preview">
-                    <div
-                      id="imagePreview"
-                      style="
-                        background-image: url(http://i.pravatar.cc/500?img=7);
-                      "
-                    ></div>
+                    <img
+                      v-if="url"
+                      :src="url"
+                      style="width: inherit; padding: 15px"
+                    />
                   </div>
                 </div>
               </form>
@@ -131,10 +123,6 @@
                 Submit
               </button>
             </div>
-            <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">
-              Close
-            </button>
-            <button type="button" class="btn btn-primary">Save changes</button> -->
           </div>
         </form>
       </div>
@@ -149,7 +137,6 @@ import "@vueup/vue-quill/dist/vue-quill.snow.css";
 // OR | AND
 import "@vueup/vue-quill/dist/vue-quill.bubble.css";
 import axios from "../axios";
-
 export default {
   name: "room-form-model",
   components: {
@@ -160,56 +147,57 @@ export default {
       form: {
         tags: "",
         name: "",
-        // title: "",
-        // topic: "",
         description: "this is description",
-        room_image: "",
       },
+      file: "",
+      url: null,
     };
   },
 
   created() {},
 
   methods: {
-    featchFeedCardData() {
-      // this.is_loading = true;
-      // axios.get("api/room/").then((res) => {
-      //   console.log("response", res);
-      //   this.feed_room_data = res.data;
-      //   this.available_study_room = res.data.length;
-      //   this.is_loading = false;
-      // });
-    },
+    featchRoomData() {},
     submitForm() {
       let formData = new FormData();
-      formData.append("room_image", this.form.room_image);
-      console.log("form data", this.form);
+      formData.append("tags", this.form.tags);
+      formData.append("name", this.form.name);
+      formData.append("description", this.form.description);
+      formData.append("room_image", this.file);
       axios
-        .post("api/room/", this.form, {
+        .post("api/room/", formData, {
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
           },
         })
         .then((res) => {
           console.log("response", res);
+          window.location.reload();
         })
         .catch((err) => {
           console.log("error", err);
         });
     },
     handleFileUpload() {
-      console.log("handle file upload");
-      this.room_image = this.$refs.file.files[0];
+      this.file = this.$refs.file.files[0];
+      this.url = URL.createObjectURL(this.file);
     },
+    closeModal() {},
   },
-  async mounted() {
-    await this.featchFeedCardData();
-  },
+  async mounted() {},
 };
 </script>
 
 <style scoped>
-/* .avatar-upload {
+.avatar-preview {
+  width: 17rem;
+  text-align: center;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
+/* 
+.avatar-upload {
   position: relative;
   max-width: 205px;
   margin: 50px auto;

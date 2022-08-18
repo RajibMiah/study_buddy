@@ -76,15 +76,14 @@ class RoomModelViewSet(viewsets.ModelViewSet):
         return super().get_queryset()
 
     def create(self, request, *args, **kwargs):
-        print('inside view create method')
+        print('inside view create method', request.data)
+        request.data._mutable = True
         topic_name = request.data.pop('tags')
-        print('pop topic name', topic_name)
-        topic, created = Topic.objects.get_or_create(name=topic_name)
-
+        for topic in topic_name:
+            topic, created = Topic.objects.get_or_create(name=topic)
         context = request.data
         context['host'] = request.user.id
         context['topic'] = topic.id
-        # print('context ==========>', context)
         serializer = SimplateRoomSerializer(data=context)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
@@ -93,8 +92,6 @@ class RoomModelViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         pk = self.kwargs.get('pk')
         user = User.objects.get(room__id=pk)
-        print('user', user)
-        print('requested user', request.user)
         if user == request.user:
             return super().update(request, *args, **kwargs)
         return Response({'msg': 'You are not authorized for update'}, status=status.HTTP_400_BAD_REQUEST)
