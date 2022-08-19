@@ -119,6 +119,7 @@ export default {
     },
     async thumbUpMethod(data) {
       console.log("thumb up length", data?.is_votted.length);
+      console.log("data ===>", data);
       if (data?.is_votted.length > 0) {
         await axios
           .delete(`api/votes/${data.is_votted[0].id}/`, {
@@ -135,7 +136,7 @@ export default {
         let thumb_data = {
           upvote: 1,
           upvote_boolean: true,
-          user: data.room_host.id,
+          user: this.$store.state.activeUser.id,
           room: data.id,
         };
         await axios
@@ -170,7 +171,7 @@ export default {
         let thumb_data = {
           downvote: 1,
           downvote_boolean: true,
-          user: data.room_host.id,
+          user: this.$store.state.activeUser.id,
           room: data.id,
         };
         await axios

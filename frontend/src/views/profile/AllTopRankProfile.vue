@@ -16,19 +16,26 @@
               <div class="company-up-info snip-div">
                 <img :src="user.avator" alt="" class="snip-img" />
                 <h3 class="snip-h3">{{ user.username }}</h3>
-                <h4 class="snip-h4">Graphic Designer</h4>
+                <h4 class="snip-h4">{{ user.designation }}</h4>
                 <ul class="snip-ul">
                   <li class="snip-li">
-                    <a href="#" title="" class="follow snip-a"> Follow </a>
-                  </li>
-                  <li class="snip-li">
-                    <a href="#" title="" class="message-us snip-a">
-                      <i class="fa fa-envelope"> </i>
+                    <a
+                      href="#"
+                      title=""
+                      class="follow snip-a"
+                      @click="followBtn(user.id)"
+                    >
+                      Follow
                     </a>
                   </li>
                   <li class="snip-li">
-                    <a href="#" title="" class="hire-us snip-a"> Hire </a>
+                    <router-link to="/chat" title="" class="message-us snip-a">
+                      <i class="fa fa-envelope"> </i>
+                    </router-link>
                   </li>
+                  <!-- <li class="snip-li">
+                    <a href="#" title="" class="hire-us snip-a"> Hire </a>
+                  </li> -->
                 </ul>
               </div>
               <router-link
@@ -72,11 +79,30 @@ export default {
   methods: {
     fetchAllTopfollowerPersons() {
       this.is_loading = true;
-      axios.get("api/most-followed-peoples/").then((res) => {
+      axios.get("api/top-profiles/").then((res) => {
         console.log("picked profile details data", res.data);
         this.user_profile = res.data;
         this.is_loading = false;
       });
+    },
+    async followBtn(user_id) {
+      console.log("user id", user_id);
+      let data = {
+        user_id: user_id,
+        following_user_id: this.$store.state.activeUser.id,
+      };
+      await axios
+        .post("/api/userfollowing/", JSON.stringify(data), {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((res) => {
+          console.log("response", res);
+        })
+        .catch((err) => {
+          console.log("error==>", err);
+        });
     },
   },
   async mounted() {

@@ -135,7 +135,7 @@ class TopProfileModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'name', 'username', 'avator', 'designation')
+        fields = ('id', 'name', 'username', 'avator', 'designation', 'uuid')
 
     # class MostFollowedUserModelSerializer(serializers.ModelSerializer):
 

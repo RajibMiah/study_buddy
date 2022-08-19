@@ -96,27 +96,11 @@
                           </button>
                         </div>
                       </a>
-                      <!-- <a href="#" target="_blank">
-                  <div class="header__user">
-                    <button type="button" class="icon-button">
-                      <span class="material-symbols-outlined">
-                        storefront
-                      </span>
-                    </button>
-                  </div>
-                </a> -->
                     </div>
                   </div>
                 </div>
               </div>
-
-              <!-- <p>@{{ user.username }}</p> -->
             </div>
-
-            <!-- <a href="#" class="btn btn--main btn--pill"
-              >Edit Profile</a
-            >
-           -->
           </div>
           <div class="profile__about">
             <h3>About</h3>

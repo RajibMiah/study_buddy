@@ -107,6 +107,19 @@
             <div class="room__details" style="color: black">
               {{ room_details.description }}
             </div>
+            <div class="image-card-container">
+              <div class="card image-card">
+                <img
+                  class="card-img-top card-img"
+                  :src="
+                    room_details.room_image
+                      ? room_details.room_image
+                      : 'https://www.lighthouselabs.ca/uploads/post/open_graph_image/414/JavaScript-Uses-Cases-Programming-Language-.jpg'
+                  "
+                  alt="room_image"
+                />
+              </div>
+            </div>
             <span class="room__topics">{{ room_details?.topic?.name }}</span>
           </div>
 

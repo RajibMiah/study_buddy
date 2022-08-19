@@ -2,14 +2,13 @@
   <div class="widget suggestions full-width snipcss-YIPho snip-div">
     <div class="sd-title snip-div">
       <h3 class="snip-h3">Most Viewed People</h3>
-      <!-- <span class="material-symbols-outlined"> more_vert </span> -->
     </div>
     <div class="suggestions-list snip-div">
       <div v-for="user in user_profile" class="suggestion-usd snip-div">
         <img :src="user.avator" alt="" class="snip-img" />
         <div class="sgt-text snip-div">
           <h4 class="snip-h4">{{ user.username }}</h4>
-          <span class="snip-span"> Graphic Designer </span>
+          <span class="snip-span"> {{ user.designation }} </span>
         </div>
         <span
           class="material-symbols-outlined follow-btn"
@@ -47,8 +46,8 @@ export default {
   methods: {
     fetchAllTopfollowerPersons() {
       this.is_loading = true;
-      axios.get("api/most-followed-peoples/").then((res) => {
-        console.log("picked profile details data", res.data);
+      axios.get("api/top-profiles/").then((res) => {
+        console.log("picked toprofile sidebar data", res.data);
         this.user_profile = res.data;
         this.is_loading = false;
       });
