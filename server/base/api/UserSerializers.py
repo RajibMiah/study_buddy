@@ -1,10 +1,10 @@
 
 
-from base.models import Room, Skill, User, UserFollowing
-from django.db.models import Count, Max
+from base.models import Message, Room, Skill, User, UserFollowing
+from django.db.models import Count, Max, Q
 from rest_framework import serializers
 
-from .serializers import RoomSerializer
+from .serializers import RoomSerializer, SimpleUserSerializer
 
 AVATOR_BASE_URL = 'http://127.0.0.1:8000/images/'
 
@@ -22,10 +22,20 @@ class UserFollowingStatusSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class MessageModelSerilaizer(serializers.ModelSerializer):
+    user = SimpleUserSerializer(read_only=True)
+    room = SimplateRoomSerializer(read_only=True)
+
+    class Meta:
+        model = Message
+        fields = '__all__'
+
+
 class UserProfielSerializer(serializers.ModelSerializer):
 
     user_created_rooms = serializers.SerializerMethodField(read_only=True)
     follows_list = serializers.SerializerMethodField(read_only=True)
+    room_activity = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
@@ -40,6 +50,7 @@ class UserProfielSerializer(serializers.ModelSerializer):
             'last_name',
             'email',
             'bio',
+            'room_activity',
             'avator',
             'follows_list',
             'user_created_rooms'
@@ -62,6 +73,12 @@ class UserProfielSerializer(serializers.ModelSerializer):
         ctx['follows'] = UserFollowingStatusSerializer(
             following_list, many=True).data
         return ctx
+
+    def get_room_activity(self, obj):
+
+        room_messages = Message.objects.filter(
+            Q(room__participants__uuid=obj.uuid), Q(room__topic__name__icontains=''))
+        return MessageModelSerilaizer(room_messages, many=True).data
 
 
 class SkillModelSerializer(serializers.ModelSerializer):

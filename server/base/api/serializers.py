@@ -126,9 +126,9 @@ class UserFollowingModelSerializer(serializers.ModelSerializer):
         model = UserFollowing
         fields = "__all__"
 
-    # def get_total_follower(self, user):
-    #     followers = UserFollowing.objects.filter(user_id=user.id).count()
-    #     return followers
+    def get_total_follower(self, user):
+        followers = UserFollowing.objects.filter(user_id=user.id).count()
+        return followers
 
 
 class TopProfileModelSerializer(serializers.ModelSerializer):

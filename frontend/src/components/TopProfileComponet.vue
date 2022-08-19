@@ -5,11 +5,14 @@
     </div>
     <div class="suggestions-list snip-div">
       <div v-for="user in user_profile" class="suggestion-usd snip-div">
-        <img :src="user.avator" alt="" class="snip-img" />
-        <div class="sgt-text snip-div">
-          <h4 class="snip-h4">{{ user.username }}</h4>
-          <span class="snip-span"> {{ user.designation }} </span>
-        </div>
+        <router-link :to="{ name: 'profile', params: { uuid: user.uuid } }">
+          <img :src="user.avator" alt="" class="snip-img" />
+          <div class="sgt-text snip-div">
+            <h4 class="snip-h4">{{ user.username }}</h4>
+            <span class="snip-span"> {{ user.designation }} </span>
+          </div>
+        </router-link>
+
         <span
           class="material-symbols-outlined follow-btn"
           @click="followBtn(user.id)"

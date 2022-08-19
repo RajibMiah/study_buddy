@@ -3,7 +3,7 @@
   <div v-if="is_loading">..</div>
   <main v-else class="profile-page layout layout--3">
     <div class="container">
-      <div>
+      <div class="top-rated-profile-container">
         <TopicComponentVue />
       </div>
 
@@ -112,10 +112,19 @@
           :key="feeditem.id"
         >
           <!-- <pre>{{ feeditem }}</pre> -->
-          <FeedComponentVue :data="feeditem" />
+          <FeedComponentVue
+            :data="feeditem"
+            :thumbUpMethod="thumbUpMethod"
+            :thumbDownMethod="thumbDownMethod"
+          />
         </div>
       </div>
-      <ActivityComponentVue />
+      <div v-if="this.$route.params.uuid == this.$store.state.activeUser.uuid">
+        <ActivityComponentVue :room_activity="user_profile.room_activity" />
+      </div>
+      <div v-else class="top-rated-profile-container">
+        <TopProfileComponetVue />
+      </div>
     </div>
   </main>
 </template>
@@ -125,12 +134,14 @@ import axios from "../../axios";
 import ActivityComponentVue from "../../components/ActivityComponent.vue";
 import FeedComponentVue from "../../components/FeedComponent.vue";
 import TopicComponentVue from "../../components/TopicComponent.vue";
+import TopProfileComponetVue from "../../components/TopProfileComponet.vue";
 export default {
   name: "Profile",
   components: {
     FeedComponentVue,
     ActivityComponentVue,
     TopicComponentVue,
+    TopProfileComponetVue,
   },
   data: function () {
     return {
@@ -147,6 +158,76 @@ export default {
         this.user_profile = res.data;
         this.is_loading = false;
       });
+    },
+    async thumbUpMethod(data) {
+      console.log("thumb up length", data?.is_votted.length);
+      console.log("data ===>", data);
+      if (data?.is_votted.length > 0) {
+        await axios
+          .delete(`api/votes/${data.is_votted[0].id}/`, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then((res) => {
+            console.log("deleted", res.data);
+            data.is_votted = [];
+            data.vote.upvote = data.vote.upvote - 1;
+          });
+      } else {
+        let thumb_data = {
+          upvote: 1,
+          upvote_boolean: true,
+          user: this.$store.state.activeUser.id,
+          room: data.id,
+        };
+        await axios
+          .post("api/votes/", JSON.stringify(thumb_data), {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then((res) => {
+            data.is_votted.push(res.data);
+            data.vote.upvote = data.vote.upvote + 1;
+            console.log("data crated ", data);
+          });
+      }
+
+      console.log("not called");
+    },
+    async thumbDownMethod(data) {
+      if (data?.is_votted.length > 0) {
+        await axios
+          .delete(`api/votes/${data.is_votted[0].id}/`, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then((res) => {
+            console.log("deleted", res.data);
+            data.is_votted = [];
+            data.vote.downvote = data.vote.downvote - 1;
+          });
+      } else {
+        let thumb_data = {
+          downvote: 1,
+          downvote_boolean: true,
+          user: this.$store.state.activeUser.id,
+          room: data.id,
+        };
+        await axios
+          .post("api/votes/", JSON.stringify(thumb_data), {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then((res) => {
+            data.is_votted.push(res.data);
+            data.vote.downvote = data.vote.downvote + 1;
+            console.log("data crated ", data);
+          });
+      }
     },
     async followingBtn(user_id, follows_data, is_followed) {
       if (is_followed) {
@@ -193,6 +274,7 @@ export default {
     },
   },
   async mounted() {
+    console.log("mount is call");
     await this.fetchProfileData();
   },
 
@@ -200,6 +282,11 @@ export default {
 };
 </script>
 <style scoped>
+.top-rated-profile-container {
+  position: sticky;
+  height: 95vh;
+  top: 13px;
+}
 .profile-contact-conatiner {
   display: flex;
   text-align: center;

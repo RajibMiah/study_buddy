@@ -1255,6 +1255,7 @@ a {
 
 .activities__container {
   /* background: #d4d1d1; */
+  max-width: 39rem;
   border-radius: 3px;
   position: sticky;
   height: 95vh;

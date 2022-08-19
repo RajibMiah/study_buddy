@@ -486,7 +486,6 @@ export default {
       this.file = this.$refs.file.files[0];
       this.url = URL.createObjectURL(this.file);
     },
-    closeModal() {},
   },
   async mounted() {
     await this.fetachRoomDetails();
