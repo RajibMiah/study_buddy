@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'base.apps.BaseConfig',
     'chat',
-    'shop.apps.HomeConfig',
+    'shop.apps.ShopConfig',
 
 ]
 

@@ -127,10 +127,6 @@
                   Submit
                 </button>
               </div>
-              <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">
-              Close
-            </button>
-            <button type="button" class="btn btn-primary">Save changes</button> -->
             </div>
           </form>
         </div>
@@ -423,10 +419,8 @@
 
 <script>
 import { QuillEditor } from "@vueup/vue-quill";
-import "@vueup/vue-quill/dist/vue-quill.snow.css";
-
-// OR | AND
 import "@vueup/vue-quill/dist/vue-quill.bubble.css";
+import "@vueup/vue-quill/dist/vue-quill.snow.css";
 
 export default {
   name: "RoomView",
@@ -446,6 +440,9 @@ export default {
   },
 
   methods: {},
+  async mounted:{
+
+  }
 };
 </script>
 <style scoped>

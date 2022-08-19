@@ -1,9 +1,7 @@
-import json
 from datetime import datetime, timedelta
 
 import stripe
-# from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, get_user_model, login, logout
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 
@@ -11,24 +9,19 @@ from .models import *
 
 # Create your views here.
 
-User = get_user_model()
 
-
-@login_required(login_url='/login/')
-def home(request, uuid):
-    course = Course.objects.filter(course_holder__uuid=uuid)
-    print('course', course)
+def home(request):
+    course = Course.objects.all()
     context = {'course': course}
-    # print(context)
+
     if request.user.is_authenticated:
-        profile = Profile.objects.filter(user=request.user).first()
+        profile = UserProfile.objects.filter(user=request.user).first()
         request.session['profile'] = profile.is_pro
 
     print(context)
     return render(request, 'home.html', context)
 
 
-@login_required(login_url='/login/')
 def view_course(request, slug):
     course = Course.objects.filter(slug=slug).first()
     course_modules = CourseModule.objects.filter(course=course)
@@ -43,10 +36,10 @@ def become_pro(request):
         amount = 1000
         if membership == 'YEARLY':
             amount = 11000
-        stripe.api_key = 'sk_test_51LQxZWEKsGmDNYQ4sebArSMDZJwOnNxN2ErCfId15IIuropIeaEm66D8F38dvwuvdkSyqAP7R0UrFeK1G29xfNLD004zEpVpVF'
+        stripe.api_key = 'sk_test_qu7ivgHp9WRHlHJjs2QHugIA00hKFbC5qc'
 
         customer = stripe.Customer.create(
-            email="ahmedrajib942@gmail.com",
+            email="abhijeetg40@gmail.com",
             name=request.user.username,
             source=request.POST['stripeToken']
         )
@@ -54,13 +47,13 @@ def become_pro(request):
         charge = stripe.Charge.create(
             customer=customer,
             amount=amount*100,
-            currency='BDT',
+            currency='inr',
             description="Membership",
         )
 
         print(charge['amount'])
         if charge['paid'] == True:
-            profile = Profile.objects.filter(user=request.user).first()
+            profile = UserProfile.objects.filter(user=request.user).first()
             if charge['amount'] == 100000:
                 profile.subscription_type = 'M'
                 profile.is_pro = True

@@ -49,9 +49,6 @@
       </div>
     </router-link>
     <div class="roomListRoom__meta">
-      <!-- up and down vote section -->
-      <!-- {{ data?.is_votted[0].upvote_boolean }} -->
-
       <div class="vote-section">
         <div clsss="vote-btn-section">
           <div type="buton" class="vote-btn" @click="thumbUpMethod(data)">

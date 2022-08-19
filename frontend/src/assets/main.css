@@ -995,6 +995,7 @@ a {
   align-items: center;
   padding: 1rem 2rem;
   position: relative;
+  z-index: 999999;
 }
 
 .room__top svg,

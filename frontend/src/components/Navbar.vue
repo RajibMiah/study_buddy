@@ -60,7 +60,7 @@
                   <div class="profile-container">
                     <!-- {{ $store.state.activeUser.username }} -->
                     <span class="profie-username">
-                      @{{ $store.state.activeUser.username }}
+                      {{ $store.state.activeUser.username }}
                     </span>
                     <span>{{ $store.state.activeUser.name }}</span>
                   </div>

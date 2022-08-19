@@ -78,8 +78,8 @@ const routes = [
         }
     },
     {
-        path:'/create-room',
-        name:'create-room',
+        path:'/update-room/:roomid',
+        name:'update-room',
         component:()=> import('../components/CreateRoom.vue'),
         meta: {
             auth: true
