@@ -94,19 +94,19 @@
                     <div class="avatar-edit">
                       <input
                         type="file"
-                        id="imageUpload"
+                        id="file"
+                        ref="file"
                         accept=".png, .jpg, .jpeg"
                         v-on:change="handleFileUpload()"
                       />
                       <label for="imageUpload"></label>
                     </div>
                     <div class="avatar-preview">
-                      <div
-                        id="imagePreview"
-                        style="
-                          background-image: url(http://i.pravatar.cc/500?img=7);
-                        "
-                      ></div>
+                      <img
+                        v-if="url"
+                        :src="url"
+                        style="width: inherit; padding: 15px"
+                      />
                     </div>
                   </div>
                 </form>
@@ -118,6 +118,7 @@
                   class="btn btn--dark btn-danger"
                   data-dismiss="modal"
                   type="button"
+                  @click="$router.go(-1)"
                   >Cancel</a
                 >
                 <button
@@ -419,12 +420,13 @@
 
 <script>
 import { QuillEditor } from "@vueup/vue-quill";
-import "@vueup/vue-quill/dist/vue-quill.bubble.css";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
 
+// OR | AND
+import "@vueup/vue-quill/dist/vue-quill.bubble.css";
+import axios from "../axios";
 export default {
-  name: "RoomView",
-
+  name: "room-form-model",
   components: {
     QuillEditor,
   },
@@ -434,18 +436,72 @@ export default {
         tags: "",
         name: "",
         description: "this is description",
-        room_image: "",
       },
+      file: "",
+      url: null,
     };
   },
 
-  methods: {},
-  async mounted:{
+  created() {},
 
-  }
+  methods: {
+    fetachRoomDetails() {
+      axios
+        .get(`/api/room/${this.$route.params.roomid}/`)
+        .then((res) => {
+          this.room_details = res.data;
+          console.log("response", res.data);
+          this.form.tags = res.data.topic.name;
+          this.form.name = res.data.name;
+          this.form.description = res.data.description;
+          this.url = res.data.room_image;
+        })
+        .catch((err) => {
+          console.log("error===>", err);
+        });
+    },
+    submitForm() {
+      let formData = new FormData();
+      formData.append("tags", this.form.tags);
+      formData.append("name", this.form.name);
+      formData.append("description", this.form.description);
+      formData.append("room_image", this.file);
+      axios
+        .patch(`/api/room/${this.$route.params.roomid}/`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((res) => {
+          console.log("response", res);
+          this.$router.push({
+            path: `/room/${this.$route.params.roomid}/`,
+          });
+        })
+        .catch((err) => {
+          console.log("error", err);
+        });
+    },
+    handleFileUpload() {
+      this.file = this.$refs.file.files[0];
+      this.url = URL.createObjectURL(this.file);
+    },
+    closeModal() {},
+  },
+  async mounted() {
+    await this.fetachRoomDetails();
+  },
 };
 </script>
+
 <style scoped>
+.avatar-preview {
+  width: 17rem;
+  text-align: center;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
 .form-container {
   width: 50%;
   background: white;
