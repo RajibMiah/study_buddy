@@ -156,3 +156,7 @@ class MessageModelViewSet(viewsets.ModelViewSet):
         # print(self.id)
         result = super().get_queryset().filter(Q(room=47))
         return result
+
+    def create(self, request, *args, **kwargs):
+        # TODO:: HANDLE REQUEST USER.ID
+        return super().create(request, *args, **kwargs)

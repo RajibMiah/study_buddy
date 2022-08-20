@@ -258,15 +258,22 @@ export default {
       });
     },
     async createRoomNewMessage(data) {
+      let postdata = {
+        user__id: data.userid,
+        room: data.roomid,
+        body: data.message,
+      };
+      // console.log("post data", JSON.stringify(postdata));
       await axios
-        .post("/api/room-message/", data, {
+        .post("/api/room-message/", JSON.stringify(postdata), {
           headers: {
-            //application json
+            "Content-Type": "application/json",
           },
         })
         .then((res) => {
           console.log("New Room Message reponse", res.data);
-        });
+        })
+        .catch((err) => console.log(err));
       // return `<div class="thread">
       //         <div class="thread__top">
       //             <div class="thread__author">
@@ -339,7 +346,7 @@ export default {
           break;
         case "NEW_MSG":
           console.log("new message", data.message);
-          this.createRoomNewMessage(data);
+          this.createRoomNewMessage(data.message);
           // $("#room-chat-list").append(createRoomNewMessage(data.message));
 
           break;
