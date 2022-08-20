@@ -123,8 +123,8 @@ class Vote(models.Model):
 class Message(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    voted_message = models.ManyToManyField(
-        Vote, related_name='voted_message', blank=True)
+    # voted_message = models.ManyToManyField(
+    #     Vote, related_name='voted_message', blank=True)
     body = models.TextField(max_length=255)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)

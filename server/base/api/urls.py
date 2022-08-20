@@ -15,6 +15,8 @@ router.register(r'userfollowing', views.UserFollowingModelViewSet,
                 basename='userfollowing')
 router.register(r'top-profiles', views.TopProfileModelViewSet,
                 basename='top-profiles')
+router.register(r'room-message', views.MessageModelViewSet, basename='message')
+
 
 # router.register(r'most-followed-peoples',
 #                 views.MostFollowedPeopleModelViewSet, basename='most-followed-people')

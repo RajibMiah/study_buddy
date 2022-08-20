@@ -7,8 +7,8 @@ from rest_framework.decorators import action
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
 
-from .serializers import (RoomSerializer, TopicSerializer,
-                          TopProfileModelSerializer,
+from .serializers import (MessageModelSerializer, RoomSerializer,
+                          TopicSerializer, TopProfileModelSerializer,
                           UserFollowingModelSerializer, VoteModelSerializer)
 from .UserSerializers import (ProfileEditSerializer, SimplateRoomSerializer,
                               UserProfielSerializer)
@@ -146,3 +146,13 @@ class TopProfileModelViewSet(viewsets.ModelViewSet):
             followers=self.request.user.id)
 
         return not_followed_by_user
+
+
+class MessageModelViewSet(viewsets.ModelViewSet):
+    queryset = Message.objects.all()
+    serializer_class = MessageModelSerializer
+
+    def get_queryset(self):
+        # print(self.id)
+        result = super().get_queryset().filter(Q(room=47))
+        return result

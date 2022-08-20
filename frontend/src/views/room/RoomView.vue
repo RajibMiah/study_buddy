@@ -54,7 +54,7 @@
           <div class="room__header scroll">
             <div class="room__info">
               <h3>{{ room_details.name }}</h3>
-              <span> {{ dateHumanize(room_details.created) }} ago</span>
+              <span> {{ dateHumanize(room_details.created) }}</span>
             </div>
             <div class="room__hosted">
               <p>Hosted By</p>
@@ -157,9 +157,15 @@
               name="body"
               id="chatMessageInput"
               placeholder="Write your message here..."
+              v-model="message_input_value"
             />
             <div class="room_msg_input-group-append">
-              <button class="btn" id="chatMessageSend" type="button">
+              <button
+                @click="postMessageToWebSocket()"
+                class="btn"
+                id="chatMessageSend"
+                type="button"
+              >
                 Send
               </button>
             </div>
@@ -212,6 +218,7 @@
   </main>
 </template>
 <script>
+import $ from "jquery";
 import moment from "moment";
 import axios from "../../axios";
 import ConfirmationComponentVue from "../../components/ConfirmationComponent.vue";
@@ -229,6 +236,9 @@ export default {
       room_participants: [],
       host: [],
       message_set: [],
+      connection: null,
+      message_connection: null,
+      message_input_value: "",
     };
   },
 
@@ -247,9 +257,105 @@ export default {
         this.is_loading = false;
       });
     },
+    async createRoomNewMessage(data) {
+      await axios
+        .post("/api/room-message/", data, {
+          headers: {
+            //application json
+          },
+        })
+        .then((res) => {
+          console.log("New Room Message reponse", res.data);
+        });
+      // return `<div class="thread">
+      //         <div class="thread__top">
+      //             <div class="thread__author">
+      //                 <a href="#" class="thread__authorInfo">
+      //                     <div class="avatar avatar--small">
+      //                         <img src=${data.avator}/>
+      //                     </div>
+      //                     <span>${data.username}</span>
+      //                 </a>
+      //                 <span class="thread__date">${data.created}|timesince ago</span>
+      //             </div>
+      //                 <a href="{% url 'delete-message' ${data.message_id} %}">
+      //                     <div class="thread__delete">
+      //                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      //                             <title>remove</title>
+      //                             <path d="M27.314 6.019l-1.333-1.333-9.98 9.981-9.981-9.981-1.333 1.333 9.981 9.981-9.981 9.98 1.333 1.333 9.981-9.98 9.98 9.98 1.333-1.333-9.98-9.98 9.98-9.981z"></path>
+      //                         </svg>
+      //                     </div>
+      //                 </a>
+      //         </div>
+      //         <div class="thread__details" id = "chatLog" >
+      //             ${data.body}
+      //         </div>
+      //     </div>`;
+    },
+    postMessageToWebSocket() {
+      if (this.message_input_value === 0) return;
+      this.connection.send(
+        JSON.stringify({
+          command: "NEW_MSG",
+          message: this.message_input_value,
+          userid: this.$store.state.activeUser.id,
+          username: this.$store.state.activeUser.username,
+          roomid: this.$route.params.roomid,
+        })
+      );
+    },
   },
   async mounted() {
     await this.fetchRoomDetails();
+  },
+  created() {
+    // this.connection = new WebSocket(
+    //   `${import.meta.env.VITE_WS_ENDPOINT}ws/notification/`
+    // );
+    this.connection = new WebSocket(
+      `${import.meta.env.VITE_WS_ENDPOINT}ws/room/${this.$route.params.roomid}/`
+    );
+
+    this.connection.onopen = (event) => {
+      console.log("Successfully connected to the WebSocket.");
+    };
+    this.connection.onclose = (event) => {
+      console.log(
+        "WebSocket connection closed unexpectedly. Trying to reconnect in 2s..."
+      );
+      setTimeout(function () {
+        console.log("Reconnecting...");
+        this.created();
+      }, 2000);
+    };
+
+    this.connection.onmessage = (e) => {
+      console.log("on message");
+      const data = JSON.parse(e.data);
+      console.log("group channel data===>", data);
+      switch (data["command"]) {
+        case "LOAD_CHAT_MSG":
+          console.log("Group message loadded", data.message);
+          break;
+        case "NEW_MSG":
+          console.log("new message", data.message);
+          this.createRoomNewMessage(data);
+          // $("#room-chat-list").append(createRoomNewMessage(data.message));
+
+          break;
+        case "PARTICIPANTS_ADDED":
+          console.log("participants added ", data.message);
+          $("#participants_list").append(createParticipants(data.message));
+          break;
+        default:
+          console.error("Unknown message type!");
+          break;
+      }
+
+      // // scroll 'chatLog' to the bottom
+      // chatLog.scrollTop = chatLog.scrollHeight;
+      // console.log("chat log", chatLog);
+    };
   },
 };
 </script>

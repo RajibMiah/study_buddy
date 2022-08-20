@@ -1,39 +1,47 @@
 <template>
   <!-- <pre>{{ data }}</pre> -->
   <div class="roomListRoom">
+    <div>
+      <div class="roomListRoom__header">
+        <div class="room_detail_container">
+          <router-link
+            :to="{ name: 'profile', params: { uuid: data.room_host?.uuid } }"
+            class="roomListRoom__author"
+          >
+            <div class="avatar avatar--small">
+              <img
+                :src="
+                  data.room_host?.avator
+                    ? data.room_host?.avator
+                    : 'https://www.pngkey.com/png/detail/230-2301779_best-classified-apps-default-user-profile.png'
+                "
+              />
+            </div>
+            <span>@{{ data.room_host?.name }}</span>
+          </router-link>
+          <div class="roomListRoom__actions">
+            <div class="join-btn" @click="joinFunc(40)">
+              <span class="material-symbols-outlined join-btn-icon"> add </span>
+              <span class="join-btn join-btn-text">join</span>
+            </div>
+
+            <span>{{ dateHumanize(data.created) }}</span>
+          </div>
+        </div>
+      </div>
+      <router-link
+        :to="{ name: 'room', params: { roomid: data.id } }"
+        class="room-list-link"
+      >
+        <div class="roomListRoom__content">
+          <a href="#">{{ data.name }}</a>
+        </div>
+      </router-link>
+    </div>
     <router-link
       :to="{ name: 'room', params: { roomid: data.id } }"
       class="room-list-link"
     >
-      <div>
-        <div class="roomListRoom__header">
-          <div class="room_detail_container">
-            <router-link
-              :to="{ name: 'profile', params: { uuid: data.room_host?.uuid } }"
-              class="roomListRoom__author"
-            >
-              <div class="avatar avatar--small">
-                <img
-                  :src="
-                    data.room_host?.avator
-                      ? data.room_host?.avator
-                      : 'https://www.pngkey.com/png/detail/230-2301779_best-classified-apps-default-user-profile.png'
-                  "
-                />
-              </div>
-              <span>@{{ data.room_host?.name }}</span>
-            </router-link>
-            <div class="roomListRoom__actions">
-              <span>{{ dateHumanize(data.created) }}</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="roomListRoom__content">
-          <a href="#">{{ data.name }}</a>
-        </div>
-      </div>
-
       <div class="image-card-container">
         <div class="card image-card">
           <img
@@ -48,6 +56,7 @@
         </div>
       </div>
     </router-link>
+
     <div class="roomListRoom__meta">
       <div class="vote-section">
         <div clsss="vote-btn-section">
@@ -118,6 +127,9 @@ export default {
       return moment(date).fromNow();
     },
 
+    joinFunc(roomid) {
+      console.log("join button room id", roomid);
+    },
     thumb_up_func(data, thumb_up) {
       console.log("data of state", data);
 
@@ -195,6 +207,18 @@ export default {
   height: inherit;
 }
 .vote-style {
+  color: orange;
+}
+.join-btn {
+  display: flex !important;
+  cursor: pointer;
+}
+.join-btn-icon {
+  font-size: 2.75rem;
+  color: orange;
+}
+.join-btn-text {
+  font-size: 1.75rem;
   color: orange;
 }
 </style>

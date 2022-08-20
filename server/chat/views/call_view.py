@@ -30,6 +30,7 @@ class StartCall(APIView):
         if serializer.is_valid():
             sender_user = User.objects.get(
                 username=serializer.validated_data['sender'])
+
             channel_layer = get_channel_layer()
             async_to_sync(channel_layer.group_send)(
                 'chat_%s' % serializer.validated_data['receiver'], {

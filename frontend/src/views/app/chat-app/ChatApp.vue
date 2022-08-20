@@ -190,6 +190,7 @@ export default {
           return value.username === message.sender;
         })[0];
         user.messages.push(message);
+        console.log("message object", message);
         if (this.selected_user.username === user.username) {
           user.messages.filter((value) => (value.read = true));
         }

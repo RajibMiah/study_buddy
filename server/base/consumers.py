@@ -25,7 +25,7 @@ class RoomConsumer(WebsocketConsumer):
 
         # connection has to be accepted
         self.accept()
-
+        print('Room connected')
         # join the room group
         async_to_sync(self.channel_layer.group_add)(
             self.room_group_name,
@@ -63,42 +63,41 @@ class RoomConsumer(WebsocketConsumer):
 
     def send_new_msg(self, recv_data):
         data = recv_data['message']
-        try:
-            if not self.user.is_authenticated:  # new
-                return                          # new
+        self.send_room_msg(msg=recv_data, type='chat.message')
+        # try:
 
-            new_msg_obj = Message.objects.create(
-                user=self.user, room=self.room, body=data)  # new
+        #     new_msg_obj = Message.objects.create(
+        #         user=data.userId, room=self.room, body=data)  # new
 
-            # self.send_to_socket({
-            #     "command": 'NEW_MSG',
-            #     'message': self.to_json_msg(new_msg_obj)
-            # })
-            room = Room.objects.get(id=self.room_id)
-            if not room.participants.filter(uuid=self.user.uuid).exists():
-                room.participants.add(self.user)
-                user = User.objects.get(
-                    Q(username=self.user) and Q(uuid=self.user.uuid))
+        #     # self.send_to_socket({
+        #     #     "command": 'NEW_MSG',
+        #     #     'message': self.to_json_msg(new_msg_obj)
+        #     # })
+        #     room = Room.objects.get(id=self.room_id)
+        #     if not room.participants.filter(id=data.userId).exists():
+        #         room.participants.add(self.user)
+        #         user = User.objects.get(
+        #             Q(username=data.userName) and Q(id=data.userId))
 
-                ctx = {
-                    'id': user.id,
-                    'username': str(user.name),
-                    'avator': str(user.avator.url),
-                }
+        #         ctx = {
+        #             'id': user.id,
+        #             'username': str(user.userName),
+        #             'avator': str(user.avator.url),
+        #         }
 
-                self.send_to_socket({
-                    'command': 'PARTICIPANTS_ADDED',
-                    'message': ctx
-                })
-                self.send_room_msg(msg=ctx, type='chat.message')
-            else:
-                print('user exit')
+        #         self.send_to_socket({
+        #             'command': 'PARTICIPANTS_ADDED',
+        #             'message': ctx
+        #         })
+        #         self.send_room_msg(msg=ctx, type='chat.message')
+        #     else:
+        #         print('user exit')
 
-            self.send_room_msg(msg=self.to_json_msg(
-                new_msg_obj), type='chat.message')
+        #     self.send_room_msg(msg=self.to_json_msg(
+        #         new_msg_obj), type='chat.message')
 
-        except Exception as e:
-            print('exception in new_msg' + str(e))
+        # except Exception as e:
+        #     print('exception in new_msg' + str(e))
 
     def send_room_msg(self, msg, type):
 
@@ -123,6 +122,7 @@ class RoomConsumer(WebsocketConsumer):
 
     def receive(self, text_data=None, bytes_data=None):
         recv_data = json.loads(text_data)
+        print("recived data", recv_data)
 
         if recv_data['command'] == 'MESSAGE':
             pass
