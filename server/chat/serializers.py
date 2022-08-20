@@ -68,9 +68,10 @@ class UsersWithMessageSerializer(serializers.ModelSerializer):
     status = serializers.CharField(source='profile.status')
     messages = serializers.SerializerMethodField()
 
+
     class Meta:
         model = User
-        fields = ('name', 'username',  'online',
+        fields = ('name', 'uuid','username',  'online',
                   'status', 'messages', 'avator')
 
     def get_name(self, obj):

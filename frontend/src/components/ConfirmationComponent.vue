@@ -27,7 +27,13 @@
           <button type="button" class="btn btn-info" data-dismiss="modal">
             Cancel
           </button>
-          <button type="button" class="btn btn-danger">Delete</button>
+          <button
+            @click="confirmFun(data)"
+            type="button"
+            class="btn btn-danger"
+          >
+            Delete
+          </button>
         </div>
       </div>
     </div>
@@ -35,7 +41,12 @@
 </template>
 
 <script>
-export default {};
+export default {
+  props: ["confirmFun", "data"],
+  mounted() {
+    console.log("data fetched", this.data);
+  },
+};
 </script>
 
 <style scoped>

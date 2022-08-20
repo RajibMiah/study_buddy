@@ -103,6 +103,7 @@
                 :key="message.id"
                 class="thread"
                 id="chatLog"
+                ref="chatLog"
               >
                 <div class="thread__top">
                   <div class="thread__author">
@@ -114,9 +115,12 @@
                       class="thread__authorInfo"
                     >
                       <div class="avatar avatar--small">
-                        <img :src="message.user.avator" alt="user_profile" />
+                        <img
+                          :src="message.user_details.avator"
+                          alt="user_profile"
+                        />
                       </div>
-                      <span>@{{ message?.user.username }}</span>
+                      <span>@{{ message?.user_details.username }}</span>
                     </router-link>
                     <span class="thread__date">{{
                       dateHumanize(message.created)
@@ -124,7 +128,7 @@
                   </div>
 
                   <a
-                    v-if="message.user.id == $store.state.activeUser.id"
+                    v-if="message.user_details.id == $store.state.activeUser.id"
                     href="#myModal"
                     class="trigger-btn"
                     data-toggle="modal"
@@ -152,7 +156,12 @@
         </div>
 
         <div class="room__message">
-          <form action="" method="POST" class="room_message_form_control">
+          <form
+            v-on:submit.prevent="postMessageToWebSocket"
+            action=""
+            method="POST"
+            class="room_message_form_control"
+          >
             <input
               name="body"
               id="chatMessageInput"
@@ -172,21 +181,16 @@
           </form>
         </div>
       </div>
-      <!-- Room End -->
-
-      <!--   Start -->
       <div class="participants">
         <h3 class="participants__top">
           Participants
           <span>({{ room_participants.length }} Joined)</span>
         </h3>
-        <!-- <pre>{{ room_details.participants }}</pre> -->
         <div
           v-for="participant in room_participants"
           :key="participant.id"
           id="participants_list"
         >
-          <!-- <pre>{{ participant }}</pre> -->
           <div class="participants__list scroll" id="participants_list">
             <router-link
               :to="{
@@ -213,7 +217,7 @@
         </div>
       </div>
     </div>
-    <ConfirmationComponentVue />
+    <ConfirmationComponentVue :confirmFun="deleteComment" />
     <!-- <room-from-model /> -->
   </main>
 </template>
@@ -241,7 +245,16 @@ export default {
       message_input_value: "",
     };
   },
-
+  // watch: {
+  //   message_set: {
+  //     handler() {
+  //       setTimeout(() => {
+  //         console.log("watched");
+  //         this.$refs.chatLog.scrollDown();
+  //       }, 500);
+  //     },
+  //   },
+  // },
   methods: {
     dateHumanize(date) {
       return moment(date).fromNow();
@@ -257,13 +270,16 @@ export default {
         this.is_loading = false;
       });
     },
+
+    deleteComment(data) {
+      console.log("deleted info data", data);
+    },
     async createRoomNewMessage(data) {
       let postdata = {
-        user__id: data.userid,
+        user: data.userid,
         room: data.roomid,
         body: data.message,
       };
-      // console.log("post data", JSON.stringify(postdata));
       await axios
         .post("/api/room-message/", JSON.stringify(postdata), {
           headers: {
@@ -271,33 +287,10 @@ export default {
           },
         })
         .then((res) => {
-          console.log("New Room Message reponse", res.data);
+          this.message_set.push(res.data);
+          this.message_input_value = "";
         })
         .catch((err) => console.log(err));
-      // return `<div class="thread">
-      //         <div class="thread__top">
-      //             <div class="thread__author">
-      //                 <a href="#" class="thread__authorInfo">
-      //                     <div class="avatar avatar--small">
-      //                         <img src=${data.avator}/>
-      //                     </div>
-      //                     <span>${data.username}</span>
-      //                 </a>
-      //                 <span class="thread__date">${data.created}|timesince ago</span>
-      //             </div>
-      //                 <a href="{% url 'delete-message' ${data.message_id} %}">
-      //                     <div class="thread__delete">
-      //                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-      //                             <title>remove</title>
-      //                             <path d="M27.314 6.019l-1.333-1.333-9.98 9.981-9.981-9.981-1.333 1.333 9.981 9.981-9.981 9.98 1.333 1.333 9.981-9.98 9.98 9.98 1.333-1.333-9.98-9.98 9.98-9.981z"></path>
-      //                         </svg>
-      //                     </div>
-      //                 </a>
-      //         </div>
-      //         <div class="thread__details" id = "chatLog" >
-      //             ${data.body}
-      //         </div>
-      //     </div>`;
     },
     postMessageToWebSocket() {
       if (this.message_input_value === 0) return;
@@ -311,58 +304,65 @@ export default {
         })
       );
     },
+    ws_connection() {
+      this.connection = new WebSocket(
+        `${import.meta.env.VITE_WS_ENDPOINT}ws/room/${
+          this.$route.params.roomid
+        }/`
+      );
+
+      this.connection.onopen = (event) => {
+        console.log("Successfully connected to the WebSocket.");
+      };
+      this.connection.onclose = (event) => {
+        console.log(
+          "WebSocket connection closed unexpectedly. Trying to reconnect in 2s..."
+        );
+        setTimeout(function () {
+          console.log("Reconnecting...");
+          this.created();
+        }, 2000);
+      };
+
+      this.connection.onmessage = (e) => {
+        console.log("on message");
+        const data = JSON.parse(e.data);
+        console.log("group channel data===>", data);
+        switch (data["command"]) {
+          case "LOAD_CHAT_MSG":
+            console.log("Group message loadded", data.message);
+            break;
+          case "NEW_MSG":
+            console.log("new message", data.message);
+            this.createRoomNewMessage(data.message);
+            // $("#room-chat-list").append(createRoomNewMessage(data.message));
+
+            break;
+          case "PARTICIPANTS_ADDED":
+            console.log("participants added ", data.message);
+            $("#participants_list").append(createParticipants(data.message));
+            break;
+          default:
+            console.error("Unknown message type!");
+            break;
+        }
+
+        // // scroll 'chatLog' to the bottom
+        // chatLog.scrollTop = chatLog.scrollHeight;
+        // console.log("chat log", chatLog);
+      };
+    },
   },
   async mounted() {
     await this.fetchRoomDetails();
+    console.log("mounted");
+  },
+  update() {
+    console.log("update");
+    this.ws_connection();
   },
   created() {
-    // this.connection = new WebSocket(
-    //   `${import.meta.env.VITE_WS_ENDPOINT}ws/notification/`
-    // );
-    this.connection = new WebSocket(
-      `${import.meta.env.VITE_WS_ENDPOINT}ws/room/${this.$route.params.roomid}/`
-    );
-
-    this.connection.onopen = (event) => {
-      console.log("Successfully connected to the WebSocket.");
-    };
-    this.connection.onclose = (event) => {
-      console.log(
-        "WebSocket connection closed unexpectedly. Trying to reconnect in 2s..."
-      );
-      setTimeout(function () {
-        console.log("Reconnecting...");
-        this.created();
-      }, 2000);
-    };
-
-    this.connection.onmessage = (e) => {
-      console.log("on message");
-      const data = JSON.parse(e.data);
-      console.log("group channel data===>", data);
-      switch (data["command"]) {
-        case "LOAD_CHAT_MSG":
-          console.log("Group message loadded", data.message);
-          break;
-        case "NEW_MSG":
-          console.log("new message", data.message);
-          this.createRoomNewMessage(data.message);
-          // $("#room-chat-list").append(createRoomNewMessage(data.message));
-
-          break;
-        case "PARTICIPANTS_ADDED":
-          console.log("participants added ", data.message);
-          $("#participants_list").append(createParticipants(data.message));
-          break;
-        default:
-          console.error("Unknown message type!");
-          break;
-      }
-
-      // // scroll 'chatLog' to the bottom
-      // chatLog.scrollTop = chatLog.scrollHeight;
-      // console.log("chat log", chatLog);
-    };
+    this.ws_connection();
   },
 };
 </script>

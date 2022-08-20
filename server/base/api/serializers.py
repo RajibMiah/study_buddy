@@ -1,6 +1,4 @@
 
-from asyncore import read
-from dataclasses import field
 
 from base.models import Message, Room, Topic, User, UserFollowing, Vote
 from django.db.models import Q, Sum
@@ -46,11 +44,11 @@ class VoteModelSerializer(serializers.ModelSerializer):
 
 
 class MessageModelSerializer(serializers.ModelSerializer):
-    user = SimpleUserSerializer()
+    user_details = SimpleUserSerializer(source='user', read_only=True)
 
     class Meta:
         model = Message
-        fields = '__all__'
+        fields = ['id', 'user', 'room', 'body', 'created', 'user_details']
 
 
 class RoomSerializer(serializers.ModelSerializer):

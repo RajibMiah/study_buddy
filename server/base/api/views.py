@@ -153,10 +153,9 @@ class MessageModelViewSet(viewsets.ModelViewSet):
     serializer_class = MessageModelSerializer
 
     def get_queryset(self):
-        # print(self.id)
-        result = super().get_queryset().filter(Q(room=47))
+        print("room_id", self.roomid)
+        result = super().get_queryset().filter(Q(room=self.roomid))
         return result
 
     def create(self, request, *args, **kwargs):
-        # TODO:: HANDLE REQUEST USER.ID
         return super().create(request, *args, **kwargs)
