@@ -22,5 +22,5 @@ router.register(r'room-message', views.MessageModelViewSet, basename='message')
 #                 views.MostFollowedPeopleModelViewSet, basename='most-followed-people')
 
 urlpatterns = [
-
+    path('join-room/<int:pk>/', views.addParticipants, name='join-participant'),
 ] + router.urls

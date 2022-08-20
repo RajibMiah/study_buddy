@@ -2,9 +2,11 @@
 
 from base.models import Message, Room, Topic, User, UserFollowing, Vote
 from django.db.models import Count, Max, Min, Q
+from django.http import HttpResponse, JsonResponse
 from rest_framework import status, viewsets
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view, renderer_classes
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.response import Response
 
 from .serializers import (MessageModelSerializer, RoomSerializer,
@@ -159,3 +161,16 @@ class MessageModelViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
+
+
+@api_view(['POST'])
+@renderer_classes((TemplateHTMLRenderer, JSONRenderer))
+def addParticipants(request, pk):
+    print('pk', pk, 'REQUEST', request)
+    room_details = Room.objects.get(id=pk, participants=request.user.id)
+    if room_details.exists():
+        room_details.participants.add(request.user)
+        return JsonResponse({'msg': 'user added'}, status=status.HTTP_201_CREATED)
+    else:
+        room_details.participants.leave(request.user)
+        return JsonResponse({'msg': 'user removed'}, status=status.HTTP_404_NOT_FOUND)

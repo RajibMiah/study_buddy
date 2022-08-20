@@ -20,9 +20,13 @@
             <span>@{{ data.room_host?.name }}</span>
           </router-link>
           <div class="roomListRoom__actions">
-            <div class="join-btn" @click="joinFunc(40)">
+            <div v-if="data.is_joined" class="join-btn" @click="joinFunc(40)">
               <span class="material-symbols-outlined join-btn-icon"> add </span>
-              <span class="join-btn join-btn-text">join</span>
+              <span class="join-btn join-btn-text">Remove</span>
+            </div>
+            <div v-else class="join-btn" @click="joinFunc(40)">
+              <span class="material-symbols-outlined join-btn-icon"> add </span>
+              <span class="join-btn join-btn-text">Join</span>
             </div>
 
             <span>{{ dateHumanize(data.created) }}</span>

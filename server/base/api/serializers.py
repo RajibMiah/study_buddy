@@ -60,11 +60,12 @@ class RoomSerializer(serializers.ModelSerializer):
     messages = serializers.SerializerMethodField(read_only=True)
     is_votted = serializers.SerializerMethodField(read_only=True)
     room_image = serializers.SerializerMethodField('get_room_image')
+    is_joined = serializers.SerializerMethodField()
 
     class Meta:
         model = Room
         fields = ['id', 'room_host', 'room_image', 'topic', 'vote', 'is_votted', 'participants', 'messages',
-                  'name', 'description', 'updated', 'created']
+                  'name', 'description', 'updated', 'created', 'is_joined']
 
     def get_participants(self, data):
         room = Room.objects.select_related(
@@ -103,6 +104,11 @@ class RoomSerializer(serializers.ModelSerializer):
             image_url = str(AVATOR_BASE_URL) + str(obj.room_image)
             return image_url
         return None
+
+    def get_is_joined(self, obj):
+        qs = Room.objects.prefetch_related('participants').filter(
+            Q(id=obj.pk), Q(participants=self.context['request'].user.id))
+        return qs.exists()
 
 
 class TopicSerializer(serializers.ModelSerializer):
