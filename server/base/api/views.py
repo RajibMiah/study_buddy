@@ -133,6 +133,14 @@ class UserFollowingModelViewSet(viewsets.ModelViewSet):
     queryset = UserFollowing.objects.all()
     serializer_class = UserFollowingModelSerializer
 
+    def get_queryset(self):
+        print(self.request.data)
+        return super().get_queryset()
+
+    def create(self, request, *args, **kwargs):
+        print(request.data)
+        return super().create(request, *args, **kwargs)
+
 
 class TopProfileModelViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -165,12 +173,14 @@ class MessageModelViewSet(viewsets.ModelViewSet):
 
 @api_view(['POST'])
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
-def addParticipants(request, pk):
-    print('pk', pk, 'REQUEST', request)
-    room_details = Room.objects.get(id=pk, participants=request.user.id)
-    if room_details.exists():
-        room_details.participants.add(request.user)
-        return JsonResponse({'msg': 'user added'}, status=status.HTTP_201_CREATED)
-    else:
-        room_details.participants.leave(request.user)
-        return JsonResponse({'msg': 'user removed'}, status=status.HTTP_404_NOT_FOUND)
+def addORRemoveParticipants(request, pk):
+    if request.method == 'POST':
+        print('pk', pk, 'REQUEST', request.data)
+        room_details = Room.objects.filter(
+            Q(id=pk), Q(participants=request.user.id))
+        if room_details.exists():
+            # room_details.participants.remove(request.user)
+            return JsonResponse({'msg': 'user removed'}, status=status.HTTP_201_CREATED)
+        else:
+            # room_details.participants.add(request.user)
+            return JsonResponse({'msg': 'user added'}, status=status.HTTP_201_CREATED)

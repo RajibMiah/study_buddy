@@ -156,4 +156,4 @@ class UserFollowing(models.Model):
         return self.user_id
 
     def __str__(self):
-        return str(f"{self.user_id} follows {self.following_user_id}")
+        return str(f"{self.user_id} followed by {self.following_user_id}")

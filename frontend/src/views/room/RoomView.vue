@@ -274,6 +274,7 @@ export default {
     deleteComment(data) {
       console.log("deleted info data", data);
     },
+
     async createRoomNewMessage(data) {
       let postdata = {
         user: data.userid,

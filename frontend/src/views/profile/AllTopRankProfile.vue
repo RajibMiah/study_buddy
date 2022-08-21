@@ -81,7 +81,11 @@ export default {
       this.is_loading = true;
       axios.get("api/top-profiles/").then((res) => {
         console.log("picked profile details data", res.data);
-        this.user_profile = res.data;
+        res.data.map((user) => {
+          if (!user.is_followed) {
+            this.user_profile.push(user);
+          }
+        });
         this.is_loading = false;
       });
     },
@@ -99,6 +103,10 @@ export default {
         })
         .then((res) => {
           console.log("response", res);
+
+          this.user_profile = this.user_profile.filter(
+            (user) => user.id !== res.data.user_id
+          );
         })
         .catch((err) => {
           console.log("error==>", err);
@@ -107,6 +115,7 @@ export default {
   },
   async mounted() {
     await this.fetchAllTopfollowerPersons();
+    console.log("mountee=========>");
   },
   computed: {},
 };

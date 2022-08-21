@@ -58,6 +58,7 @@
             :data="feeditem"
             :thumbUpMethod="thumbUpMethod"
             :thumbDownMethod="thumbDownMethod"
+            :joinFunc="joinFunc"
           />
         </div>
       </div>
@@ -186,6 +187,20 @@ export default {
             console.log("data crated ", data);
           });
       }
+    },
+    async joinFunc(roomid) {
+      await axios.post(`/api/join-room/${roomid}/`).then((res) => {
+        console.log("join room api response", res);
+        this.data = this.data.map((data) => {
+          if (data.id == roomid) {
+            console.log(data);
+
+            return { ...data, is_joined: !data.is_joined };
+          }
+          return data;
+        });
+        console.log("this.data", this.data);
+      });
     },
   },
   watch: {

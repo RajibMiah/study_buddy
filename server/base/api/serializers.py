@@ -136,11 +136,18 @@ class UserFollowingModelSerializer(serializers.ModelSerializer):
 
 
 class TopProfileModelSerializer(serializers.ModelSerializer):
+    is_followed = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
-        fields = ('id', 'name', 'username', 'avator', 'designation', 'uuid')
+        fields = ('id', 'name', 'username', 'avator',
+                  'designation', 'uuid', 'is_followed')
 
+    def get_is_followed(self, obj):
+        follwed_user = UserFollowing.objects.filter(Q(user_id=obj.id), Q(
+            following_user_id=self.context['request'].user.id))
+
+        return follwed_user.exists()
     # class MostFollowedUserModelSerializer(serializers.ModelSerializer):
 
     #     class Meta:

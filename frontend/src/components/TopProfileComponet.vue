@@ -1,10 +1,15 @@
 <template>
+  <!-- <pre>{{ user_profile }}</pre> -->
   <div class="widget suggestions full-width snipcss-YIPho snip-div">
     <div class="sd-title snip-div">
       <h3 class="snip-h3">Most Viewed People</h3>
     </div>
     <div class="suggestions-list snip-div">
-      <div v-for="user in user_profile" class="suggestion-usd snip-div">
+      <div
+        v-for="user in user_profile"
+        :key="user.id"
+        class="suggestion-usd snip-div"
+      >
         <router-link :to="{ name: 'profile', params: { uuid: user.uuid } }">
           <img :src="user.avator" alt="" class="snip-img" />
           <div class="sgt-text snip-div">
@@ -19,6 +24,12 @@
         >
           Follow
         </span>
+        <!-- <span
+          class="material-symbols-outlined follow-btn"
+          @click="followBtn(user.id)"
+        >
+          Unfollow
+        </span> -->
       </div>
 
       <div class="view-more snip-div">
@@ -47,16 +58,41 @@ export default {
     };
   },
   methods: {
-    fetchAllTopfollowerPersons() {
+    async fetchAllTopfollowerPersons() {
       this.is_loading = true;
-      axios.get("api/top-profiles/").then((res) => {
+      await axios.get("api/top-profiles/").then((res) => {
         console.log("picked toprofile sidebar data", res.data);
-        this.user_profile = res.data;
+        res.data.map((user) => {
+          if (!user.is_followed) {
+            this.user_profile.push(user);
+          }
+        });
+        // this.user_profile = res.data;
         this.is_loading = false;
       });
     },
-    followBtn(user_id) {
-      console.log("user id", user_id);
+    async followBtn(user_id) {
+      console.log(this.user_profile);
+
+      let data = {
+        user_id: user_id,
+        following_user_id: this.$store.state.activeUser.id,
+      };
+      await axios
+        .post("/api/userfollowing/", JSON.stringify(data), {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((res) => {
+          console.log("response", res);
+          this.user_profile = this.user_profile.filter(
+            (user) => user.id !== res.data.user_id
+          );
+        })
+        .catch((err) => {
+          console.log("error==>", err);
+        });
     },
   },
   async mounted() {

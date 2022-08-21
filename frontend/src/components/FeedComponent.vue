@@ -20,11 +20,17 @@
             <span>@{{ data.room_host?.name }}</span>
           </router-link>
           <div class="roomListRoom__actions">
-            <div v-if="data.is_joined" class="join-btn" @click="joinFunc(40)">
-              <span class="material-symbols-outlined join-btn-icon"> add </span>
-              <span class="join-btn join-btn-text">Remove</span>
+            <div
+              v-if="data.is_joined"
+              class="join-btn"
+              @click="joinFunc(data.id)"
+            >
+              <span class="join-btn-icon material-symbols-outlined">
+                remove
+              </span>
+              <span class="join-btn join-btn-text">Remove </span>
             </div>
-            <div v-else class="join-btn" @click="joinFunc(40)">
+            <div v-else class="join-btn" @click="joinFunc(data.id)">
               <span class="material-symbols-outlined join-btn-icon"> add </span>
               <span class="join-btn join-btn-text">Join</span>
             </div>
@@ -120,7 +126,7 @@
 import moment from "moment";
 export default {
   name: "FeedComponent",
-  props: ["data", "thumbUpMethod", "thumbDownMethod"],
+  props: ["data", "thumbUpMethod", "thumbDownMethod", "joinFunc"],
   data() {
     return {
       is_loading: false,
@@ -129,10 +135,6 @@ export default {
   methods: {
     dateHumanize(date) {
       return moment(date).fromNow();
-    },
-
-    joinFunc(roomid) {
-      console.log("join button room id", roomid);
     },
     thumb_up_func(data, thumb_up) {
       console.log("data of state", data);
