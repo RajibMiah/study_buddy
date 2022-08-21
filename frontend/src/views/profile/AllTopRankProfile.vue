@@ -86,6 +86,13 @@ export default {
             this.user_profile.push(user);
           }
         });
+        this.user_profile.sort((a, b) =>
+          b.total_follower > a.total_follower
+            ? 1
+            : a.total_follower > b.total_follower
+            ? -1
+            : 0
+        );
         this.is_loading = false;
       });
     },
@@ -106,6 +113,13 @@ export default {
 
           this.user_profile = this.user_profile.filter(
             (user) => user.id !== res.data.user_id
+          );
+          this.user_profile.sort((a, b) =>
+            b.total_follower > a.total_follower
+              ? 1
+              : a.total_follower > b.total_follower
+              ? -1
+              : 0
           );
         })
         .catch((err) => {

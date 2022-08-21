@@ -68,6 +68,14 @@ export default {
           }
         });
         // this.user_profile = res.data;
+        this.user_profile.sort((a, b) =>
+          b.total_follower > a.total_follower
+            ? 1
+            : a.total_follower > b.total_follower
+            ? -1
+            : 0
+        );
+        console.log(this.user_profile);
         this.is_loading = false;
       });
     },
@@ -88,6 +96,13 @@ export default {
           console.log("response", res);
           this.user_profile = this.user_profile.filter(
             (user) => user.id !== res.data.user_id
+          );
+          this.user_profile.sort((a, b) =>
+            a.total_follower > b.total_follower
+              ? 1
+              : b.total_follower > a.total_follower
+              ? -1
+              : 0
           );
         })
         .catch((err) => {

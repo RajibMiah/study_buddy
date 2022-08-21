@@ -137,10 +137,11 @@ class UserFollowingModelSerializer(serializers.ModelSerializer):
 
 class TopProfileModelSerializer(serializers.ModelSerializer):
     is_followed = serializers.SerializerMethodField(read_only=True)
+    total_follower = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
-        fields = ('id', 'name', 'username', 'avator',
+        fields = ('id', 'name', 'username', 'avator', 'total_follower',
                   'designation', 'uuid', 'is_followed')
 
     def get_is_followed(self, obj):
@@ -148,6 +149,11 @@ class TopProfileModelSerializer(serializers.ModelSerializer):
             following_user_id=self.context['request'].user.id))
 
         return follwed_user.exists()
+
+    def get_total_follower(self, user):
+        followers = UserFollowing.objects.filter(user_id=user.id).count()
+        return followers
+
     # class MostFollowedUserModelSerializer(serializers.ModelSerializer):
 
     #     class Meta:
