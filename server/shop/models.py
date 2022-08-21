@@ -15,13 +15,16 @@ SUBSCRIPTION = (
 User = get_user_model()
 
 
-class UserProfile(models.Model):
+class Account(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
     is_pro = models.BooleanField(default=False)
     pro_expiry_date = models.DateField(null=True, blank=True)
     subscription_type = models.CharField(
         max_length=100, choices=SUBSCRIPTION, default='FREE')
+
+    def __str__(self) -> str:
+        return str(self.user)
 
 
 class Course(models.Model):
@@ -45,3 +48,6 @@ class CourseModule(models.Model):
     course_description = RichTextField()
     video_url = models.URLField(max_length=200)
     can_view = models.BooleanField(default=False)
+
+    def __str__(self) -> str:
+        return str(self.course)

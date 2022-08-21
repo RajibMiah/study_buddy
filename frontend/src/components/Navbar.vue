@@ -92,10 +92,39 @@
               </router-link>
             </div>
             <div class="header__user">
-              <button type="button" class="icon-button">
+              <button
+                type="button"
+                class="icon-button"
+                id="notification"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
                 <span class="material-icons">notifications</span>
-                <span class="icon-button__badge">2</span>
+                <!-- <span class="icon-button__badge">2</span> -->
               </button>
+              <div
+                class="dropdown-menu notification-menu"
+                aria-labelledby="notification"
+              >
+                <span class="no-data"> No Data Available</span>
+              </div>
+            </div>
+            <div class="header__user">
+              <a
+                style="cursor: pointer"
+                href="http://127.0.0.1:8000/shop/"
+                target="_blank"
+              >
+                <div>
+                  <span
+                    style="font-size: 4rem; color: #ed8d6a"
+                    class="material-symbols-outlined"
+                  >
+                    workspace_premium
+                  </span>
+                </div>
+              </a>
             </div>
           </div>
           <div v-else>
@@ -184,6 +213,18 @@ export default {
 };
 </script>
 <style scoped>
+.notification-menu {
+  left: -96px !important;
+  width: 98% !important;
+  min-height: 95% !important;
+  height: 20rem !important;
+}
+.no-data {
+  font-size: 19px;
+  padding: 39px;
+  display: flex;
+  margin: 0 auto;
+}
 .toggal-btn {
   display: flex;
   cursor: pointer;

@@ -15,7 +15,8 @@ def home(request):
     context = {'course': course}
 
     if request.user.is_authenticated:
-        profile = UserProfile.objects.filter(user=request.user).first()
+        print('reuqest is authenticated')
+        profile = Account.objects.filter(user=request.user).first()
         request.session['profile'] = profile.is_pro
 
     print(context)
@@ -53,7 +54,7 @@ def become_pro(request):
 
         print(charge['amount'])
         if charge['paid'] == True:
-            profile = UserProfile.objects.filter(user=request.user).first()
+            profile = Account.objects.filter(user=request.user).first()
             if charge['amount'] == 100000:
                 profile.subscription_type = 'M'
                 profile.is_pro = True
