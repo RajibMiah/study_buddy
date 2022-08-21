@@ -152,8 +152,7 @@ class TopProfileModelViewSet(viewsets.ModelViewSet):
         follower_object = UserFollowing.objects.all()
         # print(follower_object)
 
-        not_followed_by_user = super().get_queryset().exclude(
-            followers=self.request.user.id)
+        not_followed_by_user = super().get_queryset().exclude(id=self.request.user.id)
 
         return not_followed_by_user
 
