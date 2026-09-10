@@ -46,6 +46,12 @@ class UserRegisterForm(UserCreationForm):
 class UserForm(forms.ModelForm):
     """Profile self-service edit form."""
 
+    github = forms.URLField(assume_scheme="https", required=False)
+    linkedin = forms.URLField(assume_scheme="https", required=False)
+    location = forms.URLField(
+        assume_scheme="https", required=False, label="Website"
+    )
+
     class Meta:
         model = User
         fields = [
