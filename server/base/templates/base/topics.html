@@ -7,7 +7,7 @@
             {% for topic in topics %}
                 <li>
                     <a href="{% url 'home' %}?q={{ topic.name|urlencode }}">
-                        {{ topic.name }} <span>{{ topic.total_rooms }}</span>
+                        {{ topic.name }} <span>{{ topic.num_rooms }}</span>
                     </a>
                 </li>
             {% empty %}

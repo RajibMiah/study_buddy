@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
-from .models import Room, Topic
+from .models import Room
 
 User = get_user_model()
 
@@ -73,8 +73,8 @@ class UserForm(forms.ModelForm):
 
 
 class RoomForm(forms.ModelForm):
-    """Room create / edit. ``topic`` is entered as free text and resolved
-    to a :class:`~base.models.Topic` row on save."""
+    """Validates room input. The free-text ``topic_name`` is turned into a
+    :class:`~base.models.Topic` row by :mod:`base.services`, not here."""
 
     topic_name = forms.CharField(max_length=255, label="Topic")
 
@@ -88,11 +88,7 @@ class RoomForm(forms.ModelForm):
             self.fields["topic_name"].initial = self.instance.topic.name
 
     def clean_topic_name(self):
-        return self.cleaned_data["topic_name"].strip()
-
-    def save(self, commit=True):
-        topic, _ = Topic.objects.get_or_create(
-            name=self.cleaned_data["topic_name"]
-        )
-        self.instance.topic = topic
-        return super().save(commit=commit)
+        name = self.cleaned_data["topic_name"].strip()
+        if not name:
+            raise forms.ValidationError("A topic is required.")
+        return name

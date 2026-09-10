@@ -78,8 +78,16 @@ class Room(models.Model):
     description = models.TextField(null=True, blank=True)
     room_image = models.ImageField(
         null=True, blank=True)
-    updated = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(auto_now=True, db_index=True)
     created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-updated", "-created"]
+        indexes = [
+            models.Index(fields=["-updated", "-created"]),
+            models.Index(fields=["host"]),
+            models.Index(fields=["topic"]),
+        ]
 
     def __str__(self) -> str:
         return self.name
@@ -116,7 +124,11 @@ class Message(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['updated', 'created']
+        ordering = ['created']
+        indexes = [
+            models.Index(fields=["room", "created"]),
+            models.Index(fields=["-created"]),
+        ]
 
     def __str__(self) -> str:
         return self.body[0:50]
@@ -134,7 +146,9 @@ class UserFollowing(models.Model):
             models.UniqueConstraint(
                 fields=['user_id', 'following_user_id'], name="unique_followers")
         ]
-
+        indexes = [
+            models.Index(fields=["following_user_id"]),
+        ]
         ordering = ['-created']
 
     @property

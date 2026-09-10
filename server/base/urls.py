@@ -10,6 +10,7 @@ urlpatterns = [
     path("topics/", views.topicsPage, name="topics"),
     path("activity/", views.activityPage, name="activity"),
     path("profile/<int:pk>/", views.userProfile, name="user-profile"),
+    path("profile/<int:pk>/follow/", views.toggleFollow, name="toggle-follow"),
     path("account/edit/", views.updateUser, name="update-user"),
     path("room/<int:pk>/", views.room, name="room"),
     path("room/create/", views.createRoom, name="create-room"),
