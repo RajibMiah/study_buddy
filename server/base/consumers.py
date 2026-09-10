@@ -1,132 +1,159 @@
 import json
+import uuid
 
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
-from django.db.models import Q
+from django.template.defaultfilters import timesince
 
-from .models import Message, Room, User
+from .models import Message, Room
 
 
 class RoomConsumer(WebsocketConsumer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(args, kwargs)
-        self.room_id = None
-        self.room_group_name = None
-        self.room = None
-        self.user = None  # new
-        self.user_details = None
+    """Realtime chat for a single study room.
+
+    Clients send ``{"command": "NEW_MESSAGE", "body": "..."}``. The consumer
+    persists the message, adds the sender to the room participants and
+    broadcasts the rendered payload to everyone in the room group.
+    """
 
     def connect(self):
-        self.room_id = self.scope['url_route']['kwargs']['room_id']
-        self.room_group_name = f'chat_{self.room_id}'
-        self.room = Room.objects.get(pk=self.room_id)
-        # self.user_details = User.objects.get(id=self.room_id)
-        self.user = self.scope['user']  # new
+        self.room_id = self.scope["url_route"]["kwargs"]["room_id"]
+        self.room_group_name = f"room_{self.room_id}"
+        self.user = self.scope["user"]
 
-        # connection has to be accepted
-        self.accept()
-        print('Room connected')
-        # join the room group
+        if not self.user.is_authenticated:
+            self.close(code=4401)
+            return
+
+        if not Room.objects.filter(pk=self.room_id).exists():
+            self.close(code=4404)
+            return
+
         async_to_sync(self.channel_layer.group_add)(
-            self.room_group_name,
-            self.channel_name,
+            self.room_group_name, self.channel_name
         )
+        self.accept()
 
     def disconnect(self, close_code):
-        async_to_sync(self.channel_layer.group_discard)(
-            self.room_group_name,
-            self.channel_name,
-        )
-
-    def send_to_socket(self, data):
-        self.send(json.dumps(data))
-
-    def to_json_msg(self, msg):
-
-        try:
-            user = User.objects.get(
-                Q(username=self.user) and Q(uuid=self.user.uuid))
-            msg_set = user.message_set.all()[:1]
-
-        except Exception as e:
-            print('exception in new_msg ' + str(e))
-
-        return{
-            'id': user.id,
-            'message_id': str(msg_set[0].id),
-            'username': str(user.name),
-            'body': str(msg),
-            'created': str(msg_set[0].created),
-            'avator': str(user.avator.url),
-
-        }
-
-    def send_new_msg(self, recv_data):
-        data = recv_data['message']
-        self.send_room_msg(msg=recv_data, type='chat.message')
-        # try:
-
-        #     new_msg_obj = Message.objects.create(
-        #         user=data.userId, room=self.room, body=data)  # new
-
-        #     # self.send_to_socket({
-        #     #     "command": 'NEW_MSG',
-        #     #     'message': self.to_json_msg(new_msg_obj)
-        #     # })
-        #     room = Room.objects.get(id=self.room_id)
-        #     if not room.participants.filter(id=data.userId).exists():
-        #         room.participants.add(self.user)
-        #         user = User.objects.get(
-        #             Q(username=data.userName) and Q(id=data.userId))
-
-        #         ctx = {
-        #             'id': user.id,
-        #             'username': str(user.userName),
-        #             'avator': str(user.avator.url),
-        #         }
-
-        #         self.send_to_socket({
-        #             'command': 'PARTICIPANTS_ADDED',
-        #             'message': ctx
-        #         })
-        #         self.send_room_msg(msg=ctx, type='chat.message')
-        #     else:
-        #         print('user exit')
-
-        #     self.send_room_msg(msg=self.to_json_msg(
-        #         new_msg_obj), type='chat.message')
-
-        # except Exception as e:
-        #     print('exception in new_msg' + str(e))
-
-    def send_room_msg(self, msg, type):
-
-        try:
-            async_to_sync(self.channel_layer.group_send)(
-                self.room_group_name,
-                {
-                    "type": type,
-                    "message": msg
-                },
+        if getattr(self, "room_group_name", None):
+            async_to_sync(self.channel_layer.group_discard)(
+                self.room_group_name, self.channel_name
             )
 
-        except Exception as e:
-            print("error while sending"+str(e))
+    def receive(self, text_data=None, bytes_data=None):
+        try:
+            payload = json.loads(text_data or "{}")
+        except json.JSONDecodeError:
+            return
+
+        if payload.get("command") != "NEW_MESSAGE":
+            return
+
+        body = (payload.get("body") or "").strip()
+        if not body:
+            return
+
+        message = self._persist(body)
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,
+            {"type": "chat.message", "message": self._serialize(message)},
+        )
+
+    def _persist(self, body):
+        room = Room.objects.get(pk=self.room_id)
+        room.participants.add(self.user)
+        return Message.objects.create(user=self.user, room=room, body=body[:255])
+
+    def _serialize(self, message):
+        avatar = message.user.avator
+        return {
+            "id": message.id,
+            "user_id": message.user_id,
+            "username": message.user.username,
+            "name": message.user.name or message.user.username,
+            "avatar": avatar.url if avatar else "",
+            "body": message.body,
+            "created": f"{timesince(message.created)} ago",
+        }
 
     def chat_message(self, event):
-        msg = event["message"]
-        self.send_to_socket({
-            'command': 'NEW_MSG',
-            'message': msg,
-        })
+        self.send(text_data=json.dumps(event["message"]))
+
+
+class CallConsumer(WebsocketConsumer):
+    """WebRTC signalling relay for a room's video call.
+
+    Peers exchange SDP offers/answers and ICE candidates through this
+    consumer; media itself stays peer-to-peer. Messages in:
+    ``{"type": "join"}`` announces the peer, ``{"type": "signal",
+    "target": <peer_id>, "data": {...}}`` relays to one peer, and
+    ``{"type": "leave"}`` tears the peer down.
+    """
+
+    def connect(self):
+        self.room_id = self.scope["url_route"]["kwargs"]["room_id"]
+        self.user = self.scope["user"]
+
+        if not self.user.is_authenticated:
+            self.close(code=4401)
+            return
+        if not Room.objects.filter(pk=self.room_id).exists():
+            self.close(code=4404)
+            return
+
+        self.peer_id = uuid.uuid4().hex
+        self.room_group = f"call_{self.room_id}"
+        self.peer_group = f"callpeer_{self.peer_id}"
+
+        async_to_sync(self.channel_layer.group_add)(self.room_group, self.channel_name)
+        async_to_sync(self.channel_layer.group_add)(self.peer_group, self.channel_name)
+        self.accept()
+        self.send(text_data=json.dumps({"type": "welcome", "peer_id": self.peer_id}))
+
+    def disconnect(self, close_code):
+        if getattr(self, "peer_id", None):
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group,
+                {"type": "call.event", "sender": self.peer_id,
+                 "event": {"type": "peer-leave", "peer_id": self.peer_id}},
+            )
+        for group in (getattr(self, "room_group", None), getattr(self, "peer_group", None)):
+            if group:
+                async_to_sync(self.channel_layer.group_discard)(group, self.channel_name)
 
     def receive(self, text_data=None, bytes_data=None):
-        recv_data = json.loads(text_data)
-        print("recived data", recv_data)
+        try:
+            msg = json.loads(text_data or "{}")
+        except json.JSONDecodeError:
+            return
 
-        if recv_data['command'] == 'MESSAGE':
-            pass
-        elif recv_data['command'] == 'NEW_MSG':
-            self.send_new_msg(recv_data)
-        else:
-            pass
+        kind = msg.get("type")
+        identity = {
+            "peer_id": self.peer_id,
+            "username": self.user.username,
+            "name": self.user.name or self.user.username,
+        }
+
+        if kind == "join":
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group,
+                {"type": "call.event", "sender": self.peer_id,
+                 "event": {"type": "peer-join", **identity}},
+            )
+        elif kind == "signal" and msg.get("target"):
+            async_to_sync(self.channel_layer.group_send)(
+                f"callpeer_{msg['target']}",
+                {"type": "call.event", "sender": self.peer_id,
+                 "event": {"type": "signal", "data": msg.get("data"), **identity}},
+            )
+        elif kind == "leave":
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group,
+                {"type": "call.event", "sender": self.peer_id,
+                 "event": {"type": "peer-leave", "peer_id": self.peer_id}},
+            )
+
+    def call_event(self, event):
+        if event.get("sender") == self.peer_id:
+            return
+        self.send(text_data=json.dumps(event["event"]))

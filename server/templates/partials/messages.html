@@ -1,0 +1,15 @@
+{% if messages %}
+  <div class="toast-tray" aria-live="polite">
+    {% for message in messages %}
+      {% if 'error' in message.tags %}
+        <span data-toast="{{ message }}" data-level="error" hidden></span>
+      {% elif 'success' in message.tags %}
+        <span data-toast="{{ message }}" data-level="success" hidden></span>
+      {% elif 'warning' in message.tags %}
+        <span data-toast="{{ message }}" data-level="warning" hidden></span>
+      {% else %}
+        <span data-toast="{{ message }}" data-level="info" hidden></span>
+      {% endif %}
+    {% endfor %}
+  </div>
+{% endif %}

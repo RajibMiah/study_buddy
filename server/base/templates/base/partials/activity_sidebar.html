@@ -1,0 +1,25 @@
+<aside class="card sidebar sidebar--secondary">
+  <div class="card__header">
+    <h2>Recent activity</h2>
+    <a href="{% url 'activity' %}" class="link-muted">View all</a>
+  </div>
+  <div class="card__body col">
+    {% for message in room_messages|slice:":6" %}
+      <div class="row" style="align-items:flex-start">
+        {% if message.user.avator %}
+          <img class="avatar avatar--xs" src="{{ message.user.avator.url }}" alt="">
+        {% else %}<span class="avatar avatar--xs"></span>{% endif %}
+        <div style="min-width:0">
+          <div class="text-sm">
+            <a href="{% url 'user-profile' message.user_id %}"><b>@{{ message.user.username }}</b></a>
+            <span class="muted">in</span>
+            <a href="{% url 'room' message.room_id %}">{{ message.room.name|truncatechars:28 }}</a>
+          </div>
+          <div class="muted text-sm" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ message.body }}</div>
+        </div>
+      </div>
+    {% empty %}
+      <p class="muted text-sm">Nothing yet — start a conversation in a room.</p>
+    {% endfor %}
+  </div>
+</aside>

@@ -281,6 +281,8 @@ pip-selfcheck.json
 
 # End of https://www.gitignore.io/api/django,python,virtualenv,pycharm+all,visualstudiocode
 
-# Django migration files
-**/migrations/*
-!**/migrations/__init__.py
+# Migration files are part of the source tree and must be committed.
+
+# Local environment / build artifacts
+.env
+staticfiles/
