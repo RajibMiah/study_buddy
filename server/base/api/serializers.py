@@ -4,9 +4,7 @@ from base.models import Message, Room, Topic, User, UserFollowing, Vote
 from django.db.models import Q, Sum
 from rest_framework import serializers
 
-# from stripe import Source
-
-AVATOR_BASE_URL = 'http://127.0.0.1:8000/images/'
+from .media import media_url
 
 
 class SimpleUserSerializer(serializers.Serializer):
@@ -17,10 +15,7 @@ class SimpleUserSerializer(serializers.Serializer):
     avator = serializers.SerializerMethodField()
 
     def get_avator(self, user):
-        if user.avator:
-            avator_url = str(AVATOR_BASE_URL) + str(user.avator)
-            return avator_url
-        return None
+        return media_url(self.context.get("request"), user.avator)
 
 
 class SimpleTopicSerializer(serializers.Serializer):
@@ -100,10 +95,7 @@ class RoomSerializer(serializers.ModelSerializer):
         return ctx
 
     def get_room_image(self, obj):
-        if obj.room_image:
-            image_url = str(AVATOR_BASE_URL) + str(obj.room_image)
-            return image_url
-        return None
+        return media_url(self.context.get("request"), obj.room_image)
 
     def get_is_joined(self, obj):
         qs = Room.objects.prefetch_related('participants').filter(

@@ -15,7 +15,7 @@ GENDER = (
 class User(AbstractUser):
 
     name = models.CharField(max_length=255, null=True)
-    email = models.EmailField(unique=True, null=True)
+    email = models.EmailField(unique=True, null=True, blank=True)
     bio = models.CharField(max_length=255, null=True, blank=True)
     uuid = models.UUIDField(
         primary_key=False, default=uuid.uuid4, editable=False)
@@ -23,7 +23,7 @@ class User(AbstractUser):
     avator = models.ImageField(
         null=True, blank=True, default='/user.png')
     designation = models.CharField(max_length=255, null=True)
-    gender = gender = models.CharField(
+    gender = models.CharField(
         choices=GENDER, max_length=55, null=True, blank=True)
     location = models.URLField(max_length=200, null=True, blank=True)
     github = models.URLField(max_length=200, null=True, blank=True)
@@ -31,8 +31,12 @@ class User(AbstractUser):
     birthday = models.DateField(null=True, blank=True)
     summary = models.TextField(null=True, blank=True)
 
-    # USERNAME_FIELD ='email'
-    # REQUIRED_FIELDS = ['username' , 'email' , 'password']
+    def save(self, *args, **kwargs):
+        # ``email`` is unique; store missing addresses as NULL so multiple
+        # accounts without an email don't collide on an empty string.
+        if not self.email:
+            self.email = None
+        super().save(*args, **kwargs)
 
 
 class Skill(models.Model):
@@ -78,22 +82,16 @@ class Room(models.Model):
     description = models.TextField(null=True, blank=True)
     room_image = models.ImageField(
         null=True, blank=True)
-    updated = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(auto_now=True, db_index=True)
     created = models.DateTimeField(auto_now_add=True)
 
-    # class Meta:
-    #     ordering = ['-updated', '-created']
-
-    def get_online_count(self):
-        return self.host.count()
-
-    def join(self, user):
-        self.host.add(user)
-        self.save()
-
-    def leave(self, user):
-        self.host.remove(user)
-        self.save()
+    class Meta:
+        ordering = ["-updated", "-created"]
+        indexes = [
+            models.Index(fields=["-updated", "-created"]),
+            models.Index(fields=["host"]),
+            models.Index(fields=["topic"]),
+        ]
 
     def __str__(self) -> str:
         return self.name
@@ -130,7 +128,11 @@ class Message(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['updated', 'created']
+        ordering = ['created']
+        indexes = [
+            models.Index(fields=["room", "created"]),
+            models.Index(fields=["-created"]),
+        ]
 
     def __str__(self) -> str:
         return self.body[0:50]
@@ -148,7 +150,9 @@ class UserFollowing(models.Model):
             models.UniqueConstraint(
                 fields=['user_id', 'following_user_id'], name="unique_followers")
         ]
-
+        indexes = [
+            models.Index(fields=["following_user_id"]),
+        ]
         ordering = ['-created']
 
     @property

@@ -1,0 +1,29 @@
+{% comment %}One room in the feed. Expects `room` with host/topic joined and
+`participant_count` / `message_count` annotated (see base.selectors).{% endcomment %}
+<article class="card card--hover room-card">
+  <div class="room-card__head">
+    <a class="room-card__who" href="{% if room.host_id %}{% url 'user-profile' room.host_id %}{% else %}#{% endif %}">
+      {% if room.host.avator %}
+        <img class="avatar avatar--sm" src="{{ room.host.avator.url }}" alt="">
+      {% else %}
+        <span class="avatar avatar--sm"></span>
+      {% endif %}
+      <b>@{{ room.host.username|default:'unknown' }}</b>
+    </a>
+    <span class="room-card__time">{{ room.created|timesince }} ago</span>
+  </div>
+
+  <h3 class="room-card__title"><a href="{% url 'room' room.id %}">{{ room.name }}</a></h3>
+  {% if room.description %}<p class="room-card__desc">{{ room.description }}</p>{% endif %}
+
+  <div class="room-card__foot">
+    {% if room.topic %}<a href="{% url 'home' %}?q={{ room.topic.name|urlencode }}" class="chip chip--brand">{{ room.topic.name }}</a>{% endif %}
+    <span class="spacer"></span>
+    <span class="row">
+      <svg class="ic ic--sm"><use href="#i-users"/></svg>{{ room.participant_count }}
+    </span>
+    <span class="row">
+      <svg class="ic ic--sm"><use href="#i-chat"/></svg>{{ room.message_count }}
+    </span>
+  </div>
+</article>

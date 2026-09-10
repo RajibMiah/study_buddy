@@ -6,7 +6,7 @@ from rest_framework import serializers
 
 from .serializers import RoomSerializer, SimpleUserSerializer
 
-AVATOR_BASE_URL = 'http://127.0.0.1:8000/images/'
+
 
 
 class SimplateRoomSerializer(serializers.ModelSerializer):

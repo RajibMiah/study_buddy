@@ -1,0 +1,36 @@
+{% extends 'main.html' %}
+{% block title %}Topics — Study Buddy{% endblock %}
+
+{% block content %}
+<div class="stack">
+  <div class="page-head">
+    <div>
+      <h1>Study topics</h1>
+      <p>{{ total }} topic{{ total|pluralize }} · pick one to filter the room feed</p>
+    </div>
+    <form class="searchbar" method="GET" style="max-width:280px">
+      <svg class="ic ic--sm"><use href="#i-search"/></svg>
+      <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Filter topics">
+    </form>
+  </div>
+
+  <div class="card">
+    <div class="card__body">
+      <div class="list">
+        {% for topic in topics %}
+          <a href="{% url 'home' %}?q={{ topic.name|urlencode }}" class="list__item">
+            <span><svg class="ic ic--sm"><use href="#i-hash"/></svg> {{ topic.name }}</span>
+            <span class="count-pill">{{ topic.num_rooms }} room{{ topic.num_rooms|pluralize }}</span>
+          </a>
+        {% empty %}
+          <div class="empty">
+            <div class="empty__art"><svg class="ic ic--lg"><use href="#i-hash"/></svg></div>
+            <h3>No topics{% if request.GET.q %} match "{{ request.GET.q }}"{% endif %}</h3>
+            <p>Topics are created automatically when someone opens a room.</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

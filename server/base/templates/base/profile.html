@@ -1,89 +1,80 @@
 {% extends 'main.html' %}
-{% load static %}
+{% block title %}{{ user.name|default:user.username }} — Study Buddy{% endblock %}
 
 {% block content %}
-    <main class="profile-page layout layout--3">
-        <div
-            class="container">
-            <!-- Topics Start -->
-            {% include 'base/topics_component.html' %}
-            <!-- Topics End -->
-
-            <!-- Room List Start -->
-                <div class="roomList"> <div class="profile">
-                    <div class="profile__avatar">
-                        <div class="avatar avatar--large active">
-                            <img id="profile-img" src="{{ user.avator.url }}" class="online" alt=""/>
-                        </div>
-                    </div>
-                    <div class="profile__info">
-                        <div class="profile_info_container">
-                            <div>
-                                <div>
-                                    <div>
-                                        <h3>{{ user.name }}</h3>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="profile-user-followers">
-                                        <h4>@{{ user.name }}
-                                            {{ followers }}
-                                            followers</h4>
-                                    </div>
-                                    {% if request.user != user %}
-                                        <div class="btn btn--main btn--pill" id='followers'>
-                                            <a class="follow-span">Follow</a>
-                                        </div>
-
-                                    {% endif %}
-                                </div>
-                            </div>
-                            <div>
-                                {% if request.user != user %}
-                                    <a href='https://localhost:3000'>
-                                        <div class="header__user">
-                                            <button type="button" class="icon-button">
-                                                <span class="material-symbols-outlined">chat</span>
-                                            </button>
-                                        </div>
-                                    </a>
-                                    <a href="{% url 'shop-home' user.uuid %}" target="_blank">
-                                        <div class="header__user">
-                                            <button type="button" class="icon-button">
-                                                <span class="material-symbols-outlined">
-                                                    storefront
-                                                </span>
-                                            </button>
-                                        </div>
-                                    </a>
-
-                                {% endif %}
-                            </div>
-                            <!-- <p>@{{ user.username }}</p> -->
-                        </div>
-
-                        {% if request.user == user %}
-                            <a href="{% url 'update-user' %}" class="btn btn--main btn--pill">Edit Profile</a>
-                        {% endif %}
-                    </div>
-                    <div class="profile__about">
-                        <h3>About</h3>
-                        <p class="profile__bio">
-                            {{ user.bio }}
-                        </p>
-                    </div>
-                </div>
-                {% include 'base/feed_component.html' %}
-
-
+<div class="grid-2">
+  <main class="stack">
+    <div class="card card--pad">
+      <div class="profile-hero">
+        {% if user.avator %}
+          <img class="avatar avatar--lg" src="{{ user.avator.url }}" alt="">
+        {% else %}<span class="avatar avatar--lg"></span>{% endif %}
+        <div class="profile-hero__meta">
+          <div class="between wrap">
+            <div>
+              <div class="profile-hero__name">{{ user.name|default:user.username }}</div>
+              <div class="muted">@{{ user.username }}{% if user.designation %} · {{ user.designation }}{% endif %}</div>
             </div>
-            <!-- Room List End -->
+            {% if request.user == user %}
+              <a href="{% url 'update-user' %}" class="btn btn--ghost btn--sm">
+                <svg class="ic ic--sm"><use href="#i-edit"/></svg> Edit profile
+              </a>
+            {% elif request.user.is_authenticated %}
+              <form method="POST" action="{% url 'toggle-follow' user.id %}">
+                {% csrf_token %}
+                <button class="btn {% if is_following %}btn--ghost{% else %}btn--primary{% endif %} btn--sm" type="submit">
+                  {% if is_following %}Following{% else %}Follow{% endif %}
+                </button>
+              </form>
+            {% endif %}
+          </div>
 
-            <!-- Activities Start -->
-            {% include 'base/activity_component.html' %}
-            <!-- Activities End -->
+          {% if user.bio %}<p class="soft mt-1">{{ user.bio }}</p>{% endif %}
+
+          <div class="stat-row">
+            <div class="stat"><b>{{ followers }}</b><span>Followers</span></div>
+            <div class="stat"><b>{{ rooms|length }}</b><span>Rooms</span></div>
+          </div>
+
+          <div class="row wrap mt-2">
+            {% if user.github %}<a class="chip" href="{{ user.github }}" target="_blank" rel="noopener">GitHub</a>{% endif %}
+            {% if user.linkedin %}<a class="chip" href="{{ user.linkedin }}" target="_blank" rel="noopener">LinkedIn</a>{% endif %}
+            {% if user.location %}<a class="chip" href="{{ user.location }}" target="_blank" rel="noopener">Website</a>{% endif %}
+          </div>
         </div>
-        <script type="text/javascript" src="{% static 'js/profile.js' %}"></script>
-    </main>
+      </div>
+    </div>
 
-{% endblock content %}
+    <div class="section-title"><h2>Rooms hosted</h2><span class="count-pill">{{ rooms|length }}</span></div>
+    <div class="col">
+      {% for room in rooms %}
+        {% include 'base/partials/room_card.html' %}
+      {% empty %}
+        <div class="card card--pad">
+          <div class="empty">
+            <div class="empty__art"><svg class="ic ic--lg"><use href="#i-compass"/></svg></div>
+            <h3>No rooms yet</h3>
+            <p>{% if request.user == user %}Create your first study room to see it here.{% else %}This person hasn't hosted a room yet.{% endif %}</p>
+            {% if request.user == user %}<a href="{% url 'create-room' %}" class="btn btn--primary btn--sm">Create a room</a>{% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </main>
+
+  <aside class="card sidebar sidebar--secondary">
+    <div class="card__header"><h2>Recent messages</h2></div>
+    <div class="card__body col">
+      {% for message in room_messages|slice:":8" %}
+        <div>
+          <a href="{% url 'room' message.room_id %}" class="text-sm"><b>{{ message.room.name|truncatechars:32 }}</b></a>
+          <div class="muted text-sm">{{ message.body|truncatechars:70 }}</div>
+          <div class="muted text-sm">{{ message.created|timesince }} ago</div>
+        </div>
+      {% empty %}
+        <p class="muted text-sm">No messages yet.</p>
+      {% endfor %}
+    </div>
+  </aside>
+</div>
+{% endblock %}

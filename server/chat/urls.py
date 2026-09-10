@@ -1,7 +1,7 @@
 from django.urls import path
 from rest_framework.authtoken import views
 
-from chat.views.auth_view import *
+from chat.views.auth_view import (Login, LogOutView, RegisterView, UsersView)
 from chat.views.call_view import EndCall, StartCall
 from chat.views.message_view import MessageView
 
@@ -14,5 +14,4 @@ urlpatterns = [
     path('message/', MessageView.as_view()),
     path('start-call/', StartCall.as_view()),
     path('end-call/', EndCall.as_view()),
-    path('test-socket/', test_socket)
 ]

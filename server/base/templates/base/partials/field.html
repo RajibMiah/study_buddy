@@ -1,0 +1,17 @@
+{% comment %}Render one bound form field with inline validation. Usage:
+  {% include 'base/partials/field.html' with field=form.name %}
+{% endcomment %}
+<div class="field{% if field.errors %} field--error{% endif %}">
+  {% if field.label %}
+    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+  {% endif %}
+  {{ field }}
+  {% if field.help_text %}
+    <span class="hint">{{ field.help_text|safe }}</span>
+  {% endif %}
+  {% for error in field.errors %}
+    <span class="field__error">
+      <svg class="ic ic--sm"><use href="#i-activity"/></svg>{{ error }}
+    </span>
+  {% endfor %}
+</div>

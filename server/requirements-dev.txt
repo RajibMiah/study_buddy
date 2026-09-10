@@ -1,0 +1,4 @@
+-r requirements.txt
+
+# Local development tooling
+django-debug-toolbar==6.0.0
