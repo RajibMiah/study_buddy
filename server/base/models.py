@@ -15,7 +15,7 @@ GENDER = (
 class User(AbstractUser):
 
     name = models.CharField(max_length=255, null=True)
-    email = models.EmailField(unique=True, null=True)
+    email = models.EmailField(unique=True, null=True, blank=True)
     bio = models.CharField(max_length=255, null=True, blank=True)
     uuid = models.UUIDField(
         primary_key=False, default=uuid.uuid4, editable=False)
@@ -31,8 +31,12 @@ class User(AbstractUser):
     birthday = models.DateField(null=True, blank=True)
     summary = models.TextField(null=True, blank=True)
 
-    # USERNAME_FIELD ='email'
-    # REQUIRED_FIELDS = ['username' , 'email' , 'password']
+    def save(self, *args, **kwargs):
+        # ``email`` is unique; store missing addresses as NULL so multiple
+        # accounts without an email don't collide on an empty string.
+        if not self.email:
+            self.email = None
+        super().save(*args, **kwargs)
 
 
 class Skill(models.Model):
