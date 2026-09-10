@@ -12,7 +12,7 @@ from chat.models import Message
 User = get_user_model()
 
 
-AVATOR_BASE_URL = 'http://127.0.0.1:8000/images/'
+
 
 
 class MessageSerializer(serializers.Serializer):
@@ -109,10 +109,14 @@ class UserSerializer(serializers.ModelSerializer):
         return []
 
     def get_avator(self, user):
-        if user.avator:
-            avator_url = str(AVATOR_BASE_URL) + str(user.avator)
-            return avator_url
-        return None
+        request = self.context.get("request")
+        if not user.avator:
+            return None
+        return (
+            request.build_absolute_uri(user.avator.url)
+            if request
+            else user.avator.url
+        )
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
