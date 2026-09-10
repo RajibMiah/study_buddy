@@ -1,4 +1,5 @@
 import json
+import uuid
 
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
@@ -77,3 +78,82 @@ class RoomConsumer(WebsocketConsumer):
 
     def chat_message(self, event):
         self.send(text_data=json.dumps(event["message"]))
+
+
+class CallConsumer(WebsocketConsumer):
+    """WebRTC signalling relay for a room's video call.
+
+    Peers exchange SDP offers/answers and ICE candidates through this
+    consumer; media itself stays peer-to-peer. Messages in:
+    ``{"type": "join"}`` announces the peer, ``{"type": "signal",
+    "target": <peer_id>, "data": {...}}`` relays to one peer, and
+    ``{"type": "leave"}`` tears the peer down.
+    """
+
+    def connect(self):
+        self.room_id = self.scope["url_route"]["kwargs"]["room_id"]
+        self.user = self.scope["user"]
+
+        if not self.user.is_authenticated:
+            self.close(code=4401)
+            return
+        if not Room.objects.filter(pk=self.room_id).exists():
+            self.close(code=4404)
+            return
+
+        self.peer_id = uuid.uuid4().hex
+        self.room_group = f"call_{self.room_id}"
+        self.peer_group = f"callpeer_{self.peer_id}"
+
+        async_to_sync(self.channel_layer.group_add)(self.room_group, self.channel_name)
+        async_to_sync(self.channel_layer.group_add)(self.peer_group, self.channel_name)
+        self.accept()
+        self.send(text_data=json.dumps({"type": "welcome", "peer_id": self.peer_id}))
+
+    def disconnect(self, close_code):
+        if getattr(self, "peer_id", None):
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group,
+                {"type": "call.event", "sender": self.peer_id,
+                 "event": {"type": "peer-leave", "peer_id": self.peer_id}},
+            )
+        for group in (getattr(self, "room_group", None), getattr(self, "peer_group", None)):
+            if group:
+                async_to_sync(self.channel_layer.group_discard)(group, self.channel_name)
+
+    def receive(self, text_data=None, bytes_data=None):
+        try:
+            msg = json.loads(text_data or "{}")
+        except json.JSONDecodeError:
+            return
+
+        kind = msg.get("type")
+        identity = {
+            "peer_id": self.peer_id,
+            "username": self.user.username,
+            "name": self.user.name or self.user.username,
+        }
+
+        if kind == "join":
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group,
+                {"type": "call.event", "sender": self.peer_id,
+                 "event": {"type": "peer-join", **identity}},
+            )
+        elif kind == "signal" and msg.get("target"):
+            async_to_sync(self.channel_layer.group_send)(
+                f"callpeer_{msg['target']}",
+                {"type": "call.event", "sender": self.peer_id,
+                 "event": {"type": "signal", "data": msg.get("data"), **identity}},
+            )
+        elif kind == "leave":
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group,
+                {"type": "call.event", "sender": self.peer_id,
+                 "event": {"type": "peer-leave", "peer_id": self.peer_id}},
+            )
+
+    def call_event(self, event):
+        if event.get("sender") == self.peer_id:
+            return
+        self.send(text_data=json.dumps(event["event"]))

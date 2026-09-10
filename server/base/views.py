@@ -1,3 +1,6 @@
+import json
+
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
@@ -78,6 +81,7 @@ def room(request, pk):
         "room": room_obj,
         "room_messages": selectors.room_messages(pk),
         "participants": selectors.room_participants(room_obj),
+        "ice_servers": json.dumps(settings.WEBRTC_ICE_SERVERS),
     }
     return render(request, "base/room.html", context)
 

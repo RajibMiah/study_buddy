@@ -33,6 +33,29 @@
         {% if room.description %}<p class="soft">{{ room.description|linebreaksbr }}</p>{% endif %}
       </div>
 
+      {% if request.user.is_authenticated %}
+      <div class="call" id="call" data-room-id="{{ room.id }}" data-ice="{{ ice_servers }}">
+        <div class="card__header" style="border-top:1px solid var(--border)">
+          <div class="call__bar" style="width:100%">
+            <button class="btn btn--primary btn--sm" id="call-start" type="button">
+              <svg class="ic ic--sm"><use href="#i-video"/></svg> Start video call
+            </button>
+            <button class="iconbtn" id="call-mic" type="button" hidden aria-pressed="false" title="Mute microphone">
+              <svg class="ic"><use href="#i-mic"/></svg>
+            </button>
+            <button class="iconbtn" id="call-cam" type="button" hidden aria-pressed="false" title="Turn off camera">
+              <svg class="ic"><use href="#i-video"/></svg>
+            </button>
+            <button class="btn btn--danger btn--sm" id="call-leave" type="button" hidden>
+              <svg class="ic ic--sm"><use href="#i-phone-off"/></svg> Leave
+            </button>
+            <span class="status" id="call-status"></span>
+          </div>
+        </div>
+        <div class="call-stage" id="call-stage"></div>
+      </div>
+      {% endif %}
+
       <div class="chat">
         <div class="chat__scroll" id="chat-scroll"
              data-room-id="{{ room.id }}" data-user-id="{{ request.user.id|default:'' }}">
@@ -109,4 +132,5 @@
 
 {% block extra_js %}
 <script src="{% static 'js/room.js' %}"></script>
+<script src="{% static 'js/call.js' %}"></script>
 {% endblock %}

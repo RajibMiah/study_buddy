@@ -1,9 +1,13 @@
+from asgiref.sync import async_to_sync
+from channels.db import database_sync_to_async
+from channels.testing import WebsocketCommunicator
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
 from django.test.utils import CaptureQueriesContext
 from django.db import connection
 from django.urls import reverse
 
+from base.consumers import CallConsumer
 from base.models import Message, Room, Topic, UserFollowing
 
 User = get_user_model()
@@ -122,3 +126,52 @@ class FollowServiceTests(TestCase):
         self.client.force_login(self.a)
         self.client.post(reverse("toggle-follow", args=[self.a.pk]))
         self.assertEqual(UserFollowing.objects.count(), 0)
+
+
+class CallSignallingTests(TransactionTestCase):
+    def _connect(self, user, room_id):
+        communicator = WebsocketCommunicator(CallConsumer.as_asgi(), "/ws/call/")
+        communicator.scope["user"] = user
+        communicator.scope["url_route"] = {"kwargs": {"room_id": str(room_id)}}
+        return communicator
+
+    def test_anonymous_socket_is_rejected(self):
+        from django.contrib.auth.models import AnonymousUser
+
+        async def scenario():
+            comm = self._connect(AnonymousUser(), 1)
+            connected, _ = await comm.connect()
+            self.assertFalse(connected)
+
+        async_to_sync(scenario)()
+
+    def test_offer_is_relayed_to_the_target_peer_only(self):
+        async def scenario():
+            host = await database_sync_to_async(User.objects.create_user)(
+                "host", password="pw-1234567"
+            )
+            room = await database_sync_to_async(Room.objects.create)(
+                host=host, name="Call room"
+            )
+            a = self._connect(host, room.pk)
+            b = self._connect(host, room.pk)
+            await a.connect()
+            await b.connect()
+            await a.receive_json_from()  # welcome
+            b_id = (await b.receive_json_from())["peer_id"]
+
+            await b.send_json_to({"type": "join"})
+            join = await a.receive_json_from()
+            self.assertEqual(join["type"], "peer-join")
+
+            await a.send_json_to(
+                {"type": "signal", "target": b_id,
+                 "data": {"description": {"type": "offer", "sdp": "v=0"}}}
+            )
+            relayed = await b.receive_json_from()
+            self.assertEqual(relayed["data"]["description"]["type"], "offer")
+
+            await a.disconnect()
+            await b.disconnect()
+
+        async_to_sync(scenario)()
