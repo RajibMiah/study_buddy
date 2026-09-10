@@ -1,9 +1,44 @@
 {% extends 'main.html' %}
+{% block title %}Activity — Study Buddy{% endblock %}
+
 {% block content %}
-<main class="layout">
-    <div class="container">
-        <h2>Recent Activity</h2>
-        {% include 'base/activity_component.html' %}
+<div class="stack" style="max-width:760px;margin-inline:auto">
+  <div class="page-head">
+    <div>
+      <h1>Recent activity</h1>
+      <p>The latest messages across every study room</p>
     </div>
-</main>
+  </div>
+
+  <div class="col">
+    {% for message in room_messages %}
+      <article class="card card--hover">
+        <div class="card__body row" style="align-items:flex-start">
+          {% if message.user.avator %}
+            <img class="avatar avatar--md" src="{{ message.user.avator.url }}" alt="">
+          {% else %}<span class="avatar avatar--md"></span>{% endif %}
+          <div style="min-width:0;flex:1">
+            <div class="text-sm">
+              <a href="{% url 'user-profile' message.user_id %}"><b>@{{ message.user.username }}</b></a>
+              <span class="muted">posted in</span>
+              <a href="{% url 'room' message.room_id %}"><b>{{ message.room.name }}</b></a>
+              <span class="muted">· {{ message.created|timesince }} ago</span>
+            </div>
+            <p class="soft mt-1">{{ message.body }}</p>
+            {% if message.room.topic %}<span class="chip chip--brand mt-1">{{ message.room.topic.name }}</span>{% endif %}
+          </div>
+        </div>
+      </article>
+    {% empty %}
+      <div class="card card--pad">
+        <div class="empty">
+          <div class="empty__art"><svg class="ic ic--lg"><use href="#i-activity"/></svg></div>
+          <h3>Nothing here yet</h3>
+          <p>Once people start chatting in rooms, their messages show up here.</p>
+          <a href="{% url 'home' %}" class="btn btn--primary btn--sm">Browse rooms</a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
 {% endblock %}

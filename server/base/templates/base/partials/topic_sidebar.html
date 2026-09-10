@@ -1,0 +1,23 @@
+<aside class="card sidebar">
+  <div class="card__header"><h2>Browse topics</h2></div>
+  <div class="card__body">
+    <div class="list">
+      <a href="{% url 'home' %}" class="list__item {% if not request.GET.q %}is-active{% endif %}">
+        <span>All rooms</span>
+        <span class="count-pill">{{ topics|length }}</span>
+      </a>
+      {% for topic in topics|slice:":8" %}
+        <a href="{% url 'home' %}?q={{ topic.name|urlencode }}"
+           class="list__item {% if request.GET.q == topic.name %}is-active{% endif %}">
+          <span># {{ topic.name }}</span>
+          <span class="count-pill">{{ topic.num_rooms }}</span>
+        </a>
+      {% empty %}
+        <p class="muted text-sm" style="padding:8px 10px">No topics yet.</p>
+      {% endfor %}
+    </div>
+    {% if topics|length > 8 %}
+      <a href="{% url 'topics' %}" class="btn btn--ghost btn--sm btn--block mt-1">See all topics</a>
+    {% endif %}
+  </div>
+</aside>

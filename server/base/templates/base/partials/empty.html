@@ -1,0 +1,15 @@
+{% comment %}Zero-data state. Usage:
+  {% include 'base/partials/empty.html' with title="No rooms yet" body="..." cta_url=... cta_label="Create a room" %}
+{% endcomment %}
+<div class="empty">
+  <div class="empty__art">
+    <svg class="ic ic--lg"><use href="#i-{{ icon|default:'compass' }}"/></svg>
+  </div>
+  <h3>{{ title }}</h3>
+  {% if body %}<p>{{ body }}</p>{% endif %}
+  {% if cta_url %}
+    <a href="{{ cta_url }}" class="btn btn--primary btn--sm">
+      <svg class="ic ic--sm"><use href="#i-plus"/></svg>{{ cta_label }}
+    </a>
+  {% endif %}
+</div>
