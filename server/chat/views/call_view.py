@@ -41,8 +41,7 @@ class StartCall(APIView):
                     }
                 }
             )
-            print('all good')
-            return Response({'hello': 'world'})
+            return Response({'status': 'call-started'})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

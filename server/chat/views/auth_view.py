@@ -15,9 +15,8 @@ from rest_framework.authentication import (BasicAuthentication,
                                            TokenAuthentication)
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.decorators import api_view
 from rest_framework.generics import CreateAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -25,7 +24,6 @@ User = get_user_model()
 
 
 class Login(ObtainAuthToken):
-    print('logged')
 
     def post(self, request, *args, **kwargs):
         """
@@ -60,9 +58,10 @@ class Login(ObtainAuthToken):
 
 class RegisterView(CreateAPIView):
     serializer_class = RegistrationSerializer
+    permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
-        super(RegisterView, self).post(request, *args, **kwargs)
+        super().post(request, *args, **kwargs)
         return Response({'message': 'Registration success, now you can login'})
 
 
@@ -108,20 +107,3 @@ def notify_others(user: User):
             'message': serializer.data
         }
     )
-
-
-def test_socket(request):
-    # users = User.objects.all()
-    # return render(request, template_name='test.html', context={'users': users})
-    # serializer = UserSerializer(user, many=False)
-    channel_layer = get_channel_layer()
-    async_to_sync(channel_layer.group_send)(
-        'chat_rifat', {
-            'type': 'new_call',
-            'message': {
-                'receiver': 'ritu',
-                'sender': 'rifat'
-            }
-        }
-    )
-    return HttpResponse("hello world")

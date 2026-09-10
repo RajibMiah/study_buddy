@@ -1,67 +1,40 @@
 {% extends 'main.html' %}
+{% block title %}{% if room %}Edit room{% else %}New room{% endif %} — Study Buddy{% endblock %}
 
 {% block content %}
-    <main class="create-room layout">
-        <div class="container">
-            <div class="layout__box">
-                <div class="layout__boxHeader">
-                    <div class="layout__boxTitle">
-                        <a href="{{request.META.HTTP_REFERER}}">
-                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewbox="0 0 32 32">
-                                <title>arrow-left</title>
-                                <path d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z"></path>
-                            </svg>
-                        </a>
-                        <h3>Create/Update Study Room</h3>
-                    </div>
-                </div>
-                <div class="layout__body">
-                    <form class="form" action="" method="POST">
-                        {% csrf_token %}
+<div class="auth-wrap" style="align-items:flex-start;padding-top:32px">
+  <div class="auth-card" style="max-width:560px">
+    <a href="{% url 'home' %}" class="btn btn--ghost btn--sm mb-2">
+      <svg class="ic ic--sm"><use href="#i-arrow-left"/></svg> Back
+    </a>
+    <div class="card card--pad">
+      <h1 class="mb-1">{% if room %}Edit study room{% else %}Create a study room{% endif %}</h1>
+      <p class="muted text-sm mb-2">Rooms are public. Give yours a clear name and topic so the right people find it.</p>
 
-                        <div class="form__group">
-                            <label for="room_topic">Enter a Topic</label>
-                            <input required type="text" value="{{room.topic.name}}" name="topic" list="topic-list"/>
-                            <datalist id="topic-list">
-                                <select id="room_topic">
-                                    {% for topic in topics %}
-                                        <option value="{{topic.name}}">{{topic.name}}</option>
-                                    {% endfor %}
-                                </select>
-                            </datalist>
-                        </div>
+      <form method="POST" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        {% include 'base/partials/field.html' with field=form.topic_name %}
+        <datalist id="topic-options">
+          {% for topic in topics %}<option value="{{ topic.name }}">{% endfor %}
+        </datalist>
 
+        {% include 'base/partials/field.html' with field=form.name %}
+        {% include 'base/partials/field.html' with field=form.description %}
+        {% if form.room_image %}{% include 'base/partials/field.html' with field=form.room_image %}{% endif %}
 
-                        <div class="form__group">
-                            <label for="room_name">Room Name</label>
-                            {{form.name}}
-                        </div>
-
-                        <div class="form__group">
-                            <label for="room_description">Room Description</label>
-                            {{form.description}}
-                        </div>
-
-                        <!-- <div class="form__group">
-                                    <label for="room_topic">Topic</label>
-                                    <input required type="text" name="topic" id="room_topic" list="topic-list" />
-                                    <datalist id="topic-list">
-                                      <select id="room_topic">
-                                        <option value="">Select your topic</option>
-                                        <option value="Python">Python</option>
-                                        <option value="Django">Django</option>
-                                      </select>
-                                    </datalist>
-                                  </div> -->
-
-
-                        <div class="form__action">
-                            <a class="btn btn--dark" href="{{request.META.HTTP_REFERER}}">Cancel</a>
-                            <button class="btn btn--main" type="submit">Submit</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+        <div class="form__actions">
+          <a href="{% url 'home' %}" class="btn btn--ghost">Cancel</a>
+          <button class="btn btn--primary" type="submit">{% if room %}Save changes{% else %}Create room{% endif %}</button>
         </div>
-    </main>
-{% endblock content %}
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var t = document.getElementById("{{ form.topic_name.id_for_label }}");
+    if (t) t.setAttribute("list", "topic-options");
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% include 'partials/icons.html' %}
+<header class="appbar">
+  <div class="container appbar__inner">
+    <a href="{% url 'home' %}" class="appbar__logo">
+      <span class="mark">SB</span>
+      <span class="hide-mobile">Study Buddy</span>
+    </a>
+
+    <form class="searchbar appbar__search" method="GET" action="{% url 'home' %}" role="search">
+      <svg class="ic ic--sm"><use href="#i-search"/></svg>
+      <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Search rooms, topics, people" aria-label="Search">
+    </form>
+
+    <nav class="appbar__links">
+      <a href="{% url 'topics' %}" class="appbar__link {% if request.resolver_match.url_name == 'topics' %}is-active{% endif %}">
+        <svg class="ic ic--sm"><use href="#i-compass"/></svg> Topics
+      </a>
+      <a href="{% url 'activity' %}" class="appbar__link {% if request.resolver_match.url_name == 'activity' %}is-active{% endif %}">
+        <svg class="ic ic--sm"><use href="#i-activity"/></svg> Activity
+      </a>
+    </nav>
+
+    <div class="appbar__spacer"></div>
+
+    <button class="iconbtn" type="button" data-theme-toggle aria-label="Toggle colour theme" aria-pressed="false">
+      <svg class="ic" data-theme-icon="light"><use href="#i-sun"/></svg>
+    </button>
+
+    {% if request.user.is_authenticated %}
+      <a href="{% url 'create-room' %}" class="btn btn--primary btn--sm hide-mobile">
+        <svg class="ic ic--sm"><use href="#i-plus"/></svg> New room
+      </a>
+      <div class="menu">
+        <button class="appbar__user" type="button" data-menu-trigger aria-haspopup="true">
+          {% if request.user.avator %}
+            <img class="avatar avatar--xs" src="{{ request.user.avator.url }}" alt="">
+          {% else %}
+            <span class="avatar avatar--xs"></span>
+          {% endif %}
+          <span class="hide-mobile">{{ request.user.username }}</span>
+          <svg class="ic ic--sm"><use href="#i-chevron"/></svg>
+        </button>
+        <div class="menu__panel" role="menu">
+          <a class="menu__item" href="{% url 'user-profile' request.user.id %}">
+            <svg class="ic ic--sm"><use href="#i-user"/></svg> My profile
+          </a>
+          <a class="menu__item" href="{% url 'update-user' %}">
+            <svg class="ic ic--sm"><use href="#i-edit"/></svg> Edit profile
+          </a>
+          <div class="menu__sep"></div>
+          <button class="menu__item" type="button" data-theme-toggle>
+            <svg class="ic ic--sm"><use href="#i-moon"/></svg>
+            Theme: <span data-theme-label>Light</span>
+          </button>
+          <div class="menu__sep"></div>
+          <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="menu__item" type="submit">
+              <svg class="ic ic--sm"><use href="#i-logout"/></svg> Sign out
+            </button>
+          </form>
+        </div>
+      </div>
+    {% else %}
+      <a href="{% url 'login' %}" class="btn btn--ghost btn--sm">Log in</a>
+      <a href="{% url 'register' %}" class="btn btn--primary btn--sm">Sign up</a>
+    {% endif %}
+
+    <button class="iconbtn navtoggle" type="button" data-nav-toggle aria-label="Menu">
+      <svg class="ic"><use href="#i-hash"/></svg>
+    </button>
+  </div>
+
+  <div class="mobile-drawer">
+    <div class="container">
+      <form class="searchbar" method="GET" action="{% url 'home' %}" role="search">
+        <svg class="ic ic--sm"><use href="#i-search"/></svg>
+        <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Search">
+      </form>
+      <a href="{% url 'topics' %}" class="appbar__link">Topics</a>
+      <a href="{% url 'activity' %}" class="appbar__link">Activity</a>
+      {% if request.user.is_authenticated %}
+        <a href="{% url 'create-room' %}" class="appbar__link">New room</a>
+      {% endif %}
+    </div>
+  </div>
+</header>
