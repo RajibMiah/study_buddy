@@ -25,7 +25,6 @@ User = get_user_model()
 
 
 class Login(ObtainAuthToken):
-    print('logged')
 
     def post(self, request, *args, **kwargs):
         """

@@ -1,0 +1,19 @@
+{% extends 'main.html' %}
+{% block content %}
+<main class="layout">
+    <div class="container">
+        <h2>Study Topics <span>({{ total }})</span></h2>
+        <ul class="topics__list">
+            {% for topic in topics %}
+                <li>
+                    <a href="{% url 'home' %}?q={{ topic.name|urlencode }}">
+                        {{ topic.name }} <span>{{ topic.total_rooms }}</span>
+                    </a>
+                </li>
+            {% empty %}
+                <li>No topics yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</main>
+{% endblock %}

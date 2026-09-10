@@ -1,7 +1,7 @@
 import json
 
 from asgiref.sync import async_to_sync
-from channels.generic.websocket import WebsocketConsumer, AsyncWebsocketConsumer
+from channels.generic.websocket import WebsocketConsumer
 
 
 class NewUserConsumer(WebsocketConsumer):
@@ -16,11 +16,15 @@ class NewUserConsumer(WebsocketConsumer):
         )
         self.accept()
 
-    def receive(self, text_data):
+    def receive(self, text_data=None, bytes_data=None):
+        try:
+            message = json.loads(text_data or "{}")["message"]
+        except (json.JSONDecodeError, KeyError, TypeError):
+            return
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name, {
                 'type': 'new_user_notification',
-                'message': json.loads(text_data)['message']
+                'message': message
             }
         )
 

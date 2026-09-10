@@ -23,7 +23,7 @@ class User(AbstractUser):
     avator = models.ImageField(
         null=True, blank=True, default='/user.png')
     designation = models.CharField(max_length=255, null=True)
-    gender = gender = models.CharField(
+    gender = models.CharField(
         choices=GENDER, max_length=55, null=True, blank=True)
     location = models.URLField(max_length=200, null=True, blank=True)
     github = models.URLField(max_length=200, null=True, blank=True)
@@ -80,20 +80,6 @@ class Room(models.Model):
         null=True, blank=True)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
-
-    # class Meta:
-    #     ordering = ['-updated', '-created']
-
-    def get_online_count(self):
-        return self.host.count()
-
-    def join(self, user):
-        self.host.add(user)
-        self.save()
-
-    def leave(self, user):
-        self.host.remove(user)
-        self.save()
 
     def __str__(self) -> str:
         return self.name
