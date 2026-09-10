@@ -15,7 +15,6 @@ env = environ.Env(
     DEBUG=(bool, False),
     ALLOWED_HOSTS=(list, ["localhost", "127.0.0.1"]),
     CSRF_TRUSTED_ORIGINS=(list, []),
-    CORS_ALLOWED_ORIGINS=(list, []),
     SECURE_SSL_REDIRECT=(bool, False),
     SECURE_HSTS_SECONDS=(int, 0),
 )
@@ -42,7 +41,6 @@ CSRF_TRUSTED_ORIGINS = env("CSRF_TRUSTED_ORIGINS")
 INSTALLED_APPS = [
     "daphne",
     "channels",
-    "corsheaders",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -58,7 +56,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -177,9 +174,11 @@ STORAGES = {
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-# Cross-Origin Resource Sharing (scoped to the SPA client only)
-CORS_ALLOWED_ORIGINS = env("CORS_ALLOWED_ORIGINS")
-CORS_ALLOW_CREDENTIALS = True
+# WebRTC signalling: ICE servers handed to the browser for room video calls.
+WEBRTC_ICE_SERVERS = env.json(
+    "WEBRTC_ICE_SERVERS",
+    default=[{"urls": ["stun:stun.l.google.com:19302"]}],
+)
 
 
 # Security hardening (active whenever DEBUG is off)

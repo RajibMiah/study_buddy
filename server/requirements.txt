@@ -5,9 +5,6 @@ djangorestframework==3.18.1
 # Realtime / ASGI
 channels[daphne]==4.3.2
 
-# Cross-origin support for the Vue SPA client
-django-cors-headers==4.9.0
-
 # Media handling
 Pillow==12.3.0
 
